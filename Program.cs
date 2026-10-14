@@ -132,8 +132,9 @@ namespace OpgaverAPI
             builder.Services.AddScoped<OpgaverAPI.Services.ChampionImageSyncService>();
             builder.Services.AddHttpClient("ddragon", c =>
                 {
-                    c.DefaultRequestHeaders.UserAgent.ParseAdd("APIer-OpgaverAPI/1.0");
-                    c.Timeout = TimeSpan.FromMinutes(3);
+                    c.DefaultRequestHeaders.UserAgent.ParseAdd(
+                        "Mozilla/5.0 (compatible; APIer-OpgaverAPI/1.0; +https://api-opgaver.mercantec.tech)");
+                    c.Timeout = TimeSpan.FromMinutes(5);
                 })
                 .ConfigurePrimaryHttpMessageHandler(() =>
                 {
