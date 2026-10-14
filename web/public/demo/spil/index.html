@@ -4,16 +4,16 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Spil — APIer</title>
-    <meta name="description" content="47 mini-spil oven på elev-API’erne." />
+    <meta name="description" content="60+ mini-spil oven på elev-API’erne." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/styles.css?v=20261014p" />
-    <link rel="stylesheet" href="/demo.css?v=20261014p" />
-    <link rel="stylesheet" href="/demo/spil/spil.css?v=20261014p" />
+    <link rel="stylesheet" href="/styles.css?v=20261014q" />
+    <link rel="stylesheet" href="/demo.css?v=20261014q" />
+    <link rel="stylesheet" href="/demo/spil/spil.css?v=20261014q" />
   </head>
   <body>
     <div class="atmosphere" aria-hidden="true"></div>
@@ -21,81 +21,101 @@
       <nav class="demo-nav">
         <a class="back" href="/demo">← Demo</a>
         <div class="demo-links">
+          <a class="btn ghost sm" href="/demo/spil/tilfaeldig">Tilfældigt</a>
           <a class="btn primary sm" href="/demo/spil">Spil</a>
         </div>
       </nav>
 
       <header class="demo-hero">
-        <p class="eyebrow">47 quizzer · Go · .NET · Opgaver-JSON</p>
+        <p class="eyebrow">63 quizzer · Go · .NET · Opgaver-JSON</p>
         <h1 class="brand">Spil</h1>
-        <p class="lede">Vælg en kategori — alle spil henter live data fra API’erne.</p>
+        <p class="lede">
+          Alle spil henter live API-data.
+          <a href="/demo/spil/tilfaeldig">Prøv et tilfældigt →</a>
+        </p>
       </header>
 
       <h2 class="spil-section-title">Pokémon</h2>
       <div class="demo-pick">
         <a class="demo-pick-card" href="/demo/spil/hvem"><span class="eyebrow">Silhuet</span><h2>Hvem er den?</h2><p>Gæt Pokémonen.</p><span class="demo-pick-cta">Spil →</span></a>
         <a class="demo-pick-card" href="/demo/spil/type"><span class="eyebrow">Types</span><h2>Type-quiz</h2><p>Hvilken type?</p><span class="demo-pick-cta">Spil →</span></a>
-        <a class="demo-pick-card" href="/demo/spil/evo"><span class="eyebrow">Evolutions</span><h2>Evolution</h2><p>Hvad udvikler den sig til?</p><span class="demo-pick-cta">Spil →</span></a>
-        <a class="demo-pick-card" href="/demo/spil/omvendtevo"><span class="eyebrow">Evolutions</span><h2>Evolverer fra?</h2><p>Hvem kom før?</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/dobbelttype"><span class="eyebrow">Types</span><h2>Én eller to typer?</h2><p>Single eller dual.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/evo"><span class="eyebrow">Evo</span><h2>Evolution</h2><p>Hvad udvikler den sig til?</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/omvendtevo"><span class="eyebrow">Evo</span><h2>Evolverer fra?</h2><p>Hvem kom før?</p><span class="demo-pick-cta">Spil →</span></a>
         <a class="demo-pick-card" href="/demo/spil/vaegt"><span class="eyebrow">Weight</span><h2>Vægt-kamp</h2><p>Hvem vejer mest?</p><span class="demo-pick-cta">Spil →</span></a>
         <a class="demo-pick-card" href="/demo/spil/hoejde"><span class="eyebrow">Height</span><h2>Højde-kamp</h2><p>Hvem er højest?</p><span class="demo-pick-cta">Spil →</span></a>
-        <a class="demo-pick-card" href="/demo/spil/dex"><span class="eyebrow">National dex</span><h2>Dex-nummer</h2><p>#25 = …?</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/dex"><span class="eyebrow">Dex</span><h2>Dex-nummer</h2><p>#25 = …?</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/xp"><span class="eyebrow">XP</span><h2>Mest XP</h2><p>Base experience.</p><span class="demo-pick-cta">Spil →</span></a>
       </div>
 
       <h2 class="spil-section-title">Minecraft</h2>
       <div class="demo-pick">
         <a class="demo-pick-card" href="/demo/spil/craft"><span class="eyebrow">Recipes</span><h2>Craft-hukommelse</h2><p>Ingredienser.</p><span class="demo-pick-cta">Spil →</span></a>
-        <a class="demo-pick-card" href="/demo/spil/mob"><span class="eyebrow">Mobs</span><h2>Mob-quiz</h2><p>Silhuet-gæt.</p><span class="demo-pick-cta">Spil →</span></a>
-        <a class="demo-pick-card" href="/demo/spil/kategori"><span class="eyebrow">Mobs</span><h2>Mob-kategori</h2><p>Passive, hostile…?</p><span class="demo-pick-cta">Spil →</span></a>
-        <a class="demo-pick-card" href="/demo/spil/biome"><span class="eyebrow">Biomes</span><h2>Biome-temperatur</h2><p>Hvem er varmest?</p><span class="demo-pick-cta">Spil →</span></a>
-        <a class="demo-pick-card" href="/demo/spil/kold"><span class="eyebrow">Biomes</span><h2>Koldeste biome</h2><p>Hvem er koldest?</p><span class="demo-pick-cta">Spil →</span></a>
-        <a class="demo-pick-card" href="/demo/spil/hardness"><span class="eyebrow">Blocks</span><h2>Hardness</h2><p>Hårdeste block.</p><span class="demo-pick-cta">Spil →</span></a>
-        <a class="demo-pick-card" href="/demo/spil/graver"><span class="eyebrow">Blocks</span><h2>Kan man grave den?</h2><p>Diggable ja/nej.</p><span class="demo-pick-cta">Spil →</span></a>
-        <a class="demo-pick-card" href="/demo/spil/stack"><span class="eyebrow">Items</span><h2>Stack-size</h2><p>1, 16 eller 64?</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/mob"><span class="eyebrow">Mobs</span><h2>Mob-quiz</h2><p>Silhuet.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/kategori"><span class="eyebrow">Mobs</span><h2>Mob-kategori</h2><p>Passive/hostile.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/bred"><span class="eyebrow">Mobs</span><h2>Bredeste mob</h2><p>Width-kamp.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/hoejmob"><span class="eyebrow">Mobs</span><h2>Højeste mob</h2><p>Height-kamp.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/biome"><span class="eyebrow">Biomes</span><h2>Varmest</h2><p>Temperatur.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/kold"><span class="eyebrow">Biomes</span><h2>Koldest</h2><p>Temperatur.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/hardness"><span class="eyebrow">Blocks</span><h2>Hardness</h2><p>Hårdeste.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/graver"><span class="eyebrow">Blocks</span><h2>Kan man grave den?</h2><p>Diggable.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/stack"><span class="eyebrow">Items</span><h2>Stack-size</h2><p>1 / 16 / 64.</p><span class="demo-pick-cta">Spil →</span></a>
       </div>
 
       <h2 class="spil-section-title">League of Legends</h2>
       <div class="demo-pick">
         <a class="demo-pick-card" href="/demo/spil/champ"><span class="eyebrow">Silhuet</span><h2>Gæt champen</h2><p>Hvem er det?</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/titel"><span class="eyebrow">Title</span><h2>Champ-titel</h2><p>“the Dark Child”…?</p><span class="demo-pick-cta">Spil →</span></a>
         <a class="demo-pick-card" href="/demo/spil/klasse"><span class="eyebrow">Tags</span><h2>Champ-klasse</h2><p>Mage, Fighter…</p><span class="demo-pick-cta">Spil →</span></a>
-        <a class="demo-pick-card" href="/demo/spil/resource"><span class="eyebrow">Partype</span><h2>Champ-resource</h2><p>Mana, Energy…?</p><span class="demo-pick-cta">Spil →</span></a>
-        <a class="demo-pick-card" href="/demo/spil/range"><span class="eyebrow">Attack range</span><h2>Melee eller ranged</h2><p>Angrebsafstand.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/resource"><span class="eyebrow">Partype</span><h2>Resource</h2><p>Mana, Energy…</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/range"><span class="eyebrow">Range</span><h2>Melee / ranged</h2><p>Angrebsafstand.</p><span class="demo-pick-cta">Spil →</span></a>
         <a class="demo-pick-card" href="/demo/spil/svaer"><span class="eyebrow">Difficulty</span><h2>Sværhedsgrad</h2><p>Højest difficulty.</p><span class="demo-pick-cta">Spil →</span></a>
         <a class="demo-pick-card" href="/demo/spil/magi"><span class="eyebrow">Magic</span><h2>Mest magi</h2><p>Magic-rating.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/angreb"><span class="eyebrow">Attack</span><h2>Højest attack</h2><p>ATK-rating.</p><span class="demo-pick-cta">Spil →</span></a>
         <a class="demo-pick-card" href="/demo/spil/rat"><span class="eyebrow">Info</span><h2>Attack vs Defense</h2><p>Hvad scorer højest?</p><span class="demo-pick-cta">Spil →</span></a>
       </div>
 
       <h2 class="spil-section-title">Countries</h2>
       <div class="demo-pick">
         <a class="demo-pick-card" href="/demo/spil/flag"><span class="eyebrow">Flags</span><h2>Kend flaget</h2><p>Flag → land.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/streak"><span class="eyebrow">Flags</span><h2>Flag-streak</h2><p>Hold streaken!</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/coat"><span class="eyebrow">Arms</span><h2>Våbenskjold</h2><p>Hvilket land?</p><span class="demo-pick-cta">Spil →</span></a>
         <a class="demo-pick-card" href="/demo/spil/hovedstad"><span class="eyebrow">Capital</span><h2>Hovedstad</h2><p>Land → hovedstad.</p><span class="demo-pick-cta">Spil →</span></a>
-        <a class="demo-pick-card" href="/demo/spil/omvendt"><span class="eyebrow">Capital</span><h2>Hovedstad omvendt</h2><p>Hovedstad → land.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/omvendt"><span class="eyebrow">Capital</span><h2>Omvendt</h2><p>Hovedstad → land.</p><span class="demo-pick-cta">Spil →</span></a>
         <a class="demo-pick-card" href="/demo/spil/nabo"><span class="eyebrow">Borders</span><h2>Nabolande</h2><p>Hvem grænser op?</p><span class="demo-pick-cta">Spil →</span></a>
         <a class="demo-pick-card" href="/demo/spil/nabotal"><span class="eyebrow">Borders</span><h2>Flest naboer</h2><p>Tæl grænser.</p><span class="demo-pick-cta">Spil →</span></a>
-        <a class="demo-pick-card" href="/demo/spil/befolkning"><span class="eyebrow">Population</span><h2>Befolkning</h2><p>Flest indbyggere.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/befolkning"><span class="eyebrow">Pop</span><h2>Befolkning</h2><p>Flest folk.</p><span class="demo-pick-cta">Spil →</span></a>
         <a class="demo-pick-card" href="/demo/spil/areal"><span class="eyebrow">Area</span><h2>Areal</h2><p>Størst land.</p><span class="demo-pick-cta">Spil →</span></a>
-        <a class="demo-pick-card" href="/demo/spil/region"><span class="eyebrow">Region</span><h2>Verdensdel</h2><p>Europe, Asia…?</p><span class="demo-pick-cta">Spil →</span></a>
-        <a class="demo-pick-card" href="/demo/spil/kontinent"><span class="eyebrow">Continents</span><h2>Kontinent</h2><p>Hvilket kontinent?</p><span class="demo-pick-cta">Spil →</span></a>
-        <a class="demo-pick-card" href="/demo/spil/landlocked"><span class="eyebrow">Landlocked</span><h2>Landlocked</h2><p>Har landet kyst?</p><span class="demo-pick-cta">Spil →</span></a>
-        <a class="demo-pick-card" href="/demo/spil/valuta"><span class="eyebrow">Currency</span><h2>Valuta</h2><p>DKK, EUR, USD…</p><span class="demo-pick-cta">Spil →</span></a>
-        <a class="demo-pick-card" href="/demo/spil/fifa"><span class="eyebrow">FIFA</span><h2>FIFA-kode</h2><p>DEN, BRA…?</p><span class="demo-pick-cta">Spil →</span></a>
-        <a class="demo-pick-card" href="/demo/spil/trafik"><span class="eyebrow">Car.side</span><h2>Køreside</h2><p>Venstre eller højre?</p><span class="demo-pick-cta">Spil →</span></a>
-        <a class="demo-pick-card" href="/demo/spil/uge"><span class="eyebrow">startOfWeek</span><h2>Ugens start</h2><p>Mandag eller søndag?</p><span class="demo-pick-cta">Spil →</span></a>
-        <a class="demo-pick-card" href="/demo/spil/subregion"><span class="eyebrow">Subregion</span><h2>Subregion</h2><p>Northern Europe…?</p><span class="demo-pick-cta">Spil →</span></a>
-        <a class="demo-pick-card" href="/demo/spil/nord"><span class="eyebrow">latlng</span><h2>Længst nord</h2><p>Højest latitude.</p><span class="demo-pick-cta">Spil →</span></a>
-        <a class="demo-pick-card" href="/demo/spil/ringekode"><span class="eyebrow">idd</span><h2>Landekode</h2><p>+45, +46…?</p><span class="demo-pick-cta">Spil →</span></a>
-        <a class="demo-pick-card" href="/demo/spil/coat"><span class="eyebrow">coatOfArms</span><h2>Våbenskjold</h2><p>Hvilket land?</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/nord"><span class="eyebrow">latlng</span><h2>Længst nord</h2><p>Latitude.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/syd"><span class="eyebrow">latlng</span><h2>Længst syd</h2><p>Latitude.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/oest"><span class="eyebrow">latlng</span><h2>Længst øst</h2><p>Longitude.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/region"><span class="eyebrow">Region</span><h2>Verdensdel</h2><p>Europe, Asia…</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/kontinent"><span class="eyebrow">Continent</span><h2>Kontinent</h2><p>Hvilket?</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/subregion"><span class="eyebrow">Subregion</span><h2>Subregion</h2><p>Northern Europe…</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/landlocked"><span class="eyebrow">Coast</span><h2>Landlocked</h2><p>Har landet kyst?</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/valuta"><span class="eyebrow">Currency</span><h2>Valuta</h2><p>DKK, EUR…</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/fifa"><span class="eyebrow">FIFA</span><h2>FIFA-kode</h2><p>DEN, BRA…</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/trafik"><span class="eyebrow">Car</span><h2>Køreside</h2><p>Venstre/højre.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/uge"><span class="eyebrow">Week</span><h2>Ugens start</h2><p>Mandag/søndag.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/ringekode"><span class="eyebrow">idd</span><h2>Landekode</h2><p>+45…</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/sprog"><span class="eyebrow">Lang</span><h2>Officielt sprog</h2><p>Hvilket sprog?</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/tld"><span class="eyebrow">DNS</span><h2>Internet-TLD</h2><p>.dk, .se…</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/demonym"><span class="eyebrow">People</span><h2>Demonym</h2><p>Danish, French…</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/timezone"><span class="eyebrow">TZ</span><h2>Flest timezones</h2><p>Hvem har flest?</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/fn"><span class="eyebrow">UN</span><h2>FN-medlem?</h2><p>Ja eller nej.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/uafhaengig"><span class="eyebrow">Status</span><h2>Uafhængig?</h2><p>Independent.</p><span class="demo-pick-cta">Spil →</span></a>
         <a class="demo-pick-card" href="/demo/spil/alfabet"><span class="eyebrow">A–Z</span><h2>Alfabet-lande</h2><p>Ét land pr. bogstav.</p><span class="demo-pick-cta">Spil →</span></a>
       </div>
 
       <h2 class="spil-section-title">Opgaver JSON</h2>
       <div class="demo-pick">
-        <a class="demo-pick-card" href="/demo/spil/wordle"><span class="eyebrow">Wordle</span><h2>Wordle</h2><p>Klassisk 5-bogstavs.</p><span class="demo-pick-cta">Spil →</span></a>
-        <a class="demo-pick-card" href="/demo/spil/anagram"><span class="eyebrow">Wordle</span><h2>Anagram</h2><p>Ret det rodete ord.</p><span class="demo-pick-cta">Spil →</span></a>
-        <a class="demo-pick-card" href="/demo/spil/pris"><span class="eyebrow">Diesel</span><h2>Pris-gæt</h2><p>Gæt prisen.</p><span class="demo-pick-cta">Spil →</span></a>
-        <a class="demo-pick-card" href="/demo/spil/higher"><span class="eyebrow">Diesel</span><h2>Higher or lower</h2><p>Steg eller fald?</p><span class="demo-pick-cta">Spil →</span></a>
-        <a class="demo-pick-card" href="/demo/spil/dyrest"><span class="eyebrow">Diesel</span><h2>Diesel eller Miles95?</h2><p>Hvad var dyrest?</p><span class="demo-pick-cta">Spil →</span></a>
-        <a class="demo-pick-card" href="/demo/spil/bil"><span class="eyebrow">Bilbasen</span><h2>Bilmærke</h2><p>Parse annonce-URL.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/wordle"><span class="eyebrow">Wordle</span><h2>Wordle</h2><p>5 bogstaver.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/anagram"><span class="eyebrow">Wordle</span><h2>Anagram</h2><p>Ret ordet.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/pris"><span class="eyebrow">Fuel</span><h2>Pris-gæt</h2><p>Gæt prisen.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/higher"><span class="eyebrow">Fuel</span><h2>Higher or lower</h2><p>Steg/fald.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/dyrest"><span class="eyebrow">Fuel</span><h2>Diesel eller Miles95?</h2><p>Hvad var dyrest?</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/bil"><span class="eyebrow">Bilbasen</span><h2>Bilmærke</h2><p>Parse URL.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/model"><span class="eyebrow">Bilbasen</span><h2>Bilmodel</h2><p>Gæt modellen.</p><span class="demo-pick-cta">Spil →</span></a>
       </div>
     </main>
   </body>

@@ -38,7 +38,7 @@ Browser → Cloudflare → Traefik → gateway (nginx)
 | `GET /demo/bilbasen` | Bilbasen JSON-parse demo |
 | `GET /demo/status` | Health + Opgaver Stats |
 | `GET /demo/countries-raw` | Rå lande-JSON (/Opgaver/CountriesRAW) |
-| `GET /demo/spil` | 47 mini-spil (Wordle, craft, champ, flag, priser, …) |
+| `GET /demo/spil` | 63 mini-spil (+ tilfældig picker) |
 | `GET /go/` | Go-service info |
 | `GET /go/health` | Go health |
 | `GET /go/pokemon` | Pokémon (Postgres, PokeAPI CSV) |
