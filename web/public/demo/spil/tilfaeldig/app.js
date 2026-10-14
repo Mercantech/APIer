@@ -7,6 +7,9 @@
     "landlocked","valuta","fifa","trafik","uge","subregion","nord","syd","oest",
     "ringekode","coat","sprog","tld","demonym","timezone","fn","uafhaengig","alfabet","streak",
     "wordle","anagram","pris","higher","dyrest","bil","model",
+    "rmstatus","rmspecies","rmgender",
+    "swfilm","swplanet","swship","swfolk",
+    "terrboss","terrweapon","terrcraft","terrcat",
   ];
 
   const status = document.getElementById("status");
