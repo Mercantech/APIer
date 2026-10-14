@@ -14,7 +14,7 @@
       href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/styles.css?v=20261014curl" />
+    <link rel="stylesheet" href="/styles.css?v=20261014expand" />
   </head>
   <body>
     <div class="atmosphere" aria-hidden="true"></div>
@@ -68,7 +68,7 @@
         <h2>Endpoint-katalog</h2>
         <p>
           Grupperet efter emne — vælg en kategori, backend eller datakilde.
-          Klik et endpoint for demo og live-svar.
+          Klik et endpoint for at åbne demo og live-svar direkte under kortet.
         </p>
         <div class="filters" id="filters"></div>
       </div>
@@ -107,18 +107,8 @@
       </div>
     </aside>
 
-    <!-- Endpoint demo drawer -->
-    <div class="drawer-backdrop" id="demoBackdrop" hidden></div>
-    <aside class="drawer wide" id="demoDrawer" aria-hidden="true" aria-label="Endpoint demo">
-      <div class="drawer-head">
-        <h2 id="demoTitle">Endpoint</h2>
-        <button type="button" class="icon-btn" id="demoClose" aria-label="Luk">×</button>
-      </div>
-      <div class="drawer-body" id="demoBody"></div>
-    </aside>
-
     <script src="/data.js?v=20261014net10"></script>
     <script src="/auth.js?v=20261014j"></script>
-    <script src="/app.js?v=20261014curl"></script>
+    <script src="/app.js?v=20261014expand"></script>
   </body>
 </html>

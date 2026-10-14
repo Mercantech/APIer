@@ -185,11 +185,9 @@
     }
   });
 
-  /* ——— Demo drawer ——— */
-  const demoDrawer = document.getElementById("demoDrawer");
-  const demoBackdrop = document.getElementById("demoBackdrop");
-  const demoTitle = document.getElementById("demoTitle");
-  const demoBody = document.getElementById("demoBody");
+  /* ——— Inline endpoint demo ——— */
+  let demoBody = null;
+  let openEndpointEl = null;
 
   const CODE_LANGS = [
     { id: "curl", label: "cURL" },
@@ -554,7 +552,7 @@ ${goAuth ? `\t` + goAuth + `\n` : ""}\tres, err := http.DefaultClient.Do(req)
   }
 
   function paintDemoBody(ep, path) {
-    const backend = backendById[ep.backend];
+    if (!demoBody) return;
     demoBody.innerHTML = `
       <div class="call-hero">
         <div class="demo-meta">
@@ -563,19 +561,6 @@ ${goAuth ? `\t` + goAuth + `\n` : ""}\tres, err := http.DefaultClient.Do(req)
         </div>
         <button type="button" class="btn ghost sm" id="demoCopyPath">Kopiér URL</button>
       </div>
-      <p class="call-summary">${escapeHtml(ep.summary)}</p>
-      <div class="tags">
-        <span class="tag source-${escapeHtml(ep.source.type)}">${escapeHtml(sourceLabel[ep.source.type] || ep.source.type)}</span>
-        <span class="tag backend-${escapeHtml(ep.backend)}">${escapeHtml(backend?.language || "")} · ${escapeHtml(backend?.service || "")}</span>
-        ${
-          ep.auth === "apiKey"
-            ? `<span class="tag auth">X-Api-Key</span>`
-            : ep.auth
-              ? `<span class="tag auth">${escapeHtml(ep.auth)}</span>`
-              : `<span class="tag auth open">Offentlig</span>`
-        }
-      </div>
-      <p class="source-detail">${escapeHtml(ep.source.detail)}</p>
       ${authBannerHtml(ep)}
       <div class="panel-stack">
         ${renderLivePanel(ep, path)}
@@ -585,8 +570,39 @@ ${goAuth ? `\t` + goAuth + `\n` : ""}\tres, err := http.DefaultClient.Do(req)
     wireDemoPanel(ep, path);
   }
 
-  function openDemo(ep) {
+  function setCardExpanded(cardEl, expanded) {
+    if (!cardEl) return;
+    cardEl.classList.toggle("open", expanded);
+    cardEl.querySelector(".endpoint-summary")?.setAttribute("aria-expanded", expanded ? "true" : "false");
+  }
+
+  function closeDemo() {
+    if (openEndpointEl) {
+      setCardExpanded(openEndpointEl, false);
+      const detail = openEndpointEl.querySelector(".endpoint-detail");
+      if (detail) {
+        detail.hidden = true;
+        detail.innerHTML = "";
+      }
+    }
+    openEndpointEl = null;
+    demoBody = null;
+    demoState = { ep: null, path: "", lang: "curl", snippets: null, live: null };
+  }
+
+  function openDemo(ep, cardEl) {
+    if (!cardEl) return;
+    if (openEndpointEl === cardEl) {
+      closeDemo();
+      return;
+    }
+
+    closeDemo();
+
     const path = resolvePath(ep.path);
+    const detail = cardEl.querySelector(".endpoint-detail");
+    if (!detail) return;
+
     demoState = {
       ep,
       path,
@@ -594,23 +610,16 @@ ${goAuth ? `\t` + goAuth + `\n` : ""}\tres, err := http.DefaultClient.Do(req)
       snippets: buildSnippets(ep, path),
       live: null,
     };
-    demoTitle.textContent = ep.title;
+    demoBody = detail;
+    openEndpointEl = cardEl;
+    setCardExpanded(cardEl, true);
+    detail.hidden = false;
     paintDemoBody(ep, path);
-    demoDrawer.classList.add("open");
-    demoDrawer.setAttribute("aria-hidden", "false");
-    demoBackdrop.hidden = false;
+    cardEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
-  function closeDemo() {
-    demoDrawer.classList.remove("open");
-    demoDrawer.setAttribute("aria-hidden", "true");
-    demoBackdrop.hidden = true;
-  }
-
-  document.getElementById("demoClose").addEventListener("click", closeDemo);
-  demoBackdrop.addEventListener("click", closeDemo);
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && demoDrawer.classList.contains("open")) closeDemo();
+    if (e.key === "Escape" && openEndpointEl) closeDemo();
   });
 
   function trimDemo(data) {
@@ -789,23 +798,28 @@ ${goAuth ? `\t` + goAuth + `\n` : ""}\tres, err := http.DefaultClient.Do(req)
   function endpointCardHtml(ep, i) {
     const backend = backendById[ep.backend];
     return `
-        <article class="endpoint" tabindex="0" role="button" data-idx="${i}" style="animation-delay:${Math.min(i, 12) * 40}ms">
-          <div class="endpoint-top">
-            <span class="method">${escapeHtml(ep.method)}</span>
-            <span class="path">${escapeHtml(ep.path)}</span>
-          </div>
-          <h3>${escapeHtml(ep.title)}</h3>
-          <p class="summary">${escapeHtml(ep.summary)}</p>
-          <div class="tags">
-            <span class="tag source-${escapeHtml(ep.source.type)}">${escapeHtml(sourceLabel[ep.source.type] || ep.source.type)}</span>
-            <span class="tag backend-${escapeHtml(ep.backend)}">${escapeHtml(backend?.language || ep.backend)} · ${escapeHtml(backend?.service || "")}</span>
-            ${ep.auth === "apiKey" ? `<span class="tag auth">API-nøgle</span>` : ep.auth ? `<span class="tag auth">${escapeHtml(ep.auth)}</span>` : ""}
-          </div>
-          <p class="source-detail">${escapeHtml(ep.source.detail)}</p>
+        <article class="endpoint" data-idx="${i}" style="animation-delay:${Math.min(i, 12) * 40}ms">
+          <button type="button" class="endpoint-summary" aria-expanded="false" data-idx="${i}">
+            <div class="endpoint-top">
+              <span class="method">${escapeHtml(ep.method)}</span>
+              <span class="path">${escapeHtml(ep.path)}</span>
+              <span class="endpoint-chevron" aria-hidden="true"></span>
+            </div>
+            <h3>${escapeHtml(ep.title)}</h3>
+            <p class="summary">${escapeHtml(ep.summary)}</p>
+            <div class="tags">
+              <span class="tag source-${escapeHtml(ep.source.type)}">${escapeHtml(sourceLabel[ep.source.type] || ep.source.type)}</span>
+              <span class="tag backend-${escapeHtml(ep.backend)}">${escapeHtml(backend?.language || ep.backend)} · ${escapeHtml(backend?.service || "")}</span>
+              ${ep.auth === "apiKey" ? `<span class="tag auth">API-nøgle</span>` : ep.auth ? `<span class="tag auth">${escapeHtml(ep.auth)}</span>` : ""}
+            </div>
+            <p class="source-detail">${escapeHtml(ep.source.detail)}</p>
+          </button>
+          <div class="endpoint-detail" hidden></div>
         </article>`;
   }
 
   function renderEndpoints() {
+    closeDemo();
     endpointsBound = catalog.endpoints.filter(matchesFilter);
 
     const categoryOrder = (catalog.categories || []).map((c) => c.id);
@@ -845,14 +859,12 @@ ${goAuth ? `\t` + goAuth + `\n` : ""}\tres, err := http.DefaultClient.Do(req)
       })
       .join("");
 
-    listEl.querySelectorAll(".endpoint").forEach((el) => {
-      const open = () => openDemo(endpointsBound[Number(el.dataset.idx)]);
-      el.addEventListener("click", open);
-      el.addEventListener("keydown", (ev) => {
-        if (ev.key === "Enter" || ev.key === " ") {
-          ev.preventDefault();
-          open();
-        }
+    listEl.querySelectorAll(".endpoint-summary").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const card = btn.closest(".endpoint");
+        const ep = endpointsBound[Number(btn.dataset.idx)];
+        if (!card || !ep) return;
+        openDemo(ep, card);
       });
     });
   }
