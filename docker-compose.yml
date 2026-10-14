@@ -30,8 +30,14 @@ services:
       context: ./go
       dockerfile: Dockerfile
     restart: unless-stopped
+    depends_on:
+      opgaver-db:
+        condition: service_healthy
     environment:
       PORT: "8080"
+      DATABASE_URL: postgres://${POSTGRES_USER:-opgaver}:${POSTGRES_PASSWORD}@opgaver-db:5432/${POSTGRES_DB:-opgaver}?sslmode=disable
+      SEED_API_KEY: ${SEED_API_KEY:?SEED_API_KEY required}
+      MINECRAFT_VERSION: ${MINECRAFT_VERSION:-1.20.4}
 
   opgaver-db:
     image: postgres:16-alpine

@@ -31,6 +31,18 @@ Browser → Cloudflare → Traefik → gateway (nginx)
 | `GET /` | Katalogside (datakilde, sprog, server) |
 | `GET /go/` | Go-service info |
 | `GET /go/health` | Go health |
+| `GET /go/pokemon` | Pokémon (Postgres, PokeAPI CSV) |
+| `GET /go/pokemon/{id}` | Én Pokémon |
+| `GET /go/pokemon/types` | Typer |
+| `GET /go/pokemon/type/{type}` | Efter type |
+| `GET /go/pokemon/{id}/evolutions` | Evolution chain |
+| `GET /go/minecraft/items` | Minecraft items (PrismarineJS) |
+| `GET /go/minecraft/blocks` | Blocks |
+| `GET /go/minecraft/mobs` | Mobs |
+| `GET /go/minecraft/biomes` | Biomes |
+| `GET /go/minecraft/recipes` | Recipes |
+| `GET /go/minecraft/recipes/{name}` | Recipe for item |
+| `POST /go/seed` | Force re-seed (`X-Seed-Key`) |
 
 ### .NET OpgaverAPI
 | Endpoint | Beskrivelse |
