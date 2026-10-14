@@ -1,6 +1,28 @@
-# Kun dokploy-network som default — undgår nye bridge-subnet (host pools er fulde).
-# Unikke service-navne undgår DNS-kollision på det delte net.
+# Gateway foran backends. Kun gateway har Traefik-labels.
+# Unikke service-navne på dokploy-network (ingen ekstra bridge).
 services:
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - opgaver-api
+      - go-api
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.opgaver-api.rule=Host(`api-opgaver.mercantec.tech`)
+      - traefik.http.routers.opgaver-api.entrypoints=web
+      - traefik.http.services.opgaver-api.loadbalancer.server.port=80
+
+  go-api:
+    build:
+      context: ./go
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      PORT: "8080"
+
   opgaver-db:
     image: postgres:16-alpine
     restart: unless-stopped
@@ -50,13 +72,6 @@ services:
       Jwt__Issuer: ${JWT_ISSUER:-opgaver-api}
       Jwt__Audience: ${JWT_AUDIENCE:-opgaver-api}
       Jwt__Key: ${JWT_KEY:?JWT_KEY required}
-    labels:
-      # Tunnel → Traefik :80 (web). SSL afsluttes i Cloudflare — ikke websecure/letsencrypt her.
-      - traefik.enable=true
-      - traefik.http.routers.opgaver-api.rule=Host(`api-opgaver.mercantec.tech`)
-      - traefik.http.routers.opgaver-api.entrypoints=web
-      - traefik.http.services.opgaver-api.loadbalancer.server.port=5104
-
 
 networks:
   default:

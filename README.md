@@ -2,14 +2,33 @@
 
 API’er med data til elevopgaver på tværs af hovedforløb.
 
-**V1 host:** [https://api-opgaver.mercantec.tech](https://api-opgaver.mercantec.tech) (Swagger: `/swagger`)
+**Host:** [https://api-opgaver.mercantec.tech](https://api-opgaver.mercantec.tech)
 
-## V1 — OpgaverAPI (.NET 9)
+## Arkitektur
 
-C# API importeret fra [Mercantech/OpgaverAPI](https://github.com/Mercantech/OpgaverAPI).
+```text
+Browser → Cloudflare → Traefik → gateway (nginx)
+                              ├─ /go/*        → go-api
+                              └─ /*           → opgaver-api (.NET)
+                                                 ├─ opgaver-db (Postgres)
+                                                 └─ opgaver-mongo
+```
 
-### Nyttige endpoints
+| Mappe | Service | Rolle |
+|-------|---------|--------|
+| `gateway/` | `gateway` | Nginx API-gateway (eneste offentlige entry) |
+| `go/` | `go-api` | Golang backend (`/go/...`) |
+| rod (C#) | `opgaver-api` | OpgaverAPI .NET 9 |
 
+## Endpoints
+
+### Gateway / Go
+| Endpoint | Beskrivelse |
+|----------|-------------|
+| `GET /go/` | Go-service info |
+| `GET /go/health` | Go health |
+
+### .NET OpgaverAPI
 | Endpoint | Beskrivelse |
 |----------|-------------|
 | `GET /Opgaver/Diesel` | Dieselpriser (JSON) |
@@ -18,35 +37,22 @@ C# API importeret fra [Mercantech/OpgaverAPI](https://github.com/Mercantech/Opga
 | `GET /Opgaver/Wordle` | Wordle-ord |
 | `GET /Opgaver/CountriesRAW` | Rå lande-data |
 | `GET /Opgaver/Stats` | Kaldestatistik |
-| `GET /api/Countries` | Lande (Mongo `opgaverapi.countries`) |
+| `GET /api/Countries` | Lande (Mongo) |
 | `POST /api/Countries/bulk` | Seed lande (`X-Seed-Key`) |
 | `GET /LeagueOfLegends` | Champions (Postgres) |
 | `POST /LeagueOfLegends/bulk` | Seed champions (`X-Seed-Key`) |
-| `GET /api/Users` | Brugere (JWT, rolle) |
 | `/swagger` | OpenAPI UI |
 
-### Lokal kørsel
+## Lokal kørsel
 
 ```bash
 cp .env.example .env
-# redigér passwords og JWT_KEY i .env
 docker compose -f docker-compose.yml -f docker-compose.local.yml up --build
 ```
 
-Åbn [http://localhost:5104/swagger](http://localhost:5104/swagger).
+- Gateway: [http://localhost:8080/swagger](http://localhost:8080/swagger)
+- Go: [http://localhost:8080/go/health](http://localhost:8080/go/health)
 
-### Compose-services
+## Fremtid
 
-Alle services bruger unikke navne på det delte `dokploy-network` (ingen ekstra bridge — hostens address pools er fulde):
-
-- `opgaver-api` — ASP.NET Core (Traefik)
-- `opgaver-db` — Postgres
-- `opgaver-mongo` — MongoDB
-
-## Fremtid (ikke V1)
-
-Når flere backends kommer (Node, Go, Rust):
-
-1. Flyt denne C#-app til `opgaver/`
-2. Tilføj `gateway/` foran
-3. Hold unik service-alias pr. backend (undgå generisk `api` på det delte Dokploy-net)
+Flere backends (Node, Rust): tilføj mappe + service med unikt navn, og en `location` i [`gateway/nginx.conf`](gateway/nginx.conf). C# kan senere flyttes til `opgaver/`.
