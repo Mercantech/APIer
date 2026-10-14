@@ -34,27 +34,50 @@
   }
 
   /* ——— Auth bar ——— */
+  const btnLogin = document.getElementById("btnLogin");
+  const accountMenu = document.getElementById("accountMenu");
+  const btnAccount = document.getElementById("btnAccount");
+  const accountDropdown = document.getElementById("accountDropdown");
+  const accountName = document.getElementById("accountName");
+
+  function closeAccountMenu() {
+    accountDropdown.hidden = true;
+    btnAccount.setAttribute("aria-expanded", "false");
+  }
+
+  function toggleAccountMenu() {
+    const open = accountDropdown.hidden;
+    accountDropdown.hidden = !open;
+    btnAccount.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+
   function renderAuthBar() {
     const loggedIn = auth.isLoggedIn();
     const profile = auth.getProfile();
-    const btnLogin = document.getElementById("btnLogin");
-    const btnLogout = document.getElementById("btnLogout");
-    const btnKeys = document.getElementById("btnKeys");
-    const chip = document.getElementById("userChip");
 
     btnLogin.hidden = loggedIn;
-    btnLogout.hidden = !loggedIn;
-    btnKeys.hidden = !loggedIn;
-    chip.hidden = !loggedIn;
-    if (loggedIn && profile) {
-      chip.textContent = profile.name || profile.email || "Bruger";
+    accountMenu.hidden = !loggedIn;
+    closeAccountMenu();
+    if (loggedIn) {
+      accountName.textContent = profile?.name || profile?.email || "Bruger";
     }
   }
 
-  document.getElementById("btnLogin").addEventListener("click", () => auth.beginLogin());
+  btnLogin.addEventListener("click", () => auth.beginLogin());
+  btnAccount.addEventListener("click", (e) => {
+    e.stopPropagation();
+    toggleAccountMenu();
+  });
   document.getElementById("btnLogout").addEventListener("click", () => {
     auth.logoutLocal();
+    closeAccountMenu();
     renderAuthBar();
+  });
+  document.addEventListener("click", (e) => {
+    if (!accountMenu.contains(e.target)) closeAccountMenu();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeAccountMenu();
   });
 
   /* ——— Keys drawer ——— */
@@ -74,7 +97,10 @@
     keysBackdrop.hidden = true;
   }
 
-  document.getElementById("btnKeys").addEventListener("click", openKeys);
+  document.getElementById("btnKeys").addEventListener("click", () => {
+    closeAccountMenu();
+    openKeys();
+  });
   document.getElementById("keysClose").addEventListener("click", closeKeys);
   keysBackdrop.addEventListener("click", closeKeys);
 

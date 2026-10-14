@@ -14,7 +14,7 @@
       href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/styles.css?v=20261014h" />
+    <link rel="stylesheet" href="/styles.css?v=20261014i" />
   </head>
   <body>
     <div class="atmosphere" aria-hidden="true"></div>
@@ -24,10 +24,24 @@
         <a class="topbar-brand" href="/">APIer</a>
         <div class="topbar-actions" id="authBar">
           <a class="btn ghost sm" href="/demo">Demo</a>
-          <button type="button" class="btn ghost sm" id="btnKeys" hidden>API-nøgler</button>
-          <span class="user-chip" id="userChip" hidden></span>
           <button type="button" class="btn primary sm" id="btnLogin">Log ind</button>
-          <button type="button" class="btn ghost sm" id="btnLogout" hidden>Log ud</button>
+          <div class="account-menu" id="accountMenu" hidden>
+            <button
+              type="button"
+              class="btn ghost sm account-toggle"
+              id="btnAccount"
+              aria-expanded="false"
+              aria-haspopup="true"
+              aria-controls="accountDropdown"
+            >
+              <span id="accountName">Bruger</span>
+              <span class="account-caret" aria-hidden="true">▾</span>
+            </button>
+            <div class="account-dropdown" id="accountDropdown" hidden role="menu">
+              <button type="button" class="account-item" id="btnKeys" role="menuitem">API-nøgler</button>
+              <button type="button" class="account-item danger" id="btnLogout" role="menuitem">Log ud</button>
+            </div>
+          </div>
         </div>
       </div>
     </nav>
@@ -99,8 +113,8 @@
       <div class="drawer-body" id="demoBody"></div>
     </aside>
 
-    <script src="/data.js?v=20261014h"></script>
-    <script src="/auth.js?v=20261014h"></script>
-    <script src="/app.js?v=20261014h"></script>
+    <script src="/data.js?v=20261014i"></script>
+    <script src="/auth.js?v=20261014i"></script>
+    <script src="/app.js?v=20261014i"></script>
   </body>
 </html>
