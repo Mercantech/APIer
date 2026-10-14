@@ -34,11 +34,11 @@ docker compose -f docker-compose.yml -f docker-compose.local.yml up --build
 
 ### Compose-services
 
-- `opgaver-api` — ASP.NET Core (unik alias, klar til senere gateway)
-- `db` — Postgres (internt net)
-- `mongo` — MongoDB (internt net)
+Alle services bruger unikke navne på det delte `dokploy-network` (ingen ekstra bridge — hostens address pools er fulde):
 
-På Dokploy hænger kun `opgaver-api` på `dokploy-network` (Traefik).
+- `opgaver-api` — ASP.NET Core (Traefik)
+- `opgaver-db` — Postgres
+- `opgaver-mongo` — MongoDB
 
 ## Fremtid (ikke V1)
 

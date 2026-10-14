@@ -1,5 +1,7 @@
+# Kun dokploy-network som default — undgår nye bridge-subnet (host pools er fulde).
+# Unikke service-navne undgår DNS-kollision på det delte net.
 services:
-  db:
+  opgaver-db:
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
@@ -8,15 +10,13 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-opgaver}
     volumes:
       - opgaver_pgdata:/var/lib/postgresql/data
-    networks:
-      - internal
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-opgaver} -d ${POSTGRES_DB:-opgaver}"]
       interval: 5s
       timeout: 5s
       retries: 10
 
-  mongo:
+  opgaver-mongo:
     image: mongo:7
     restart: unless-stopped
     environment:
@@ -24,8 +24,6 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:?MONGO_PASSWORD required}
     volumes:
       - opgaver_mongodata:/data/db
-    networks:
-      - internal
     healthcheck:
       test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand({ ping: 1 }).ok"]
       interval: 10s
@@ -39,20 +37,17 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     depends_on:
-      db:
+      opgaver-db:
         condition: service_healthy
-      mongo:
+      opgaver-mongo:
         condition: service_started
     environment:
       ASPNETCORE_URLS: http://+:5104
-      ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=${POSTGRES_DB:-opgaver};Username=${POSTGRES_USER:-opgaver};Password=${POSTGRES_PASSWORD}
-      ConnectionStrings__MongoDB: mongodb://${MONGO_USER:-opgaver}:${MONGO_PASSWORD}@mongo:27017/?authSource=admin
+      ConnectionStrings__DefaultConnection: Host=opgaver-db;Port=5432;Database=${POSTGRES_DB:-opgaver};Username=${POSTGRES_USER:-opgaver};Password=${POSTGRES_PASSWORD}
+      ConnectionStrings__MongoDB: mongodb://${MONGO_USER:-opgaver}:${MONGO_PASSWORD}@opgaver-mongo:27017/?authSource=admin
       Jwt__Issuer: ${JWT_ISSUER:-opgaver-api}
       Jwt__Audience: ${JWT_AUDIENCE:-opgaver-api}
       Jwt__Key: ${JWT_KEY:?JWT_KEY required}
-    networks:
-      - internal
-      - dokploy-network
     labels:
       - traefik.enable=true
       - traefik.http.routers.opgaver-api.rule=Host(`api-opgaver.mercantec.tech`)
@@ -61,9 +56,8 @@ services:
       - traefik.http.services.opgaver-api.loadbalancer.server.port=5104
 
 networks:
-  internal:
-    driver: bridge
-  dokploy-network:
+  default:
+    name: dokploy-network
     external: true
 
 volumes:
