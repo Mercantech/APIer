@@ -5,7 +5,7 @@ services:
     ports:
       - "8080:80"
 
-  web:
+  apier-web:
     ports:
       - "3000:80"
 

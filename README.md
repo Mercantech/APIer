@@ -8,7 +8,7 @@ API’er med data til elevopgaver på tværs af hovedforløb.
 
 ```text
 Browser → Cloudflare → Traefik → gateway (nginx)
-                              ├─ /            → web (katalog)
+                              ├─ /            → apier-web (katalog)
                               ├─ /go/*        → go-api
                               └─ /api|/Opgaver|/LeagueOfLegends|/swagger
                                               → opgaver-api (.NET)
@@ -19,7 +19,7 @@ Browser → Cloudflare → Traefik → gateway (nginx)
 | Mappe | Service | Rolle |
 |-------|---------|--------|
 | `gateway/` | `gateway` | Nginx API-gateway (eneste offentlige entry) |
-| `web/` | `web` | Endpoint-katalog (datakilde + sprog + server) |
+| `web/` | `apier-web` | Endpoint-katalog (datakilde + sprog + server) |
 | `go/` | `go-api` | Golang backend (`/go/...`) |
 | rod (C#) | `opgaver-api` | OpgaverAPI .NET 9 |
 

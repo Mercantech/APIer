@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     depends_on:
-      - web
+      - apier-web
       - opgaver-api
       - go-api
     labels:
@@ -18,7 +18,8 @@ services:
       - traefik.http.routers.apier-gateway.service=apier-gateway
       - traefik.http.services.apier-gateway.loadbalancer.server.port=80
 
-  web:
+  # Unikt navn — "web" kolliderer med andre stacks på dokploy-network
+  apier-web:
     build:
       context: ./web
       dockerfile: Dockerfile
