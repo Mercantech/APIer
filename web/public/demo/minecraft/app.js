@@ -1,5 +1,7 @@
 (() => {
-  const ASSET = "https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.20.4";
+  // 1.20.4 findes ikke i minecraft-assets — brug nærmeste med textures
+  const ASSET =
+    "https://cdn.jsdelivr.net/gh/PrismarineJS/minecraft-assets@master/data/1.21.4";
   const grid = document.getElementById("grid");
   const status = document.getElementById("status");
   const detail = document.getElementById("detail");
@@ -17,15 +19,42 @@
       .replaceAll('"', "&quot;");
   }
 
-  function assetUrl(kind, name) {
-    if (kind === "items" || kind === "blocks") {
-      return `${ASSET}/items/${name}.png`;
+  /** Items ligger ofte kun under blocks/ (fx stone); tools under items/. */
+  function assetCandidates(kind, name) {
+    if (!name) return [];
+    if (kind === "items") {
+      return [`${ASSET}/items/${name}.png`, `${ASSET}/blocks/${name}.png`];
+    }
+    if (kind === "blocks") {
+      return [`${ASSET}/blocks/${name}.png`, `${ASSET}/items/${name}.png`];
     }
     if (kind === "mobs") {
-      return `${ASSET}/entity/${name}.png`;
+      return [
+        `${ASSET}/entity/${name}/${name}.png`,
+        `${ASSET}/entity/${name}.png`,
+      ];
     }
-    return "";
+    return [];
   }
+
+  function imgTag(kind, name, cls) {
+    const cands = assetCandidates(kind, name);
+    if (!cands.length) return "";
+    const first = escapeHtml(cands[0]);
+    const rest = escapeHtml(cands.slice(1).join("|"));
+    const classAttr = cls ? ` class="${cls}"` : "";
+    return `<img${classAttr} src="${first}" data-fallbacks="${rest}" alt="" width="48" height="48" loading="lazy" onerror="window.__mcImgFallback(this)" />`;
+  }
+
+  window.__mcImgFallback = function (img) {
+    const next = (img.dataset.fallbacks || "").split("|").filter(Boolean);
+    if (next.length) {
+      img.dataset.fallbacks = next.slice(1).join("|");
+      img.src = next[0];
+      return;
+    }
+    img.remove();
+  };
 
   function endpointFor(t, q) {
     if (t === "recipes") {
@@ -65,13 +94,9 @@
       .map((it, i) => {
         const name = it.name || it.id;
         const title = it.displayName || name;
-        const img = assetUrl(tab, name);
-        const imgHtml = img
-          ? `<img src="${escapeHtml(img)}" alt="" width="48" height="48" loading="lazy" onerror="this.style.visibility='hidden'" />`
-          : "";
         return `
         <article class="mc-card" tabindex="0" role="button" data-idx="${i}" style="animation-delay:${Math.min(i, 24) * 20}ms">
-          ${imgHtml}
+          ${imgTag(tab, name)}
           <h3>${escapeHtml(title)}</h3>
           <p class="sub">${escapeHtml(name)}</p>
         </article>`;
@@ -102,14 +127,20 @@
       <div class="call-box"><code>GET ${escapeHtml(url)}</code></div>
       <div class="recipe-list">
         ${list
-          .map(
-            (r) => `
+          .map((r) => {
+            const name = r.resultName || r.id;
+            return `
           <article class="recipe-block">
-            <strong>${escapeHtml(r.resultName || r.id)}</strong>
-            <span class="demo-meta-line"> × ${r.resultCount ?? 1}</span>
+            <div style="display:flex;align-items:center;gap:0.75rem">
+              ${imgTag("items", name)}
+              <div>
+                <strong>${escapeHtml(name)}</strong>
+                <span class="demo-meta-line"> × ${r.resultCount ?? 1}</span>
+              </div>
+            </div>
             <pre>${escapeHtml(JSON.stringify(r.raw ?? r, null, 2))}</pre>
-          </article>`
-          )
+          </article>`;
+          })
           .join("")}
       </div>`;
   }
@@ -117,10 +148,9 @@
   function showItem(it, listUrl) {
     detail.classList.remove("hidden");
     const name = it.name || "";
-    const img = assetUrl(tab, name);
     detail.innerHTML = `
       <div class="detail-head">
-        ${img ? `<img class="mc" src="${escapeHtml(img)}" alt="" width="64" height="64" onerror="this.remove()" />` : ""}
+        ${imgTag(tab === "biomes" ? "" : tab, name, "mc")}
         <div>
           <h2>${escapeHtml(it.displayName || name)}</h2>
           <p class="demo-meta-line">${escapeHtml(name)} · id ${it.id ?? "—"}</p>
@@ -138,7 +168,9 @@
 
     document.getElementById("btnRecipe")?.addEventListener("click", () => {
       tab = "recipes";
-      tabs.querySelectorAll("button").forEach((b) => b.classList.toggle("active", b.dataset.tab === "recipes"));
+      tabs.querySelectorAll("button").forEach((b) =>
+        b.classList.toggle("active", b.dataset.tab === "recipes")
+      );
       search.value = name;
       load();
     });

@@ -170,6 +170,12 @@
   image-rendering: pixelated;
   margin: 0.35rem auto;
   display: block;
+  min-height: 48px;
+  object-fit: contain;
+}
+
+.mc-card:not(:has(img)) h3 {
+  margin-top: 0.15rem;
 }
 
 .poke-card h3,
