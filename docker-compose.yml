@@ -71,7 +71,7 @@ services:
 
   # S3-kompatibel object storage (unikt navn på dokploy-network)
   opgaver-minio:
-    image: minio/minio:RELEASE.2025-04-22T22-12-26Z
+    image: minio/minio:latest
     restart: unless-stopped
     command: server /data --console-address ":9001"
     environment:
@@ -81,7 +81,7 @@ services:
       - opgaver_minio_data:/data
 
   opgaver-minio-init:
-    image: minio/mc:RELEASE.2025-04-16T18-13-26Z
+    image: minio/mc:latest
     depends_on:
       - opgaver-minio
     restart: "on-failure"
