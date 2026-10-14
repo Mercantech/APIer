@@ -73,8 +73,18 @@ namespace OpgaverAPI.Services
                 ContentType = contentType,
                 AutoCloseStream = false,
             };
-            await _s3.PutObjectAsync(req, ct);
-            _log.LogInformation("Uploaded s3://{Bucket}/{Key}", _opt.Bucket, req.Key);
+            var resp = await _s3.PutObjectAsync(req, ct);
+            _log.LogInformation(
+                "Uploaded s3://{Bucket}/{Key} etag={ETag} size={Size}",
+                _opt.Bucket,
+                req.Key,
+                resp.ETag,
+                content.CanSeek ? content.Length : -1);
+
+            // Verificér at objektet faktisk ligger i bucket (MinIO kan ellers “lyve”)
+            var ok = await ExistsAsync(req.Key, ct);
+            if (!ok)
+                throw new InvalidOperationException($"Upload af {req.Key} kunne ikke verificeres");
         }
 
         public async Task<bool> ExistsAsync(string objectKey, CancellationToken ct = default)

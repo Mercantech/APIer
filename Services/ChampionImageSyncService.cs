@@ -185,6 +185,7 @@ namespace OpgaverAPI.Services
         public Task StartAsync(CancellationToken cancellationToken)
         {
             var sync = _cfg.GetValue("S3:SyncChampionsOnStartup", true);
+            var force = _cfg.GetValue("S3:ForceSyncOnStartup", false);
             var enabled = !string.IsNullOrWhiteSpace(_cfg["S3:ServiceUrl"]);
             if (!sync || !enabled)
                 return Task.CompletedTask;
@@ -196,7 +197,7 @@ namespace OpgaverAPI.Services
                     await Task.Delay(TimeSpan.FromSeconds(8), cancellationToken);
                     using var scope = _sp.CreateScope();
                     var svc = scope.ServiceProvider.GetRequiredService<ChampionImageSyncService>();
-                    var result = await svc.SyncMissingAsync(force: false, cancellationToken);
+                    var result = await svc.SyncMissingAsync(force: force, cancellationToken);
                     _log.LogInformation(
                         "Champion image sync: checked={Checked} uploaded={Uploaded} updated={Updated} skipped={Skipped} failed={Failed} version={Version}",
                         result.Checked,
