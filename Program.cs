@@ -126,6 +126,8 @@ namespace OpgaverAPI
 
             builder.Services.AddScoped<ApiKeyService>();
             builder.Services.AddScoped<RickAndMortySeedService>();
+            builder.Services.AddScoped<StarWarsSeedService>();
+            builder.Services.AddScoped<TerrariaSeedService>();
 
             builder.Services.Configure<OpgaverAPI.Services.S3Options>(
                 builder.Configuration.GetSection(OpgaverAPI.Services.S3Options.Section));
@@ -148,12 +150,16 @@ namespace OpgaverAPI
                     }
                     return handler;
                 });
-            builder.Services.AddHttpClient(RickAndMortySeedService.HttpClientName, c =>
+            void ConfigureSeedClient(HttpClient c)
             {
                 c.DefaultRequestHeaders.UserAgent.ParseAdd(
                     "Mozilla/5.0 (compatible; APIer-OpgaverAPI/1.0; +https://api-opgaver.mercantec.tech)");
-                c.Timeout = TimeSpan.FromMinutes(5);
-            });
+                c.Timeout = TimeSpan.FromMinutes(10);
+            }
+
+            builder.Services.AddHttpClient(RickAndMortySeedService.HttpClientName, ConfigureSeedClient);
+            builder.Services.AddHttpClient(StarWarsSeedService.HttpClientName, ConfigureSeedClient);
+            builder.Services.AddHttpClient(TerrariaSeedService.HttpClientName, ConfigureSeedClient);
             builder.Services.AddHostedService<OpgaverAPI.Services.ChampionImageSyncHostedService>();
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -193,21 +199,46 @@ namespace OpgaverAPI
 
             await StorageBootstrap.EnsureAsync(app.Services);
 
-            // Seed Rick and Morty i baggrunden hvis Postgres er tom/ufuldstændig
+            // Seed datasæt i baggrunden hvis Postgres er tom/ufuldstændig
             _ = Task.Run(async () =>
             {
                 try
                 {
                     using var scope = app.Services.CreateScope();
-                    var seed = scope.ServiceProvider.GetRequiredService<RickAndMortySeedService>();
-                    var result = await seed.EnsureSeededAsync();
+                    var rm = await scope.ServiceProvider.GetRequiredService<RickAndMortySeedService>().EnsureSeededAsync();
                     app.Logger.LogInformation(
                         "RickAndMorty klar ({Characters}/{Locations}/{Episodes})",
-                        result.Characters, result.Locations, result.Episodes);
+                        rm.Characters, rm.Locations, rm.Episodes);
                 }
                 catch (Exception ex)
                 {
                     app.Logger.LogError(ex, "RickAndMorty auto-seed fejlede");
+                }
+
+                try
+                {
+                    using var scope = app.Services.CreateScope();
+                    var sw = await scope.ServiceProvider.GetRequiredService<StarWarsSeedService>().EnsureSeededAsync();
+                    app.Logger.LogInformation(
+                        "StarWars klar ({People}/{Planets}/{Films}/{Species}/{Starships})",
+                        sw.People, sw.Planets, sw.Films, sw.Species, sw.Starships);
+                }
+                catch (Exception ex)
+                {
+                    app.Logger.LogError(ex, "StarWars auto-seed fejlede");
+                }
+
+                try
+                {
+                    using var scope = app.Services.CreateScope();
+                    var te = await scope.ServiceProvider.GetRequiredService<TerrariaSeedService>().EnsureSeededAsync();
+                    app.Logger.LogInformation(
+                        "Terraria klar ({Items}/{Recipes}/{Npcs}/{Bosses})",
+                        te.Items, te.Recipes, te.Npcs, te.Bosses);
+                }
+                catch (Exception ex)
+                {
+                    app.Logger.LogError(ex, "Terraria auto-seed fejlede");
                 }
             });
 

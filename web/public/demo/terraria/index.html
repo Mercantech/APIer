@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="da">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Terraria-demo — APIer</title>
+    <meta name="description" content="Live demo af /api/Terraria — items, recipes og bosses (CC BY-NC-SA tekstdata)." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css?v=20261014t" />
+    <link rel="stylesheet" href="/demo.css?v=20261014t" />
+  </head>
+  <body>
+    <div class="atmosphere" aria-hidden="true"></div>
+    <main class="demo-shell">
+      <nav class="demo-nav">
+        <a class="back" href="/demo">← Demo</a>
+        <div class="demo-links">
+          <a class="btn primary sm" href="/demo/terraria">Terraria</a>
+          <a class="btn ghost sm" href="/demo/starwars">Star Wars</a>
+          <a class="btn ghost sm" href="/demo/rickandmorty">Rick &amp; Morty</a>
+          <a class="btn ghost sm" href="/demo/spil">Spil</a>
+        </div>
+      </nav>
+      <header class="demo-hero">
+        <p class="eyebrow">C# · Postgres · Terraria Wiki (CC BY-NC-SA)</p>
+        <h1 class="brand">Terraria</h1>
+        <p class="lede">
+          Items, crafting-opskrifter og bosses — tekstdata til crafting calculator / progression tracker.
+          Ingen spilbilleder hostes (kun wiki-links).
+        </p>
+        <p class="demo-meta-line" id="summaryLine">Backend: opgaver-api</p>
+      </header>
+      <div class="demo-toolbar">
+        <div class="type-row" id="tabs" role="tablist">
+          <button type="button" class="type-chip active" data-tab="items">Items</button>
+          <button type="button" class="type-chip" data-tab="weapons">Weapons</button>
+          <button type="button" class="type-chip" data-tab="armor">Armor</button>
+          <button type="button" class="type-chip" data-tab="recipes">Recipes</button>
+          <button type="button" class="type-chip" data-tab="bosses">Bosses</button>
+        </div>
+        <input type="search" id="search" placeholder="Søg…" autocomplete="off" />
+        <button type="button" class="btn primary sm" id="btnLoad">Hent</button>
+      </div>
+      <p class="demo-status" id="status">Indlæser…</p>
+      <div class="poke-grid" id="grid"></div>
+      <section class="detail-panel hidden" id="detail"></section>
+    </main>
+    <script src="/demo/terraria/app.js?v=20261014t"></script>
+  </body>
+</html>

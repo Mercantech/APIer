@@ -23,8 +23,8 @@ namespace OpgaverAPI.Services
             // Touch tabeller så Migrate + model er synlige/klare.
             _ = db.Champions.Any();
             _ = db.RickAndMortyCharacters.Any();
-            _ = db.RickAndMortyLocations.Any();
-            _ = db.RickAndMortyEpisodes.Any();
+            _ = db.StarWarsPeople.Any();
+            _ = db.TerrariaItems.Any();
 
             var mongo = sp.GetRequiredService<IMongoDatabase>();
             var countries = mongo.GetCollection<Country>(CountriesCollection);

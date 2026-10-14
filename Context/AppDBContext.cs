@@ -13,6 +13,14 @@ namespace OpgaverAPI.Context
         public DbSet<RmCharacter> RickAndMortyCharacters { get; set; }
         public DbSet<RmLocation> RickAndMortyLocations { get; set; }
         public DbSet<RmEpisode> RickAndMortyEpisodes { get; set; }
+        public DbSet<SwPerson> StarWarsPeople { get; set; }
+        public DbSet<SwPlanet> StarWarsPlanets { get; set; }
+        public DbSet<SwFilm> StarWarsFilms { get; set; }
+        public DbSet<SwSpecies> StarWarsSpecies { get; set; }
+        public DbSet<SwStarship> StarWarsStarships { get; set; }
+        public DbSet<TerrariaItem> TerrariaItems { get; set; }
+        public DbSet<TerrariaRecipe> TerrariaRecipes { get; set; }
+        public DbSet<TerrariaNpc> TerrariaNpcs { get; set; }
 
         public AppDBContext(DbContextOptions<AppDBContext> options)
             : base(options)
@@ -51,6 +59,53 @@ namespace OpgaverAPI.Context
                 e.ToTable("RickAndMortyEpisodes");
                 e.HasIndex(x => x.ApiId).IsUnique();
                 e.HasIndex(x => x.EpisodeCode);
+            });
+
+            modelBuilder.Entity<SwPerson>(e =>
+            {
+                e.ToTable("StarWarsPeople");
+                e.HasIndex(x => x.ApiId).IsUnique();
+            });
+            modelBuilder.Entity<SwPlanet>(e =>
+            {
+                e.ToTable("StarWarsPlanets");
+                e.HasIndex(x => x.ApiId).IsUnique();
+            });
+            modelBuilder.Entity<SwFilm>(e =>
+            {
+                e.ToTable("StarWarsFilms");
+                e.HasIndex(x => x.ApiId).IsUnique();
+                e.HasIndex(x => x.EpisodeId);
+            });
+            modelBuilder.Entity<SwSpecies>(e =>
+            {
+                e.ToTable("StarWarsSpecies");
+                e.HasIndex(x => x.ApiId).IsUnique();
+            });
+            modelBuilder.Entity<SwStarship>(e =>
+            {
+                e.ToTable("StarWarsStarships");
+                e.HasIndex(x => x.ApiId).IsUnique();
+            });
+
+            modelBuilder.Entity<TerrariaItem>(e =>
+            {
+                e.ToTable("TerrariaItems");
+                e.HasIndex(x => x.ItemId).IsUnique();
+                e.HasIndex(x => x.Category);
+                e.HasIndex(x => x.Name);
+            });
+            modelBuilder.Entity<TerrariaRecipe>(e =>
+            {
+                e.ToTable("TerrariaRecipes");
+                e.HasIndex(x => x.ResultItemId);
+                e.HasIndex(x => x.Station);
+            });
+            modelBuilder.Entity<TerrariaNpc>(e =>
+            {
+                e.ToTable("TerrariaNpcs");
+                e.HasIndex(x => x.NpcId);
+                e.HasIndex(x => x.IsBoss);
             });
         }
 

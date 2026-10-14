@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="da">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Star Wars-demo — APIer</title>
+    <meta name="description" content="Live demo af /api/StarWars — people, planets, films, species, starships." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css?v=20261014s" />
+    <link rel="stylesheet" href="/demo.css?v=20261014s" />
+  </head>
+  <body>
+    <div class="atmosphere" aria-hidden="true"></div>
+    <main class="demo-shell">
+      <nav class="demo-nav">
+        <a class="back" href="/demo">← Demo</a>
+        <div class="demo-links">
+          <a class="btn primary sm" href="/demo/starwars">Star Wars</a>
+          <a class="btn ghost sm" href="/demo/terraria">Terraria</a>
+          <a class="btn ghost sm" href="/demo/rickandmorty">Rick &amp; Morty</a>
+          <a class="btn ghost sm" href="/demo/spil">Spil</a>
+        </div>
+      </nav>
+      <header class="demo-hero">
+        <p class="eyebrow">C# · Postgres · SWAPI</p>
+        <h1 class="brand">Star Wars</h1>
+        <p class="lede">
+          Encyklopædi med relationer (URL-lister) — people, planets, films, species og starships.
+        </p>
+        <p class="demo-meta-line" id="summaryLine">Backend: opgaver-api</p>
+      </header>
+      <div class="demo-toolbar">
+        <div class="type-row" id="tabs" role="tablist">
+          <button type="button" class="type-chip active" data-tab="people">People</button>
+          <button type="button" class="type-chip" data-tab="planets">Planets</button>
+          <button type="button" class="type-chip" data-tab="films">Films</button>
+          <button type="button" class="type-chip" data-tab="species">Species</button>
+          <button type="button" class="type-chip" data-tab="starships">Starships</button>
+        </div>
+        <input type="search" id="search" placeholder="Søg…" autocomplete="off" />
+        <button type="button" class="btn primary sm" id="btnLoad">Hent</button>
+      </div>
+      <p class="demo-status" id="status">Indlæser…</p>
+      <div class="poke-grid" id="grid"></div>
+      <section class="detail-panel hidden" id="detail"></section>
+    </main>
+    <script src="/demo/starwars/app.js?v=20261014s"></script>
+  </body>
+</html>
