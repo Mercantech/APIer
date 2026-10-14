@@ -11,9 +11,12 @@ services:
       - go-api
     labels:
       - traefik.enable=true
-      - traefik.http.routers.opgaver-api.rule=Host(`api-opgaver.mercantec.tech`)
-      - traefik.http.routers.opgaver-api.entrypoints=web
-      - traefik.http.services.opgaver-api.loadbalancer.server.port=80
+      - traefik.docker.network=dokploy-network
+      - traefik.http.routers.apier-gateway.rule=Host(`api-opgaver.mercantec.tech`)
+      - traefik.http.routers.apier-gateway.entrypoints=web
+      - traefik.http.routers.apier-gateway.service=apier-gateway
+      - traefik.http.services.apier-gateway.loadbalancer.server.port=80
+
 
   go-api:
     build:
