@@ -6,11 +6,14 @@ using OpgaverAPI.Models;
 namespace OpgaverAPI.Services
 {
     /// <summary>
-    /// Henter manglende champion-billeder fra Riot Data Dragon
-    /// (samme CDN som leagueoflegends.com/champions) og gemmer i S3/MinIO.
+    /// Henter manglende champion-billeder (samme visuelle assets som
+    /// leagueoflegends.com/champions) via Community Dragon og gemmer i S3/MinIO.
     /// </summary>
     public class ChampionImageSyncService
     {
+        private const string SummaryUrl =
+            "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-summary.json";
+
         private readonly AppDBContext _db;
         private readonly ObjectStorageService _storage;
         private readonly IHttpClientFactory _httpFactory;
@@ -30,6 +33,8 @@ namespace OpgaverAPI.Services
 
         public record SyncResult(int Checked, int Uploaded, int Updated, int Skipped, int Failed, string? Version);
 
+        private sealed record CdragonChamp(int Id, string Name, string Alias);
+
         public async Task<SyncResult> SyncMissingAsync(bool force = false, CancellationToken ct = default)
         {
             if (!_storage.IsConfigured)
@@ -38,23 +43,22 @@ namespace OpgaverAPI.Services
             await _storage.EnsureBucketAsync(ct);
 
             var http = _httpFactory.CreateClient("ddragon");
-            var versionsJson = await http.GetStringAsync("https://ddragon.leagueoflegends.com/api/versions.json", ct);
-            using var versionsDoc = JsonDocument.Parse(versionsJson);
-            var version = versionsDoc.RootElement[0].GetString()
-                ?? throw new InvalidOperationException("Kunne ikke læse Data Dragon-version");
+            using var summaryRes = await http.GetAsync(SummaryUrl, ct);
+            summaryRes.EnsureSuccessStatusCode();
+            await using var summaryStream = await summaryRes.Content.ReadAsStreamAsync(ct);
+            using var summaryDoc = await JsonDocument.ParseAsync(summaryStream, cancellationToken: ct);
 
-            var champJson = await http.GetStringAsync(
-                $"https://ddragon.leagueoflegends.com/cdn/{version}/data/en_US/champion.json",
-                ct);
-            using var champDoc = JsonDocument.Parse(champJson);
-
-            var byName = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            foreach (var prop in champDoc.RootElement.GetProperty("data").EnumerateObject())
+            var byName = new Dictionary<string, CdragonChamp>(StringComparer.OrdinalIgnoreCase);
+            foreach (var el in summaryDoc.RootElement.EnumerateArray())
             {
-                var id = prop.Name;
-                var name = prop.Value.GetProperty("name").GetString() ?? id;
-                byName[name] = id;
-                byName[id] = id;
+                var id = el.GetProperty("id").GetInt32();
+                if (id <= 0) continue;
+                var name = el.GetProperty("name").GetString() ?? "";
+                var alias = el.GetProperty("alias").GetString() ?? name;
+                if (string.IsNullOrWhiteSpace(alias)) continue;
+                var entry = new CdragonChamp(id, name, alias);
+                byName[name] = entry;
+                byName[alias] = entry;
             }
 
             var champions = await _db.Champions.ToListAsync(ct);
@@ -70,21 +74,20 @@ namespace OpgaverAPI.Services
                 var hasLocal = !missing
                     && champ.ImgUrl!.StartsWith("/assets/", StringComparison.OrdinalIgnoreCase);
 
-                // Default: manglende eller ikke-lokale URL'er. force=true gen-downloader alt.
                 if (!force && hasLocal)
                 {
                     skipped++;
                     continue;
                 }
 
-                if (!TryResolveDdragonId(champ, byName, out var ddragonId))
+                if (!TryResolve(champ, byName, out var meta))
                 {
-                    _log.LogWarning("Ingen Data Dragon-id for champion {Name} ({Id})", champ.Name, champ.Id);
+                    _log.LogWarning("Ingen Community Dragon-match for champion {Name} ({Id})", champ.Name, champ.Id);
                     failed++;
                     continue;
                 }
 
-                var objectKey = $"lol/champions/{ddragonId}.png";
+                var objectKey = $"lol/champions/{meta.Alias}.png";
                 var publicUrl = _storage.PublicUrl(objectKey);
 
                 try
@@ -92,21 +95,30 @@ namespace OpgaverAPI.Services
                     var already = await _storage.ExistsAsync(objectKey, ct);
                     if (!already || force)
                     {
-                        // Square icon fra Data Dragon — samme CDN som leagueoflegends.com bruger
-                        var imgUrl =
-                            $"https://ddragon.leagueoflegends.com/cdn/{version}/img/champion/{ddragonId}.png";
-                        using var imgRes = await http.GetAsync(imgUrl, ct);
-                        if (!imgRes.IsSuccessStatusCode)
+                        // Square portrait — samme type ikon som på LoL champion-listen
+                        var candidates = new[]
                         {
-                            _log.LogWarning("Download fejlede {Status} for {Id}", imgRes.StatusCode, ddragonId);
+                            $"https://cdn.communitydragon.org/latest/champion/{meta.Alias}/square",
+                            $"https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/{meta.Id}.png",
+                        };
+
+                        byte[]? bytes = null;
+                        foreach (var imgUrl in candidates)
+                        {
+                            using var imgRes = await http.GetAsync(imgUrl, ct);
+                            if (!imgRes.IsSuccessStatusCode) continue;
+                            bytes = await imgRes.Content.ReadAsByteArrayAsync(ct);
+                            break;
+                        }
+
+                        if (bytes == null || bytes.Length == 0)
+                        {
+                            _log.LogWarning("Download fejlede for {Alias}", meta.Alias);
                             failed++;
                             continue;
                         }
 
-                        await using var stream = await imgRes.Content.ReadAsStreamAsync(ct);
-                        await using var ms = new MemoryStream();
-                        await stream.CopyToAsync(ms, ct);
-                        ms.Position = 0;
+                        await using var ms = new MemoryStream(bytes);
                         await _storage.PutAsync(objectKey, ms, "image/png", ct);
                         uploaded++;
                     }
@@ -128,25 +140,24 @@ namespace OpgaverAPI.Services
             if (updated > 0)
                 await _db.SaveChangesAsync(ct);
 
-            return new SyncResult(champions.Count, uploaded, updated, skipped, failed, version);
+            return new SyncResult(champions.Count, uploaded, updated, skipped, failed, "communitydragon-latest");
         }
 
-        private static bool TryResolveDdragonId(
+        private static bool TryResolve(
             LolChampion champ,
-            Dictionary<string, string> byName,
-            out string ddragonId)
+            Dictionary<string, CdragonChamp> byName,
+            out CdragonChamp meta)
         {
-            ddragonId = "";
+            meta = new CdragonChamp(0, "", "");
             if (!string.IsNullOrWhiteSpace(champ.Name) && byName.TryGetValue(champ.Name.Trim(), out var byDisplay))
             {
-                ddragonId = byDisplay;
+                meta = byDisplay;
                 return true;
             }
 
-            // Id kan allerede være ddragon-id (Aatrox) eller slug
             if (!string.IsNullOrWhiteSpace(champ.Id) && byName.TryGetValue(champ.Id.Trim(), out var byId))
             {
-                ddragonId = byId;
+                meta = byId;
                 return true;
             }
 
