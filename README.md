@@ -29,11 +29,12 @@ Browser → Cloudflare → Traefik → gateway (nginx)
 | Endpoint | Beskrivelse |
 |----------|-------------|
 | `GET /` | Katalogside (datakilde, sprog, server) |
-| `GET /demo` | Demo-oversigt (Pokémon, Minecraft, LoL, Countries) |
+| `GET /demo` | Demo-oversigt (Pokémon, Minecraft, LoL, Countries, Spil) |
 | `GET /demo/pokemon` | Live Pokémon-demo (Go API) |
 | `GET /demo/minecraft` | Live Minecraft-demo (Go API) |
 | `GET /demo/lol` | Live LoL-demo (.NET, kræver X-Api-Key) |
 | `GET /demo/countries` | Live Countries-demo (.NET / Mongo) |
+| `GET /demo/spil` | Mini-spil oven på API-data (craft, champ, flag, alfabet, …) |
 | `GET /go/` | Go-service info |
 | `GET /go/health` | Go health |
 | `GET /go/pokemon` | Pokémon (Postgres, PokeAPI CSV) |

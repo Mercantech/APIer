@@ -6,7 +6,7 @@
     <title>Demo — APIer</title>
     <meta
       name="description"
-      content="Live demoer af elev-API’erne — Pokémon, Minecraft, LoL og Countries."
+      content="Live demoer og mini-spil oven på elev-API’erne — Pokémon, Minecraft, LoL og Countries."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -14,25 +14,34 @@
       href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/styles.css?v=20261014h" />
-    <link rel="stylesheet" href="/demo.css?v=20261014h" />
+    <link rel="stylesheet" href="/styles.css?v=20261014m" />
+    <link rel="stylesheet" href="/demo.css?v=20261014m" />
   </head>
   <body>
     <div class="atmosphere" aria-hidden="true"></div>
     <main class="demo-shell">
       <nav class="demo-nav">
         <a class="back" href="/">← APIer katalog</a>
+        <div class="demo-links">
+          <a class="btn primary sm" href="/demo/spil">Spil</a>
+        </div>
       </nav>
 
       <header class="demo-hero">
         <p class="eyebrow">Live · Go · .NET · Mongo · Postgres</p>
         <h1 class="brand">Demo</h1>
         <p class="lede">
-          Vælg en API og browse rigtige data — sprites, items, champions, lande og mere.
+          Browse rigtige data — eller hop til mini-spil der bruger de samme endpoints.
         </p>
       </header>
 
       <div class="demo-pick">
+        <a class="demo-pick-card" href="/demo/spil">
+          <span class="eyebrow">Quiz · crafting · flag · silhuet</span>
+          <h2>Spil</h2>
+          <p>Craft-hukommelse, gæt champ, kend flaget, alfabet-lande, Pokémon og naboer.</p>
+          <span class="demo-pick-cta">Åbn spil →</span>
+        </a>
         <a class="demo-pick-card" href="/demo/pokemon">
           <span class="eyebrow">PokeAPI CSV</span>
           <h2>Pokémon</h2>

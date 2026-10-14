@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="da">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Alfabet-lande — Spil</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css?v=20261014m" />
+    <link rel="stylesheet" href="/demo.css?v=20261014m" />
+    <link rel="stylesheet" href="/demo/spil/spil.css?v=20261014m" />
+  </head>
+  <body>
+    <div class="atmosphere" aria-hidden="true"></div>
+    <main class="demo-shell">
+      <nav class="demo-nav">
+        <a class="back" href="/demo/spil">← Spil</a>
+        <div class="demo-links">
+          <a class="btn ghost sm" href="/demo/countries">Countries-demo</a>
+        </div>
+      </nav>
+      <header class="demo-hero">
+        <p class="eyebrow">Countries · startbogstaver</p>
+        <h1 class="brand">Alfabet-lande</h1>
+        <p class="lede">
+          Skriv ét land for hvert bogstav der findes i datasættet (engelske common names).
+        </p>
+      </header>
+      <div class="spil-score" id="score"></div>
+      <p class="demo-status" id="status">Henter lande…</p>
+      <div class="spil-actions" style="justify-content:flex-start;margin-bottom:1rem">
+        <button type="button" class="btn primary sm" id="btnCheck">Tjek alle</button>
+        <button type="button" class="btn ghost sm" id="btnHint">Hint (ét tilfældigt)</button>
+      </div>
+      <div class="alfabet-grid" id="grid"></div>
+    </main>
+    <script src="/demo/spil/common.js?v=20261014m"></script>
+    <script src="/demo/spil/alfabet/app.js?v=20261014m"></script>
+  </body>
+</html>
