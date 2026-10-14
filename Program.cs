@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using OpgaverAPI.Context;
 using MongoDB.Driver;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -42,7 +43,8 @@ namespace OpgaverAPI
                                       ?? Environment.GetEnvironmentVariable("DefaultConnection");
 
             builder.Services.AddDbContext<AppDBContext>(options =>
-                options.UseNpgsql(connectionString));
+                options.UseNpgsql(connectionString)
+                    .ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning)));
             builder.Services.AddControllers()
                 .AddNewtonsoftJson();
             builder.Services.AddEndpointsApiExplorer();
