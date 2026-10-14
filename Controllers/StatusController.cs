@@ -52,7 +52,7 @@ namespace OpgaverAPI.Controllers
             try
             {
                 var connectionString = _configuration.GetConnectionString("MongoDB");
-                var databaseName = "opgaverapi"; // Hardcoded eller tilføj til config
+                var databaseName = _configuration["MongoDB:Database"] ?? "opgaverapi";
                 
                 if (string.IsNullOrEmpty(connectionString))
                 {
@@ -149,7 +149,7 @@ namespace OpgaverAPI.Controllers
             try
             {
                 var connectionString = _configuration.GetConnectionString("MongoDB");
-                var databaseName = "opgaverapi";
+                var databaseName = _configuration["MongoDB:Database"] ?? "opgaverapi";
                 
                 if (string.IsNullOrEmpty(connectionString))
                 {

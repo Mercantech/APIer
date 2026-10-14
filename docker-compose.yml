@@ -45,6 +45,8 @@ services:
       ASPNETCORE_URLS: http://+:5104
       ConnectionStrings__DefaultConnection: Host=opgaver-db;Port=5432;Database=${POSTGRES_DB:-opgaver};Username=${POSTGRES_USER:-opgaver};Password=${POSTGRES_PASSWORD}
       ConnectionStrings__MongoDB: mongodb://${MONGO_USER:-opgaver}:${MONGO_PASSWORD}@opgaver-mongo:27017/?authSource=admin
+      MongoDB__Database: ${MONGO_DATABASE:-opgaverapi}
+      Seed__ApiKey: ${SEED_API_KEY:?SEED_API_KEY required}
       Jwt__Issuer: ${JWT_ISSUER:-opgaver-api}
       Jwt__Audience: ${JWT_AUDIENCE:-opgaver-api}
       Jwt__Key: ${JWT_KEY:?JWT_KEY required}

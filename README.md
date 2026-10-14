@@ -18,7 +18,10 @@ C# API importeret fra [Mercantech/OpgaverAPI](https://github.com/Mercantech/Opga
 | `GET /Opgaver/Wordle` | Wordle-ord |
 | `GET /Opgaver/CountriesRAW` | Rå lande-data |
 | `GET /Opgaver/Stats` | Kaldestatistik |
-| `GET /api/Countries` | Lande via controller |
+| `GET /api/Countries` | Lande (Mongo `opgaverapi.countries`) |
+| `POST /api/Countries/bulk` | Seed lande (`X-Seed-Key`) |
+| `GET /LeagueOfLegends` | Champions (Postgres) |
+| `POST /LeagueOfLegends/bulk` | Seed champions (`X-Seed-Key`) |
 | `GET /api/Users` | Brugere (JWT, rolle) |
 | `/swagger` | OpenAPI UI |
 

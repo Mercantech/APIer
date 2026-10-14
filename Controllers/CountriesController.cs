@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using MongoDB.Bson;
 using OpgaverAPI.Models;
+using OpgaverAPI.Attributes;
+using OpgaverAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 namespace OpgaverAPI.Controllers
 {
@@ -15,8 +17,7 @@ namespace OpgaverAPI.Controllers
         public CountriesController(IMongoDatabase database)
         {
             _database = database;
-            _countries = database.GetCollection<Country>("countries");
-            Console.WriteLine($"Connected to collection: {_countries.CollectionNamespace}"); // Debug log
+            _countries = database.GetCollection<Country>(StorageBootstrap.CountriesCollection);
         }
 
         /// <summary>
@@ -28,16 +29,52 @@ namespace OpgaverAPI.Controllers
         {
             try
             {
-                Console.WriteLine("Attempting to fetch all countries"); // Debug log
                 var countries = await _countries.Find(_ => true).ToListAsync();
-                Console.WriteLine($"Found {countries.Count} countries"); // Debug log
                 return Ok(countries);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error: {ex.Message}"); // Debug log
                 return StatusCode(500, ex.Message);
             }
+        }
+
+        /// <summary>
+        /// Indsætter ét land i Mongo (countries). Kræver X-Seed-Key.
+        /// </summary>
+        [RequireSeedKey]
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] Country country)
+        {
+            if (country == null)
+                return BadRequest("Country body mangler");
+
+            country.Id = null; // lad Mongo generere ObjectId
+            await _countries.InsertOneAsync(country);
+            return CreatedAtAction(nameof(GetById), new { id = country.Id }, country);
+        }
+
+        /// <summary>
+        /// Bulk-indsæt lande i Mongo. Erstatter ikke eksisterende medmindre replace=true.
+        /// Header: X-Seed-Key.
+        /// </summary>
+        [RequireSeedKey]
+        [HttpPost("bulk")]
+        public async Task<IActionResult> BulkCreate(
+            [FromBody] List<Country> countries,
+            [FromQuery] bool replace = false)
+        {
+            if (countries == null || countries.Count == 0)
+                return BadRequest("Tom liste");
+
+            if (replace)
+                await _countries.DeleteManyAsync(_ => true);
+
+            foreach (var c in countries)
+                c.Id = null;
+
+            await _countries.InsertManyAsync(countries);
+            var count = await _countries.CountDocumentsAsync(_ => true);
+            return Ok(new { inserted = countries.Count, total = count, replace });
         }
 
         /// <summary>

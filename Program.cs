@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using OpgaverAPI.Context;
+using OpgaverAPI.Services;
 using MongoDB.Driver;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -13,7 +14,7 @@ namespace OpgaverAPI
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -58,6 +59,13 @@ namespace OpgaverAPI
                     Type = SecuritySchemeType.ApiKey,
                     Scheme = "Bearer"
                 });
+                c.AddSecurityDefinition("SeedKey", new OpenApiSecurityScheme
+                {
+                    Description = "Seed header X-Seed-Key (env SEED_API_KEY)",
+                    Name = "X-Seed-Key",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey
+                });
 
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
@@ -92,7 +100,8 @@ namespace OpgaverAPI
             builder.Services.AddScoped(sp =>
             {
                 var client = sp.GetRequiredService<IMongoClient>();
-                return client.GetDatabase("opgaver");
+                var dbName = builder.Configuration["MongoDB:Database"] ?? "opgaverapi";
+                return client.GetDatabase(dbName);
             });
 
             var jwtKey = Configuration["Jwt:Key"]
@@ -115,11 +124,7 @@ namespace OpgaverAPI
 
             var app = builder.Build();
 
-            using (var scope = app.Services.CreateScope())
-            {
-                var db = scope.ServiceProvider.GetRequiredService<AppDBContext>();
-                db.Database.Migrate();
-            }
+            await StorageBootstrap.EnsureAsync(app.Services);
 
             app.UseForwardedHeaders();
 
@@ -137,7 +142,7 @@ namespace OpgaverAPI
 
             app.MapGet("/", () => Results.Redirect("/swagger"));
 
-            app.Run();
+            await app.RunAsync();
         }
     }
 }

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OpgaverAPI.Models;
 using OpgaverAPI.Context;
+using OpgaverAPI.Attributes;
 using Microsoft.AspNetCore.Authorization;
 namespace OpgaverAPI.Controllers
 {
@@ -39,6 +40,36 @@ namespace OpgaverAPI.Controllers
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetChampion), new { id = champion.Id }, champion);
+        }
+
+        /// <summary>
+        /// Bulk-indsæt champions i Postgres. Header: X-Seed-Key.
+        /// </summary>
+        [RequireSeedKey]
+        [HttpPost("bulk")]
+        public async Task<IActionResult> BulkCreate(
+            [FromBody] List<LolChampion> champions,
+            [FromQuery] bool replace = false)
+        {
+            if (champions == null || champions.Count == 0)
+                return BadRequest("Tom liste");
+
+            if (replace)
+            {
+                _context.Champions.RemoveRange(_context.Champions);
+                await _context.SaveChangesAsync();
+            }
+
+            foreach (var c in champions)
+            {
+                if (string.IsNullOrWhiteSpace(c.Id))
+                    c.Id = Guid.NewGuid().ToString();
+            }
+
+            await _context.Champions.AddRangeAsync(champions);
+            await _context.SaveChangesAsync();
+            var total = await _context.Champions.CountAsync();
+            return Ok(new { inserted = champions.Count, total, replace });
         }
 
         /// <summary>
