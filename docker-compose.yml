@@ -49,11 +49,12 @@ services:
       Jwt__Audience: ${JWT_AUDIENCE:-opgaver-api}
       Jwt__Key: ${JWT_KEY:?JWT_KEY required}
     labels:
+      # Tunnel → Traefik :80 (web). SSL afsluttes i Cloudflare — ikke websecure/letsencrypt her.
       - traefik.enable=true
       - traefik.http.routers.opgaver-api.rule=Host(`api-opgaver.mercantec.tech`)
-      - traefik.http.routers.opgaver-api.entrypoints=websecure
-      - traefik.http.routers.opgaver-api.tls.certresolver=letsencrypt
+      - traefik.http.routers.opgaver-api.entrypoints=web
       - traefik.http.services.opgaver-api.loadbalancer.server.port=5104
+
 
 networks:
   default:
