@@ -351,6 +351,13 @@ a:hover {
 .topbar-brand {
   font-weight: 700;
   letter-spacing: -0.02em;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.topbar-brand:hover {
+  color: var(--accent);
+  text-decoration: none;
 }
 
 .topbar-actions {

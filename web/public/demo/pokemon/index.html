@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="da">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pokémon-demo — APIer</title>
+    <meta name="description" content="Live demo af /go/pokemon — sprite, typer og evolutioner." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css?v=20261014d" />
+    <link rel="stylesheet" href="/demo.css?v=20261014d" />
+  </head>
+  <body>
+    <div class="atmosphere" aria-hidden="true"></div>
+    <main class="demo-shell">
+      <nav class="demo-nav">
+        <a class="back" href="/">← APIer katalog</a>
+        <div class="demo-links">
+          <a class="btn primary sm" href="/demo/pokemon">Pokémon</a>
+          <a class="btn ghost sm" href="/demo/minecraft">Minecraft</a>
+        </div>
+      </nav>
+
+      <header class="demo-hero">
+        <p class="eyebrow">Go · Postgres · PokeAPI CSV</p>
+        <h1 class="brand">Pokémon</h1>
+        <p class="lede">
+          Hent live data fra <code>/go/pokemon</code>. Filtrér på type, åbn en Pokémon og se
+          evolutionskæden — samme mønster elever kan bruge i egne apps.
+        </p>
+        <p class="demo-meta-line">Backend: go-api · Datakilde: PokeAPI CSV i Postgres</p>
+      </header>
+
+      <div class="demo-toolbar">
+        <input type="search" id="search" placeholder="Søg navn eller id (fx pikachu / 25)" autocomplete="off" />
+        <button type="button" class="btn primary sm" id="btnLoad">Hent liste</button>
+      </div>
+
+      <div class="type-row" id="types" aria-label="Typer"></div>
+      <p class="demo-status" id="status">Indlæser…</p>
+      <div class="poke-grid" id="grid"></div>
+
+      <section class="detail-panel hidden" id="detail" aria-live="polite"></section>
+    </main>
+    <script src="/demo/pokemon/app.js?v=20261014d"></script>
+  </body>
+</html>

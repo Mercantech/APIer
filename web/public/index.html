@@ -14,15 +14,17 @@
       href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/styles.css?v=20261014c" />
+    <link rel="stylesheet" href="/styles.css?v=20261014d" />
   </head>
   <body>
     <div class="atmosphere" aria-hidden="true"></div>
 
     <nav class="topbar" aria-label="Konto">
       <div class="topbar-inner">
-        <span class="topbar-brand">APIer</span>
+        <a class="topbar-brand" href="/">APIer</a>
         <div class="topbar-actions" id="authBar">
+          <a class="btn ghost sm" href="/demo/pokemon">Pokémon</a>
+          <a class="btn ghost sm" href="/demo/minecraft">Minecraft</a>
           <button type="button" class="btn ghost sm" id="btnKeys" hidden>API-nøgler</button>
           <span class="user-chip" id="userChip" hidden></span>
           <button type="button" class="btn primary sm" id="btnLogin">Log ind</button>
@@ -37,11 +39,12 @@
       <p class="lede">
         Ét host, flere backends. Se hvilken server og hvilket sprog der leverer
         hvert endpoint — og om data kommer fra JSON, Mongo, Postgres eller runtime.
-        Klik et kort for demo og live-kald.
+        Prøv live demoer for Pokémon og Minecraft.
       </p>
       <div class="hero-actions">
-        <a class="btn primary" href="#katalog">Se katalog</a>
-        <a class="btn ghost" href="/swagger" target="_blank" rel="noreferrer">Åbn Swagger</a>
+        <a class="btn primary" href="/demo/pokemon">Pokémon-demo</a>
+        <a class="btn ghost" href="/demo/minecraft">Minecraft-demo</a>
+        <a class="btn ghost" href="#katalog">Katalog</a>
       </div>
     </header>
 
@@ -98,8 +101,8 @@
       <div class="drawer-body" id="demoBody"></div>
     </aside>
 
-    <script src="/data.js?v=20261014c"></script>
-    <script src="/auth.js?v=20261014c"></script>
-    <script src="/app.js?v=20261014c"></script>
+    <script src="/data.js?v=20261014d"></script>
+    <script src="/auth.js?v=20261014d"></script>
+    <script src="/app.js?v=20261014d"></script>
   </body>
 </html>

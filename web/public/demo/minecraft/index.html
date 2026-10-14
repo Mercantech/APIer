@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="da">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Minecraft-demo — APIer</title>
+    <meta name="description" content="Live demo af /go/minecraft — items, blocks, mobs, biomes og recipes." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css?v=20261014d" />
+    <link rel="stylesheet" href="/demo.css?v=20261014d" />
+  </head>
+  <body>
+    <div class="atmosphere" aria-hidden="true"></div>
+    <main class="demo-shell">
+      <nav class="demo-nav">
+        <a class="back" href="/">← APIer katalog</a>
+        <div class="demo-links">
+          <a class="btn ghost sm" href="/demo/pokemon">Pokémon</a>
+          <a class="btn primary sm" href="/demo/minecraft">Minecraft</a>
+        </div>
+      </nav>
+
+      <header class="demo-hero">
+        <p class="eyebrow">Go · Postgres · PrismarineJS</p>
+        <h1 class="brand">Minecraft</h1>
+        <p class="lede">
+          Browse items, blocks, mobs og biomes fra <code>/go/minecraft/*</code>, og slå crafting-opskrifter
+          op — data seedet fra minecraft-data (PC 1.20.4).
+        </p>
+        <p class="demo-meta-line">Backend: go-api · Datakilde: PrismarineJS JSON i Postgres</p>
+      </header>
+
+      <div class="demo-tabs" id="tabs" role="tablist">
+        <button type="button" class="active" data-tab="items">Items</button>
+        <button type="button" data-tab="blocks">Blocks</button>
+        <button type="button" data-tab="mobs">Mobs</button>
+        <button type="button" data-tab="biomes">Biomes</button>
+        <button type="button" data-tab="recipes">Recipes</button>
+      </div>
+
+      <div class="demo-toolbar">
+        <input type="search" id="search" placeholder="Søg (fx diamond, creeper, plains)" autocomplete="off" />
+        <button type="button" class="btn primary sm" id="btnLoad">Hent</button>
+      </div>
+
+      <p class="demo-status" id="status">Vælg fane og hent data</p>
+      <div class="mc-grid" id="grid"></div>
+      <section class="detail-panel hidden" id="detail" aria-live="polite"></section>
+    </main>
+    <script src="/demo/minecraft/app.js?v=20261014d"></script>
+  </body>
+</html>
