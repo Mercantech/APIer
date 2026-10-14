@@ -33,6 +33,32 @@ namespace OpgaverAPI.Services
             return $"{basePath}/{key}";
         }
 
+        public async Task EnsureBucketAsync(CancellationToken ct = default)
+        {
+            var exists = await Amazon.S3.Util.AmazonS3Util.DoesS3BucketExistV2Async(_s3, _opt.Bucket);
+            if (!exists)
+            {
+                await _s3.PutBucketAsync(new PutBucketRequest { BucketName = _opt.Bucket }, ct);
+                _log.LogInformation("Oprettede S3-bucket {Bucket}", _opt.Bucket);
+            }
+
+            // Offentlig read — så gateway kan proxyere uden signerede URL'er
+            var policy =
+                "{"
+                + "\"Version\":\"2012-10-17\","
+                + "\"Statement\":[{"
+                + "\"Effect\":\"Allow\","
+                + "\"Principal\":{\"AWS\":[\"*\"]},"
+                + "\"Action\":[\"s3:GetObject\"],"
+                + $"\"Resource\":[\"arn:aws:s3:::{_opt.Bucket}/*\"]"
+                + "}]}";
+            await _s3.PutBucketPolicyAsync(new PutBucketPolicyRequest
+            {
+                BucketName = _opt.Bucket,
+                Policy = policy,
+            }, ct);
+        }
+
         public async Task PutAsync(
             string objectKey,
             Stream content,

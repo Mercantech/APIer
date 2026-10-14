@@ -35,6 +35,8 @@ namespace OpgaverAPI.Services
             if (!_storage.IsConfigured)
                 throw new InvalidOperationException("S3 er ikke konfigureret");
 
+            await _storage.EnsureBucketAsync(ct);
+
             var http = _httpFactory.CreateClient("ddragon");
             var versionsJson = await http.GetStringAsync("https://ddragon.leagueoflegends.com/api/versions.json", ct);
             using var versionsDoc = JsonDocument.Parse(versionsJson);

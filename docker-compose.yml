@@ -80,25 +80,6 @@ services:
     volumes:
       - opgaver_minio_data:/data
 
-  opgaver-minio-init:
-    image: minio/mc:latest
-    depends_on:
-      - opgaver-minio
-    restart: "on-failure"
-    entrypoint: >
-      /bin/sh -c "
-      set -e;
-      echo 'Waiting for MinIO…';
-      until mc alias set local http://opgaver-minio:9000 \"$$MINIO_ROOT_USER\" \"$$MINIO_ROOT_PASSWORD\"; do sleep 2; done;
-      mc mb --ignore-existing local/$${S3_BUCKET:-apier-assets};
-      mc anonymous set download local/$${S3_BUCKET:-apier-assets};
-      echo 'Bucket klar';
-      "
-    environment:
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-apier}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-apier-minio-dev-only}
-      S3_BUCKET: ${S3_BUCKET:-apier-assets}
-
   opgaver-api:
     build:
       context: .
@@ -111,8 +92,6 @@ services:
         condition: service_started
       opgaver-minio:
         condition: service_started
-      opgaver-minio-init:
-        condition: service_completed_successfully
     environment:
       ASPNETCORE_URLS: http://+:5104
       ConnectionStrings__DefaultConnection: Host=opgaver-db;Port=5432;Database=${POSTGRES_DB:-opgaver};Username=${POSTGRES_USER:-opgaver};Password=${POSTGRES_PASSWORD}
