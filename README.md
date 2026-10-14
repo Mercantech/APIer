@@ -29,6 +29,7 @@ Browser → Cloudflare → Traefik → gateway (nginx)
 | Endpoint | Beskrivelse |
 |----------|-------------|
 | `GET /` | Katalogside (datakilde, sprog, server) |
+| `GET /demo` | Demo-oversigt (Pokémon + Minecraft) |
 | `GET /demo/pokemon` | Live Pokémon-demo (Go API) |
 | `GET /demo/minecraft` | Live Minecraft-demo (Go API) |
 | `GET /go/` | Go-service info |
