@@ -8,8 +8,10 @@ API’er med data til elevopgaver på tværs af hovedforløb.
 
 ```text
 Browser → Cloudflare → Traefik → gateway (nginx)
+                              ├─ /            → web (katalog)
                               ├─ /go/*        → go-api
-                              └─ /*           → opgaver-api (.NET)
+                              └─ /api|/Opgaver|/LeagueOfLegends|/swagger
+                                              → opgaver-api (.NET)
                                                  ├─ opgaver-db (Postgres)
                                                  └─ opgaver-mongo
 ```
@@ -17,14 +19,16 @@ Browser → Cloudflare → Traefik → gateway (nginx)
 | Mappe | Service | Rolle |
 |-------|---------|--------|
 | `gateway/` | `gateway` | Nginx API-gateway (eneste offentlige entry) |
+| `web/` | `web` | Endpoint-katalog (datakilde + sprog + server) |
 | `go/` | `go-api` | Golang backend (`/go/...`) |
 | rod (C#) | `opgaver-api` | OpgaverAPI .NET 9 |
 
 ## Endpoints
 
-### Gateway / Go
+### Web / Go
 | Endpoint | Beskrivelse |
 |----------|-------------|
+| `GET /` | Katalogside (datakilde, sprog, server) |
 | `GET /go/` | Go-service info |
 | `GET /go/health` | Go health |
 
@@ -50,7 +54,8 @@ cp .env.example .env
 docker compose -f docker-compose.yml -f docker-compose.local.yml up --build
 ```
 
-- Gateway: [http://localhost:8080/swagger](http://localhost:8080/swagger)
+- Katalog: [http://localhost:8080/](http://localhost:8080/)
+- Swagger: [http://localhost:8080/swagger](http://localhost:8080/swagger)
 - Go: [http://localhost:8080/go/health](http://localhost:8080/go/health)
 
 ## Fremtid

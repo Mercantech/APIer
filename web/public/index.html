@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="da">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>APIer — endpoint-katalog</title>
+    <meta
+      name="description"
+      content="Overblik over Mercantec elev-API’er: datakilde, server og programmeringssprog."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="atmosphere" aria-hidden="true"></div>
+
+    <header class="hero">
+      <p class="eyebrow">Mercantec · elevdata</p>
+      <h1 class="brand">APIer</h1>
+      <p class="lede">
+        Ét host, flere backends. Se hvilken server og hvilket sprog der leverer
+        hvert endpoint — og om data kommer fra JSON, Mongo, Postgres eller runtime.
+      </p>
+      <div class="hero-actions">
+        <a class="btn primary" href="#katalog">Se katalog</a>
+        <a class="btn ghost" href="/swagger" target="_blank" rel="noreferrer">Åbn Swagger</a>
+      </div>
+    </header>
+
+    <section class="backends" id="backends" aria-label="Backends"></section>
+
+    <section class="catalog" id="katalog">
+      <div class="catalog-head">
+        <h2>Endpoint-katalog</h2>
+        <p>Filtrér efter backend eller datakilde. Klik et endpoint for at åbne det live.</p>
+        <div class="filters" id="filters"></div>
+      </div>
+      <div class="endpoint-list" id="endpoints"></div>
+    </section>
+
+    <footer class="site-footer">
+      <p>
+        Gateway: nginx · Host:
+        <a href="https://api-opgaver.mercantec.tech">api-opgaver.mercantec.tech</a>
+      </p>
+    </footer>
+
+    <script src="/data.js"></script>
+    <script src="/app.js"></script>
+  </body>
+</html>

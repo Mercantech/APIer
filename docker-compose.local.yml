@@ -5,6 +5,10 @@ services:
     ports:
       - "8080:80"
 
+  web:
+    ports:
+      - "3000:80"
+
   go-api:
     ports:
       - "8081:8080"
