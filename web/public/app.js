@@ -467,26 +467,39 @@ ${goAuth ? `\t` + goAuth + `\n` : ""}\tres, err := http.DefaultClient.Do(req)
       </section>`;
   }
 
+  function curlCommandFor(ep, path) {
+    return demoState.snippets?.curl || buildSnippets(ep, path).curl;
+  }
+
+  function formatCurlLiveHtml(ep, path, outputHtml) {
+    const curl = curlCommandFor(ep, path);
+    const cmd = `<span class="tok-prompt">$</span> ${highlight(curl, "curl")}`;
+    return `${cmd}\n\n${outputHtml}`;
+  }
+
   function renderLivePanel(ep, path) {
     const canCall = ep.method === "GET" && !ep.path.includes("{");
     const live = demoState.live;
+    const idleHtml = formatCurlLiveHtml(
+      ep,
+      path,
+      `<span class="tok-comment"># Tryk «Kør cURL» for at hente svaret</span>`
+    );
     return `
       <section class="demo-section" aria-labelledby="demoLiveHeading">
         <h3 class="demo-section-title" id="demoLiveHeading">Live svar</h3>
         <div class="live-toolbar">
-          <button type="button" class="btn primary" id="demoFetch" ${canCall ? "" : "disabled"}>Kald live</button>
+          <button type="button" class="btn primary" id="demoFetch" ${canCall ? "" : "disabled"}>Kør cURL</button>
           <a class="btn ghost" href="${escapeHtml(path)}" target="_blank" rel="noreferrer">Åbn i ny fane</a>
         </div>
         ${canCall ? "" : `<p class="drawer-note">Live-kald er kun til GET uden uopløste path-parametre. Brug kode-eksemplerne med de viste værdier.</p>`}
-        <div class="live-status${live ? ` ${escapeHtml(live.tone)}` : ""}" id="demoStatus">${live ? escapeHtml(live.status) : "Klar — tryk «Kald live» for svar"}</div>
+        <div class="live-status${live ? ` ${escapeHtml(live.tone)}` : ""}" id="demoStatus">${live ? escapeHtml(live.status) : "Klar — tryk «Kør cURL» for svar"}</div>
         <div class="code-frame">
           <div class="code-toolbar">
-            <span class="code-lang-label">Response</span>
-            <button type="button" class="btn ghost sm" id="demoCopyJson" ${live?.raw ? "" : "hidden"}>Kopiér JSON</button>
+            <span class="code-lang-label">cURL</span>
+            <button type="button" class="btn ghost sm" id="demoCopyJson" ${live?.raw ? "" : "hidden"}>Kopiér svar</button>
           </div>
-          <pre class="code-block response" id="demoJson"><code>${
-            live?.html || `<span class="tok-comment">// Intet svar endnu</span>`
-          }</code></pre>
+          <pre class="code-block response" id="demoJson"><code>${live?.html || idleHtml}</code></pre>
         </div>
       </section>`;
   }
@@ -535,7 +548,7 @@ ${goAuth ? `\t` + goAuth + `\n` : ""}\tres, err := http.DefaultClient.Do(req)
       copyJson.onclick = async () => {
         await navigator.clipboard.writeText(demoState.live.raw);
         copyJson.textContent = "Kopieret";
-        setTimeout(() => (copyJson.textContent = "Kopiér JSON"), 1200);
+        setTimeout(() => (copyJson.textContent = "Kopiér svar"), 1200);
       };
     }
   }
@@ -634,16 +647,16 @@ ${goAuth ? `\t` + goAuth + `\n` : ""}\tres, err := http.DefaultClient.Do(req)
       copyBtn.onclick = async () => {
         await navigator.clipboard.writeText(live.raw);
         copyBtn.textContent = "Kopieret";
-        setTimeout(() => (copyBtn.textContent = "Kopiér JSON"), 1200);
+        setTimeout(() => (copyBtn.textContent = "Kopiér svar"), 1200);
       };
     }
   }
 
   async function runLiveCall(ep, path) {
     demoState.live = {
-      status: "Henter…",
+      status: "Kører cURL…",
       tone: "pending",
-      html: `<span class="tok-comment">// Henter…</span>`,
+      html: formatCurlLiveHtml(ep, path, `<span class="tok-comment"># Henter…</span>`),
       raw: "",
     };
     applyLiveView();
@@ -655,7 +668,11 @@ ${goAuth ? `\t` + goAuth + `\n` : ""}\tres, err := http.DefaultClient.Do(req)
         demoState.live = {
           status: "Mangler API-nøgle — opret under din konto",
           tone: "error",
-          html: `<span class="tok-comment">// 401 — autentificér først</span>`,
+          html: formatCurlLiveHtml(
+            ep,
+            path,
+            `<span class="tok-comment">curl: (22) HTTP 401 — autentificér først</span>`
+          ),
           raw: "",
         };
         applyLiveView();
@@ -674,15 +691,21 @@ ${goAuth ? `\t` + goAuth + `\n` : ""}\tres, err := http.DefaultClient.Do(req)
         parsed = text;
       }
 
-      const ct = res.headers.get("content-type") || "svar";
+      const ct = res.headers.get("content-type") || "text/plain";
       const demo = typeof parsed === "string" ? parsed.slice(0, 2000) : trimDemo(parsed);
-      const raw = typeof demo === "string" ? demo : JSON.stringify(demo, null, 2);
+      const body = typeof demo === "string" ? demo : JSON.stringify(demo, null, 2);
       const asJson =
-        typeof demo !== "string" || raw.trim().startsWith("{") || raw.trim().startsWith("[");
+        typeof demo !== "string" || body.trim().startsWith("{") || body.trim().startsWith("[");
+      const httpLine = `HTTP/1.1 ${res.status} ${res.statusText || ""}`.trim();
+      const headerBlock = `${httpLine}\ncontent-type: ${ct}\n`;
+      const bodyHtml = asJson ? highlight(body, "json") : escapeHtml(body);
+      const outputHtml = `<span class="tok-comment">${escapeHtml(headerBlock)}</span>\n${bodyHtml}`;
+      const raw = `${headerBlock}\n${body}`;
+
       demoState.live = {
         status: `${res.status} · ${ct}`,
         tone: res.ok ? "ok" : "error",
-        html: highlight(raw, asJson ? "json" : "curl"),
+        html: formatCurlLiveHtml(ep, path, outputHtml),
         raw,
       };
       applyLiveView();
@@ -690,7 +713,11 @@ ${goAuth ? `\t` + goAuth + `\n` : ""}\tres, err := http.DefaultClient.Do(req)
       demoState.live = {
         status: "Netværksfejl",
         tone: "error",
-        html: `<span class="tok-str">${escapeHtml(e.message || String(e))}</span>`,
+        html: formatCurlLiveHtml(
+          ep,
+          path,
+          `<span class="tok-comment">curl: (7) ${escapeHtml(e.message || String(e))}</span>`
+        ),
         raw: "",
       };
       applyLiveView();

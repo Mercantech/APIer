@@ -857,6 +857,12 @@ button.btn {
   word-break: break-word;
 }
 
+.tok-prompt {
+  color: var(--accent);
+  font-weight: 700;
+  user-select: none;
+}
+
 .tok-kw {
   color: #7dd3fc;
 }
