@@ -110,6 +110,7 @@ services:
       S3__Bucket: ${S3_BUCKET:-apier-assets}
       S3__PublicBasePath: ${S3_PUBLIC_BASE_PATH:-/assets}
       S3__SyncChampionsOnStartup: ${S3_SYNC_CHAMPIONS_ON_STARTUP:-true}
+      S3__InsecureDdragon: ${S3_INSECURE_DDRAGON:-true}
 
 networks:
   default:

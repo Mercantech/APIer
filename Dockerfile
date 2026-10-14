@@ -1,4 +1,9 @@
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+USER root
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates \
+    && update-ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 USER app
 WORKDIR /app
 EXPOSE 5104

@@ -131,10 +131,21 @@ namespace OpgaverAPI
             builder.Services.AddSingleton<OpgaverAPI.Services.ObjectStorageService>();
             builder.Services.AddScoped<OpgaverAPI.Services.ChampionImageSyncService>();
             builder.Services.AddHttpClient("ddragon", c =>
-            {
-                c.DefaultRequestHeaders.UserAgent.ParseAdd("APIer-OpgaverAPI/1.0");
-                c.Timeout = TimeSpan.FromSeconds(60);
-            });
+                {
+                    c.DefaultRequestHeaders.UserAgent.ParseAdd("APIer-OpgaverAPI/1.0");
+                    c.Timeout = TimeSpan.FromMinutes(3);
+                })
+                .ConfigurePrimaryHttpMessageHandler(() =>
+                {
+                    var handler = new HttpClientHandler();
+                    // Nogle hosts har ufuldstændig CA-kæde udad — tillad Data Dragon-sync
+                    if (builder.Configuration.GetValue("S3:InsecureDdragon", true))
+                    {
+                        handler.ServerCertificateCustomValidationCallback =
+                            HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                    }
+                    return handler;
+                });
             builder.Services.AddHostedService<OpgaverAPI.Services.ChampionImageSyncHostedService>();
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
