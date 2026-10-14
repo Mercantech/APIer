@@ -30,7 +30,21 @@
   }
 
   function resolvePath(path) {
-    return path.replace(/\{region\}/g, "Europe").replace(/\{[^}]+\}/g, "demo");
+    return path
+      .replace(/\{region\}/g, "Europe")
+      .replace(/\{name\}/g, "Ahri")
+      .replace(/\{className\}/g, "Mage")
+      .replace(/\{gameName\}/g, "demo")
+      .replace(/\{id\}/gi, "1")
+      .replace(/\{[^}]+\}/g, "demo");
+  }
+
+  function apiBase() {
+    return (catalog.host || window.location.origin).replace(/\/$/, "");
+  }
+
+  function fullUrl(path) {
+    return `${apiBase()}${path.startsWith("/") ? path : `/${path}`}`;
   }
 
   /* ——— Auth bar ——— */
@@ -177,48 +191,398 @@
   const demoTitle = document.getElementById("demoTitle");
   const demoBody = document.getElementById("demoBody");
 
-  function openDemo(ep) {
-    const backend = backendById[ep.backend];
-    const path = resolvePath(ep.path);
-    demoTitle.textContent = ep.title;
-    demoBody.innerHTML = `
-      <div class="demo-meta">
-        <span class="method">${escapeHtml(ep.method)}</span>
-        <code class="path">${escapeHtml(path)}</code>
+  const CODE_LANGS = [
+    { id: "curl", label: "cURL" },
+    { id: "csharp", label: "C#" },
+    { id: "js", label: "JavaScript" },
+    { id: "python", label: "Python" },
+    { id: "go", label: "Go" },
+  ];
+
+  function authKind(ep) {
+    if (ep.auth === "apiKey") return "apiKey";
+    if (ep.auth && String(ep.auth).toLowerCase().includes("jwt")) return "jwt";
+    return null;
+  }
+
+  function authHeaders(ep, style) {
+    const kind = authKind(ep);
+    if (kind === "apiKey") {
+      if (style === "curl") return [`  -H "X-Api-Key: $API_KEY"`];
+      if (style === "obj") return { "X-Api-Key": "YOUR_API_KEY" };
+      if (style === "csharp") return `client.DefaultRequestHeaders.Add("X-Api-Key", apiKey);`;
+      if (style === "python") return `headers={"X-Api-Key": api_key}`;
+      if (style === "go") return `req.Header.Set("X-Api-Key", apiKey)`;
+      if (style === "js") return `headers: { "X-Api-Key": apiKey }`;
+    }
+    if (kind === "jwt") {
+      if (style === "curl") return [`  -H "Authorization: Bearer $ACCESS_TOKEN"`];
+      if (style === "obj") return { Authorization: "Bearer YOUR_ACCESS_TOKEN" };
+      if (style === "csharp")
+        return `client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);`;
+      if (style === "python") return `headers={"Authorization": f"Bearer {access_token}"}`;
+      if (style === "go") return `req.Header.Set("Authorization", "Bearer "+accessToken)`;
+      if (style === "js") return `headers: { Authorization: \`Bearer \${accessToken}\` }`;
+    }
+    return style === "curl" ? [] : style === "obj" ? {} : "";
+  }
+
+  function buildSnippets(ep, path) {
+    const url = fullUrl(path);
+    const method = (ep.method || "GET").toUpperCase();
+    const kind = authKind(ep);
+    const hasBody = method !== "GET" && method !== "HEAD";
+
+    const curlLines = [`curl -sS -X ${method} "${url}"`, ...authHeaders(ep, "curl")];
+    if (hasBody) curlLines.push(`  -H "Content-Type: application/json"`, `  -d '{}'`);
+
+    const csharpAuth = authHeaders(ep, "csharp");
+    const csharpVars =
+      kind === "apiKey"
+        ? `var apiKey = Environment.GetEnvironmentVariable("API_KEY")!;`
+        : kind === "jwt"
+          ? `var accessToken = Environment.GetEnvironmentVariable("ACCESS_TOKEN")!;`
+          : "";
+    const csharpCall =
+      method === "GET"
+        ? "var res = await client.GetAsync(url);"
+        : `var res = await client.SendAsync(new HttpRequestMessage(HttpMethod.${method[0] + method.slice(1).toLowerCase()}, url));`;
+
+    const jsHeaders = [];
+    if (kind === "apiKey") jsHeaders.push(`    "X-Api-Key": apiKey`);
+    if (kind === "jwt") jsHeaders.push(`    Authorization: \`Bearer \${accessToken}\``);
+    if (hasBody) jsHeaders.push(`    "Content-Type": "application/json"`);
+    const jsHeaderBlock = jsHeaders.length
+      ? `,\n  headers: {\n${jsHeaders.join(",\n")}\n  }`
+      : "";
+    const jsBody = hasBody ? `,\n  body: JSON.stringify({})` : "";
+    const jsEnv =
+      kind === "apiKey"
+        ? `const apiKey = process.env.API_KEY;\n`
+        : kind === "jwt"
+          ? `const accessToken = process.env.ACCESS_TOKEN;\n`
+          : "";
+
+    const pyEnv =
+      kind === "apiKey"
+        ? `api_key = os.environ["API_KEY"]\n`
+        : kind === "jwt"
+          ? `access_token = os.environ["ACCESS_TOKEN"]\n`
+          : "";
+    const pyHeaders = [];
+    if (kind === "apiKey") pyHeaders.push(`    "X-Api-Key": api_key`);
+    if (kind === "jwt") pyHeaders.push(`    "Authorization": f"Bearer {access_token}"`);
+    if (hasBody) pyHeaders.push(`    "Content-Type": "application/json"`);
+    const pyHeaderArg = pyHeaders.length ? `,\n    headers={\n${pyHeaders.join(",\n")}\n    }` : "";
+    const pyData = hasBody ? `,\n    json={}` : "";
+
+    const goEnv =
+      kind === "apiKey"
+        ? `\tapiKey := os.Getenv("API_KEY")\n`
+        : kind === "jwt"
+          ? `\taccessToken := os.Getenv("ACCESS_TOKEN")\n`
+          : "";
+    const goAuth = authHeaders(ep, "go");
+
+    return {
+      curl: curlLines.join(" \\\n"),
+      csharp: `${kind === "jwt" ? "using System.Net.Http.Headers;\n\n" : ""}var url = "${url}";
+${csharpVars ? csharpVars + "\n" : ""}using var client = new HttpClient();
+${csharpAuth ? csharpAuth + "\n" : ""}${csharpCall}
+res.EnsureSuccessStatusCode();
+var json = await res.Content.ReadAsStringAsync();
+Console.WriteLine(json);`,
+      js: `${jsEnv}const res = await fetch("${url}", {
+  method: "${method}"${jsHeaderBlock}${jsBody}
+});
+const data = await res.json();
+console.log(data);`,
+      python: `${kind ? "import os\n" : ""}import requests
+
+url = "${url}"
+${pyEnv}res = requests.request(
+    "${method}",
+    url${pyHeaderArg}${pyData}
+)
+res.raise_for_status()
+print(res.json())`,
+      go: `package main
+
+import (
+\t"fmt"
+\t"io"
+\t"net/http"${kind ? `\n\t"os"` : ""}
+)
+
+func main() {
+${goEnv}\treq, _ := http.NewRequest("${method}", "${url}", nil)
+${goAuth ? `\t` + goAuth + `\n` : ""}\tres, err := http.DefaultClient.Do(req)
+\tif err != nil {
+\t\tpanic(err)
+\t}
+\tdefer res.Body.Close()
+\tbody, _ := io.ReadAll(res.Body)
+\tfmt.Println(string(body))
+}`,
+    };
+  }
+
+  function highlight(code, lang) {
+    const src = String(code);
+    const tokens = [];
+    const push = (type, value) => {
+      if (!value) return;
+      tokens.push({ type, value });
+    };
+
+    if (lang === "json") {
+      const re =
+        /("(?:\\.|[^"\\])*")(\s*:)?|\b(true|false|null)\b|-?\b\d+(?:\.\d+)?(?:[eE][+-]?\d+)?\b|[{}\[\],]/g;
+      let last = 0;
+      let m;
+      while ((m = re.exec(src))) {
+        if (m.index > last) push("plain", src.slice(last, m.index));
+        if (m[1] != null && m[2]) {
+          push("key", m[1]);
+          push("plain", m[2]);
+        } else if (m[1] != null) push("str", m[1]);
+        else if (m[3]) push("bool", m[3]);
+        else if (m[0].match(/^-?\d/)) push("num", m[0]);
+        else push("punct", m[0]);
+        last = m.index + m[0].length;
+      }
+      if (last < src.length) push("plain", src.slice(last));
+    } else if (lang === "curl") {
+      const re =
+        /(\\[^\n]*)|("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')|(^|\s)(-[A-Za-z]+)|(\$[A-Z_][A-Z0-9_]*)|(https?:\/\/[^\s"']+)/gm;
+      let last = 0;
+      let m;
+      while ((m = re.exec(src))) {
+        if (m.index > last) push("plain", src.slice(last, m.index));
+        if (m[1]) push("comment", m[1]);
+        else if (m[2]) push("str", m[2]);
+        else if (m[4]) {
+          push("plain", m[3] || "");
+          push("flag", m[4]);
+        } else if (m[5]) push("var", m[5]);
+        else if (m[6]) push("url", m[6]);
+        last = m.index + m[0].length;
+      }
+      if (last < src.length) push("plain", src.slice(last));
+    } else {
+      const keywords =
+        lang === "csharp"
+          ? /\b(using|var|new|await|async|return|class|public|static|string|void|namespace|if|else)\b/g
+          : lang === "js"
+            ? /\b(const|let|var|await|async|function|return|import|from|export|if|else|new)\b/g
+            : lang === "python"
+              ? /\b(import|from|def|return|print|True|False|None|as|with)\b/g
+              : lang === "go"
+                ? /\b(package|import|func|return|if|else|defer|var|const|err|nil)\b/g
+                : /$a/;
+      const re = new RegExp(
+        String.raw`(\/\/[^\n]*|#.*$)|("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|` +
+          "`(?:\\\\.|[^\\\\`])*`" +
+          String.raw`)|(-?\b\d+(?:\.\d+)?\b)|` +
+          keywords.source,
+        "gm"
+      );
+      let last = 0;
+      let m;
+      while ((m = re.exec(src))) {
+        if (m.index > last) push("plain", src.slice(last, m.index));
+        if (m[1]) push("comment", m[1]);
+        else if (m[2]) push("str", m[2]);
+        else if (m[3]) push("num", m[3]);
+        else push("kw", m[0]);
+        last = m.index + m[0].length;
+      }
+      if (last < src.length) push("plain", src.slice(last));
+    }
+
+    return tokens
+      .map(({ type, value }) => {
+        if (type === "plain") {
+          return escapeHtml(value).replace(/\bcurl\b/g, '<span class="tok-kw">curl</span>');
+        }
+        return `<span class="tok-${type}">${escapeHtml(value)}</span>`;
+      })
+      .join("");
+  }
+
+  function authBannerHtml(ep) {
+    const kind = authKind(ep);
+    if (!kind) {
+      return `<div class="call-auth open"><span class="call-auth-dot"></span> Offentligt endpoint — ingen auth nødvendig</div>`;
+    }
+    if (kind === "apiKey") {
+      const hasKey = !!auth.getStoredApiKey();
+      if (hasKey) {
+        return `<div class="call-auth ready"><span class="call-auth-dot"></span>
+          <div><strong>X-Api-Key</strong> — nøgle klar i denne session
+          <p>Eksemplerne bruger <code>$API_KEY</code> / <code>YOUR_API_KEY</code>. Live-kald bruger din gemte nøgle.</p></div>
+        </div>`;
+      }
+      if (auth.isLoggedIn()) {
+        return `<div class="call-auth warn"><span class="call-auth-dot"></span>
+          <div><strong>Kræver X-Api-Key</strong>
+          <p>Opret en nøgle for at køre live-kald. Kode-eksempler viser headeren.</p>
+          <button type="button" class="btn primary sm" id="demoOpenKeys">Opret API-nøgle</button></div>
+        </div>`;
+      }
+      return `<div class="call-auth warn"><span class="call-auth-dot"></span>
+        <div><strong>Kræver X-Api-Key</strong>
+        <p>Log ind og opret en elev-nøgle. Se cURL/C# med auth under Kode.</p>
+        <button type="button" class="btn primary sm" id="demoLogin">Log ind</button></div>
+      </div>`;
+    }
+    return `<div class="call-auth warn"><span class="call-auth-dot"></span>
+      <div><strong>${escapeHtml(ep.auth)}</strong>
+      <p>Eksemplerne viser <code>Authorization: Bearer</code>.</p></div>
+    </div>`;
+  }
+
+  let demoState = { ep: null, path: "", lang: "curl", panel: "code", snippets: null, live: null };
+
+  function renderCodePanel() {
+    const { lang, snippets } = demoState;
+    const code = snippets?.[lang] || "";
+    const highlightLang = lang === "curl" ? "curl" : lang === "js" ? "js" : lang;
+    return `
+      <div class="lang-tabs" role="tablist" aria-label="Sprog">
+        ${CODE_LANGS.map(
+          (l) =>
+            `<button type="button" class="lang-tab${l.id === lang ? " active" : ""}" data-lang="${l.id}" role="tab" aria-selected="${l.id === lang}">${l.label}</button>`
+        ).join("")}
       </div>
-      <p>${escapeHtml(ep.summary)}</p>
+      <div class="code-frame">
+        <div class="code-toolbar">
+          <span class="code-lang-label">${escapeHtml(CODE_LANGS.find((l) => l.id === lang)?.label || lang)}</span>
+          <button type="button" class="btn ghost sm" id="demoCopyCode">Kopiér</button>
+        </div>
+        <pre class="code-block" id="demoCode"><code>${highlight(code, highlightLang)}</code></pre>
+      </div>`;
+  }
+
+  function renderLivePanel(ep, path) {
+    const canCall = ep.method === "GET" && !ep.path.includes("{");
+    const live = demoState.live;
+    return `
+      <div class="live-toolbar">
+        <button type="button" class="btn primary" id="demoFetch" ${canCall ? "" : "disabled"}>Kald live</button>
+        <a class="btn ghost" href="${escapeHtml(path)}" target="_blank" rel="noreferrer">Åbn i ny fane</a>
+      </div>
+      ${canCall ? "" : `<p class="drawer-note">Live-kald er kun til GET uden uopløste path-parametre. Brug kode-eksemplerne med de viste værdier.</p>`}
+      <div class="live-status${live ? ` ${escapeHtml(live.tone)}` : ""}" id="demoStatus">${live ? escapeHtml(live.status) : "Klar — tryk «Kald live» for svar"}</div>
+      <div class="code-frame">
+        <div class="code-toolbar">
+          <span class="code-lang-label">Response</span>
+          <button type="button" class="btn ghost sm" id="demoCopyJson" ${live?.raw ? "" : "hidden"}>Kopiér JSON</button>
+        </div>
+        <pre class="code-block response" id="demoJson"><code>${
+          live?.html || `<span class="tok-comment">// Intet svar endnu</span>`
+        }</code></pre>
+      </div>`;
+  }
+
+  function wireDemoPanel(ep, path) {
+    document.getElementById("demoLogin")?.addEventListener("click", () => auth.beginLogin());
+    document.getElementById("demoOpenKeys")?.addEventListener("click", openKeys);
+
+    demoBody.querySelectorAll("[data-panel]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        demoState.panel = btn.dataset.panel;
+        paintDemoBody(ep, path);
+      });
+    });
+
+    demoBody.querySelectorAll("[data-lang]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        demoState.lang = btn.dataset.lang;
+        paintDemoBody(ep, path);
+      });
+    });
+
+    document.getElementById("demoCopyCode")?.addEventListener("click", async () => {
+      const text = demoState.snippets?.[demoState.lang] || "";
+      try {
+        await navigator.clipboard.writeText(text);
+        const b = document.getElementById("demoCopyCode");
+        if (b) {
+          b.textContent = "Kopieret";
+          setTimeout(() => (b.textContent = "Kopiér"), 1200);
+        }
+      } catch {
+        /* ignore */
+      }
+    });
+
+    document.getElementById("demoFetch")?.addEventListener("click", () => runLiveCall(ep, path));
+    document.getElementById("demoCopyPath")?.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(fullUrl(path));
+        const b = document.getElementById("demoCopyPath");
+        if (b) {
+          b.textContent = "Kopieret";
+          setTimeout(() => (b.textContent = "Kopiér URL"), 1200);
+        }
+      } catch {
+        /* ignore */
+      }
+    });
+  }
+
+  function paintDemoBody(ep, path) {
+    const backend = backendById[ep.backend];
+    const panel = demoState.panel;
+    demoBody.innerHTML = `
+      <div class="call-hero">
+        <div class="demo-meta">
+          <span class="method method-${escapeHtml(ep.method.toLowerCase())}">${escapeHtml(ep.method)}</span>
+          <code class="path call-path">${escapeHtml(path)}</code>
+        </div>
+        <button type="button" class="btn ghost sm" id="demoCopyPath">Kopiér URL</button>
+      </div>
+      <p class="call-summary">${escapeHtml(ep.summary)}</p>
       <div class="tags">
         <span class="tag source-${escapeHtml(ep.source.type)}">${escapeHtml(sourceLabel[ep.source.type] || ep.source.type)}</span>
         <span class="tag backend-${escapeHtml(ep.backend)}">${escapeHtml(backend?.language || "")} · ${escapeHtml(backend?.service || "")}</span>
-        ${ep.auth === "apiKey" ? `<span class="tag auth">X-Api-Key</span>` : ep.auth ? `<span class="tag auth">${escapeHtml(ep.auth)}</span>` : ""}
+        ${
+          ep.auth === "apiKey"
+            ? `<span class="tag auth">X-Api-Key</span>`
+            : ep.auth
+              ? `<span class="tag auth">${escapeHtml(ep.auth)}</span>`
+              : `<span class="tag auth open">Offentlig</span>`
+        }
       </div>
       <p class="source-detail">${escapeHtml(ep.source.detail)}</p>
-      ${
-        ep.auth === "apiKey"
-          ? `<p class="drawer-note">Kræver din API-nøgle. ${
-              auth.getStoredApiKey()
-                ? "Nøgle er klar i denne session."
-                : auth.isLoggedIn()
-                  ? `<button type="button" class="btn ghost sm" id="demoOpenKeys">Opret / vælg nøgle</button>`
-                  : `<button type="button" class="btn primary sm" id="demoLogin">Log ind</button>`
-            }</p>`
-          : ""
-      }
-      <div class="demo-actions">
-        <button type="button" class="btn primary" id="demoFetch" ${ep.method !== "GET" || path.includes("{") ? "disabled" : ""}>Kald live</button>
-        <a class="btn ghost" href="${escapeHtml(path)}" target="_blank" rel="noreferrer">Åbn i ny fane</a>
+      ${authBannerHtml(ep)}
+      <div class="panel-tabs" role="tablist">
+        <button type="button" class="panel-tab${panel === "code" ? " active" : ""}" data-panel="code">Kode</button>
+        <button type="button" class="panel-tab${panel === "live" ? " active" : ""}" data-panel="live">Live svar</button>
       </div>
-      <p class="muted" id="demoStatus"></p>
-      <pre class="demo-json" id="demoJson">Klik «Kald live» for at hente data.</pre>
+      <div class="panel-body">
+        ${panel === "code" ? renderCodePanel() : renderLivePanel(ep, path)}
+      </div>
     `;
+    wireDemoPanel(ep, path);
+  }
 
+  function openDemo(ep) {
+    const path = resolvePath(ep.path);
+    demoState = {
+      ep,
+      path,
+      lang: "curl",
+      panel: "code",
+      snippets: buildSnippets(ep, path),
+      live: null,
+    };
+    demoTitle.textContent = ep.title;
+    paintDemoBody(ep, path);
     demoDrawer.classList.add("open");
     demoDrawer.setAttribute("aria-hidden", "false");
     demoBackdrop.hidden = false;
-
-    document.getElementById("demoLogin")?.addEventListener("click", () => auth.beginLogin());
-    document.getElementById("demoOpenKeys")?.addEventListener("click", openKeys);
-    document.getElementById("demoFetch")?.addEventListener("click", () => runLiveCall(ep, path));
   }
 
   function closeDemo() {
@@ -229,6 +593,9 @@
 
   document.getElementById("demoClose").addEventListener("click", closeDemo);
   demoBackdrop.addEventListener("click", closeDemo);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && demoDrawer.classList.contains("open")) closeDemo();
+  });
 
   function trimDemo(data) {
     if (Array.isArray(data)) {
@@ -250,18 +617,45 @@
     return data;
   }
 
-  async function runLiveCall(ep, path) {
+  function applyLiveView() {
     const status = document.getElementById("demoStatus");
     const pre = document.getElementById("demoJson");
-    status.textContent = "Henter…";
-    pre.textContent = "";
+    const copyBtn = document.getElementById("demoCopyJson");
+    const live = demoState.live;
+    if (!status || !pre || !live) return;
+    status.textContent = live.status;
+    status.className = `live-status ${live.tone}`;
+    pre.innerHTML = `<code>${live.html}</code>`;
+    if (copyBtn) {
+      copyBtn.hidden = !live.raw;
+      copyBtn.onclick = async () => {
+        await navigator.clipboard.writeText(live.raw);
+        copyBtn.textContent = "Kopieret";
+        setTimeout(() => (copyBtn.textContent = "Kopiér JSON"), 1200);
+      };
+    }
+  }
+
+  async function runLiveCall(ep, path) {
+    demoState.live = {
+      status: "Henter…",
+      tone: "pending",
+      html: `<span class="tok-comment">// Henter…</span>`,
+      raw: "",
+    };
+    applyLiveView();
 
     const headers = {};
     if (ep.auth === "apiKey") {
       const key = auth.getStoredApiKey();
       if (!key) {
-        status.textContent = "Mangler API-nøgle — log ind og opret en under API-nøgler.";
-        pre.textContent = "";
+        demoState.live = {
+          status: "Mangler API-nøgle — opret under din konto",
+          tone: "error",
+          html: `<span class="tok-comment">// 401 — autentificér først</span>`,
+          raw: "",
+        };
+        applyLiveView();
         return;
       }
       headers["X-Api-Key"] = key;
@@ -277,19 +671,26 @@
         parsed = text;
       }
 
-      if (res.status === 401) {
-        status.textContent = `401 — ${typeof parsed === "string" ? parsed : "Uautoriseret"}`;
-        pre.textContent = typeof parsed === "string" ? parsed : JSON.stringify(parsed, null, 2);
-        return;
-      }
-
-      status.textContent = `${res.status} · ${res.headers.get("content-type") || "svar"}`;
+      const ct = res.headers.get("content-type") || "svar";
       const demo = typeof parsed === "string" ? parsed.slice(0, 2000) : trimDemo(parsed);
-      pre.textContent =
-        typeof demo === "string" ? demo : JSON.stringify(demo, null, 2);
+      const raw = typeof demo === "string" ? demo : JSON.stringify(demo, null, 2);
+      const asJson =
+        typeof demo !== "string" || raw.trim().startsWith("{") || raw.trim().startsWith("[");
+      demoState.live = {
+        status: `${res.status} · ${ct}`,
+        tone: res.ok ? "ok" : "error",
+        html: highlight(raw, asJson ? "json" : "curl"),
+        raw,
+      };
+      applyLiveView();
     } catch (e) {
-      status.textContent = "Netværksfejl";
-      pre.textContent = e.message || String(e);
+      demoState.live = {
+        status: "Netværksfejl",
+        tone: "error",
+        html: `<span class="tok-str">${escapeHtml(e.message || String(e))}</span>`,
+        raw: "",
+      };
+      applyLiveView();
     }
   }
 
