@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="da">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Countries-demo — APIer</title>
+    <meta
+      name="description"
+      content="Live demo af /api/Countries — lande, flag, regioner og naboer."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css?v=20261014h" />
+    <link rel="stylesheet" href="/demo.css?v=20261014h" />
+  </head>
+  <body>
+    <div class="atmosphere" aria-hidden="true"></div>
+    <main class="demo-shell">
+      <nav class="demo-nav">
+        <a class="back" href="/demo">← Demo</a>
+        <div class="demo-links">
+          <a class="btn ghost sm" href="/demo/pokemon">Pokémon</a>
+          <a class="btn ghost sm" href="/demo/minecraft">Minecraft</a>
+          <a class="btn ghost sm" href="/demo/lol">LoL</a>
+          <a class="btn primary sm" href="/demo/countries">Countries</a>
+        </div>
+      </nav>
+
+      <header class="demo-hero">
+        <p class="eyebrow">C# · MongoDB · RestCountries</p>
+        <h1 class="brand">Countries</h1>
+        <p class="lede">
+          Browse lande fra <code>/api/Countries</code> — forenklet liste, regioner,
+          detaljer og nabolande. Samme data elever bruger i fetch-øvelser.
+        </p>
+        <p class="demo-meta-line">Backend: api (.NET) · Datakilde: RestCountries v5 i MongoDB</p>
+      </header>
+
+      <div class="demo-toolbar">
+        <input
+          type="search"
+          id="search"
+          placeholder="Søg land (fx Denmark, Japan)"
+          autocomplete="off"
+        />
+        <button type="button" class="btn primary sm" id="btnLoad">Hent</button>
+      </div>
+
+      <div class="type-row" id="regions" aria-label="Regioner"></div>
+      <p class="demo-status" id="status">Indlæser…</p>
+      <div class="country-grid" id="grid"></div>
+      <section class="detail-panel hidden" id="detail" aria-live="polite"></section>
+    </main>
+    <script src="/demo/countries/app.js?v=20261014h"></script>
+  </body>
+</html>
