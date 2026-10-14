@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using OpgaverAPI.Context;
 using OpgaverAPI.Models;
