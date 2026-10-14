@@ -21,7 +21,7 @@ Browser → Cloudflare → Traefik → gateway (nginx)
 | `gateway/` | `gateway` | Nginx API-gateway (eneste offentlige entry) |
 | `web/` | `apier-web` | Endpoint-katalog (datakilde + sprog + server) |
 | `go/` | `go-api` | Golang backend (`/go/...`) |
-| rod (C#) | `opgaver-api` | OpgaverAPI .NET 9 |
+| rod (C#) | `opgaver-api` | OpgaverAPI .NET 10 |
 
 ## Endpoints
 

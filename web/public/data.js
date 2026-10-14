@@ -4,7 +4,7 @@ window.APIER_CATALOG = {
     {
       id: "dotnet",
       name: "OpgaverAPI",
-      language: "C# / .NET 9",
+      language: "C# / .NET 10",
       service: "opgaver-api",
       description: "Primær elev-API med JSON-filer, MongoDB og Postgres.",
       swagger: "/swagger",
