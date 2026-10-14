@@ -48,6 +48,9 @@ namespace OpgaverAPI.Services
             await using var summaryStream = await summaryRes.Content.ReadAsStreamAsync(ct);
             using var summaryDoc = await JsonDocument.ParseAsync(summaryStream, cancellationToken: ct);
 
+            // Community Dragon har både klassiske champions og "Jade_*"-varianter
+            // med samme display-name (fx Aatrox / Jade_Aatrox). Preferér den
+            // kanoniske alias, ellers ender ImgUrl på Jade_* og /assets/.../Aatrox.png 404'er.
             var byName = new Dictionary<string, CdragonChamp>(StringComparer.OrdinalIgnoreCase);
             foreach (var el in summaryDoc.RootElement.EnumerateArray())
             {
@@ -57,8 +60,10 @@ namespace OpgaverAPI.Services
                 var alias = el.GetProperty("alias").GetString() ?? name;
                 if (string.IsNullOrWhiteSpace(alias)) continue;
                 var entry = new CdragonChamp(id, name, alias);
-                byName[name] = entry;
                 byName[alias] = entry;
+                if (string.IsNullOrWhiteSpace(name)) continue;
+                if (!byName.TryGetValue(name, out var existing) || PreferChampion(entry, existing))
+                    byName[name] = entry;
             }
 
             var champions = await _db.Champions.ToListAsync(ct);
@@ -70,15 +75,6 @@ namespace OpgaverAPI.Services
             foreach (var champ in champions)
             {
                 ct.ThrowIfCancellationRequested();
-                var missing = string.IsNullOrWhiteSpace(champ.ImgUrl);
-                var hasLocal = !missing
-                    && champ.ImgUrl!.StartsWith("/assets/", StringComparison.OrdinalIgnoreCase);
-
-                if (!force && hasLocal)
-                {
-                    skipped++;
-                    continue;
-                }
 
                 if (!TryResolve(champ, byName, out var meta))
                 {
@@ -122,7 +118,12 @@ namespace OpgaverAPI.Services
                         await _storage.PutAsync(objectKey, ms, "image/png", ct);
                         uploaded++;
                     }
+                    else
+                    {
+                        skipped++;
+                    }
 
+                    // Ret også forkerte Jade_*-ImgUrls selv når filen allerede findes
                     if (!string.Equals(champ.ImgUrl, publicUrl, StringComparison.Ordinal))
                     {
                         champ.ImgUrl = publicUrl;
@@ -163,6 +164,22 @@ namespace OpgaverAPI.Services
 
             return false;
         }
+
+        /// <summary>
+        /// Vælg klassisk champion frem for Jade_/mode-varianter med samme display-name.
+        /// </summary>
+        private static bool PreferChampion(CdragonChamp candidate, CdragonChamp existing)
+        {
+            var candJade = IsModeVariant(candidate.Alias);
+            var existJade = IsModeVariant(existing.Alias);
+            if (candJade != existJade)
+                return !candJade;
+            return candidate.Id < existing.Id;
+        }
+
+        private static bool IsModeVariant(string alias) =>
+            alias.StartsWith("Jade_", StringComparison.OrdinalIgnoreCase)
+            || alias.StartsWith("URF", StringComparison.OrdinalIgnoreCase);
     }
 
     /// <summary>Kører image-sync én gang efter opstart, hvis S3 er konfigureret.</summary>
