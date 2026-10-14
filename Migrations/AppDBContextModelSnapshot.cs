@@ -109,6 +109,152 @@ namespace OpgaverAPI.Migrations
                     b.ToTable("Champions");
                 });
 
+            modelBuilder.Entity("OpgaverAPI.Models.RmCharacter", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<int>("ApiId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.PrimitiveCollection<List<string>>("Episode")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
+                    b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Species")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApiId")
+                        .IsUnique();
+
+                    b.HasIndex("Species");
+
+                    b.HasIndex("Status");
+
+                    b.ToTable("RickAndMortyCharacters", (string)null);
+                });
+
+            modelBuilder.Entity("OpgaverAPI.Models.RmEpisode", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("AirDate")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ApiId")
+                        .HasColumnType("integer");
+
+                    b.PrimitiveCollection<List<string>>("Characters")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("EpisodeCode")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApiId")
+                        .IsUnique();
+
+                    b.HasIndex("EpisodeCode");
+
+                    b.ToTable("RickAndMortyEpisodes", (string)null);
+                });
+
+            modelBuilder.Entity("OpgaverAPI.Models.RmLocation", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<int>("ApiId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Dimension")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.PrimitiveCollection<List<string>>("Residents")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApiId")
+                        .IsUnique();
+
+                    b.HasIndex("Dimension");
+
+                    b.ToTable("RickAndMortyLocations", (string)null);
+                });
+
             modelBuilder.Entity("OpgaverAPI.Models.User", b =>
                 {
                     b.Property<string>("Id")
@@ -150,6 +296,57 @@ namespace OpgaverAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("OpgaverAPI.Models.RmCharacter", b =>
+                {
+                    b.OwnsOne("OpgaverAPI.Models.RmNamedUrl", "Location", b1 =>
+                        {
+                            b1.Property<string>("RmCharacterId")
+                                .HasColumnType("text");
+
+                            b1.Property<string>("Name")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<string>("Url")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.HasKey("RmCharacterId");
+
+                            b1.ToTable("RickAndMortyCharacters");
+
+                            b1.WithOwner()
+                                .HasForeignKey("RmCharacterId");
+                        });
+
+                    b.OwnsOne("OpgaverAPI.Models.RmNamedUrl", "Origin", b1 =>
+                        {
+                            b1.Property<string>("RmCharacterId")
+                                .HasColumnType("text");
+
+                            b1.Property<string>("Name")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<string>("Url")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.HasKey("RmCharacterId");
+
+                            b1.ToTable("RickAndMortyCharacters");
+
+                            b1.WithOwner()
+                                .HasForeignKey("RmCharacterId");
+                        });
+
+                    b.Navigation("Location")
+                        .IsRequired();
+
+                    b.Navigation("Origin")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

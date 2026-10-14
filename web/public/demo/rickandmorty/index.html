@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="da">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rick and Morty-demo — APIer</title>
+    <meta
+      name="description"
+      content="Live demo af /api/RickAndMorty — characters, locations og episodes."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css?v=20261014r" />
+    <link rel="stylesheet" href="/demo.css?v=20261014r" />
+  </head>
+  <body>
+    <div class="atmosphere" aria-hidden="true"></div>
+    <main class="demo-shell">
+      <nav class="demo-nav">
+        <a class="back" href="/demo">← Demo</a>
+        <div class="demo-links">
+          <a class="btn primary sm" href="/demo/rickandmorty">Rick &amp; Morty</a>
+          <a class="btn ghost sm" href="/demo/pokemon">Pokémon</a>
+          <a class="btn ghost sm" href="/demo/countries">Countries</a>
+          <a class="btn ghost sm" href="/demo/lol">LoL</a>
+          <a class="btn ghost sm" href="/demo/spil">Spil</a>
+        </div>
+      </nav>
+
+      <header class="demo-hero">
+        <p class="eyebrow">C# · Postgres · rickandmortyapi.com</p>
+        <h1 class="brand">Rick and Morty</h1>
+        <p class="lede">
+          826 characters, 126 locations og 51 episodes — lokalt i OpgaverAPI.
+          Filtrér, åbn detaljer og brug samme endpoints i C# / Blazor-øvelser.
+        </p>
+        <p class="demo-meta-line" id="summaryLine">Backend: opgaver-api · Seed ved start</p>
+      </header>
+
+      <div class="demo-toolbar">
+        <div class="type-row" id="tabs" role="tablist" aria-label="Ressource">
+          <button type="button" class="type-chip active" data-tab="characters">Characters</button>
+          <button type="button" class="type-chip" data-tab="locations">Locations</button>
+          <button type="button" class="type-chip" data-tab="episodes">Episodes</button>
+        </div>
+        <input
+          type="search"
+          id="search"
+          placeholder="Søg (fx Rick, Citadel, Pilot)"
+          autocomplete="off"
+        />
+        <select id="filter" aria-label="Filter"></select>
+        <button type="button" class="btn primary sm" id="btnLoad">Hent</button>
+      </div>
+
+      <p class="demo-status" id="status">Indlæser…</p>
+      <div class="poke-grid" id="grid"></div>
+      <section class="detail-panel hidden" id="detail" aria-live="polite"></section>
+    </main>
+    <script src="/demo/rickandmorty/app.js?v=20261014r"></script>
+  </body>
+</html>

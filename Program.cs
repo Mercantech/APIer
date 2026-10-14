@@ -125,6 +125,7 @@ namespace OpgaverAPI
                 ?? $"{authIssuer.TrimEnd('/')}/.well-known/jwks.json";
 
             builder.Services.AddScoped<ApiKeyService>();
+            builder.Services.AddScoped<RickAndMortySeedService>();
 
             builder.Services.Configure<OpgaverAPI.Services.S3Options>(
                 builder.Configuration.GetSection(OpgaverAPI.Services.S3Options.Section));
@@ -147,6 +148,12 @@ namespace OpgaverAPI
                     }
                     return handler;
                 });
+            builder.Services.AddHttpClient(RickAndMortySeedService.HttpClientName, c =>
+            {
+                c.DefaultRequestHeaders.UserAgent.ParseAdd(
+                    "Mozilla/5.0 (compatible; APIer-OpgaverAPI/1.0; +https://api-opgaver.mercantec.tech)");
+                c.Timeout = TimeSpan.FromMinutes(5);
+            });
             builder.Services.AddHostedService<OpgaverAPI.Services.ChampionImageSyncHostedService>();
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -185,6 +192,24 @@ namespace OpgaverAPI
             var app = builder.Build();
 
             await StorageBootstrap.EnsureAsync(app.Services);
+
+            // Seed Rick and Morty i baggrunden hvis Postgres er tom/ufuldstændig
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    using var scope = app.Services.CreateScope();
+                    var seed = scope.ServiceProvider.GetRequiredService<RickAndMortySeedService>();
+                    var result = await seed.EnsureSeededAsync();
+                    app.Logger.LogInformation(
+                        "RickAndMorty klar ({Characters}/{Locations}/{Episodes})",
+                        result.Characters, result.Locations, result.Episodes);
+                }
+                catch (Exception ex)
+                {
+                    app.Logger.LogError(ex, "RickAndMorty auto-seed fejlede");
+                }
+            });
 
             app.UseForwardedHeaders();
 

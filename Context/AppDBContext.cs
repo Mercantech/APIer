@@ -10,7 +10,9 @@ namespace OpgaverAPI.Context
         public DbSet<Game> Games { get; set; }
         public DbSet<Highscore> Highscores { get; set; }
         public DbSet<ApiKey> ApiKeys { get; set; }
-
+        public DbSet<RmCharacter> RickAndMortyCharacters { get; set; }
+        public DbSet<RmLocation> RickAndMortyLocations { get; set; }
+        public DbSet<RmEpisode> RickAndMortyEpisodes { get; set; }
 
         public AppDBContext(DbContextOptions<AppDBContext> options)
             : base(options)
@@ -25,6 +27,30 @@ namespace OpgaverAPI.Context
             {
                 e.HasIndex(x => x.KeyHash).IsUnique();
                 e.HasIndex(x => x.UserSub);
+            });
+
+            modelBuilder.Entity<RmCharacter>(e =>
+            {
+                e.ToTable("RickAndMortyCharacters");
+                e.HasIndex(x => x.ApiId).IsUnique();
+                e.HasIndex(x => x.Status);
+                e.HasIndex(x => x.Species);
+                e.OwnsOne(x => x.Origin);
+                e.OwnsOne(x => x.Location);
+            });
+
+            modelBuilder.Entity<RmLocation>(e =>
+            {
+                e.ToTable("RickAndMortyLocations");
+                e.HasIndex(x => x.ApiId).IsUnique();
+                e.HasIndex(x => x.Dimension);
+            });
+
+            modelBuilder.Entity<RmEpisode>(e =>
+            {
+                e.ToTable("RickAndMortyEpisodes");
+                e.HasIndex(x => x.ApiId).IsUnique();
+                e.HasIndex(x => x.EpisodeCode);
             });
         }
 

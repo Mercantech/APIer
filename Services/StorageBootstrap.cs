@@ -20,8 +20,11 @@ namespace OpgaverAPI.Services
             var db = sp.GetRequiredService<AppDBContext>();
             await db.Database.MigrateAsync(ct);
 
-            // Touch Champions så tabellen er synlig/klar (Migrate opretter den).
+            // Touch tabeller så Migrate + model er synlige/klare.
             _ = db.Champions.Any();
+            _ = db.RickAndMortyCharacters.Any();
+            _ = db.RickAndMortyLocations.Any();
+            _ = db.RickAndMortyEpisodes.Any();
 
             var mongo = sp.GetRequiredService<IMongoDatabase>();
             var countries = mongo.GetCollection<Country>(CountriesCollection);
