@@ -18,6 +18,53 @@ window.APIER_CATALOG = {
       basePath: "/go",
     },
   ],
+  categories: [
+    {
+      id: "opgaver",
+      title: "Opgaver (JSON)",
+      description: "Statiske datasæt til parsing, visualisering og første fetch-øvelser.",
+    },
+    {
+      id: "countries",
+      title: "Countries",
+      description: "Lande i MongoDB — flag, regioner og nabolande.",
+    },
+    {
+      id: "pokemon",
+      title: "Pokémon",
+      description: "Stats, typer, generationer og evolutioner (Go + Postgres).",
+    },
+    {
+      id: "minecraft",
+      title: "Minecraft",
+      description: "Items, blocks, mobs, biomes og crafting (Go + Postgres).",
+    },
+    {
+      id: "lol",
+      title: "League of Legends",
+      description: "Champions og klasser — kræver elev API-nøgle.",
+    },
+    {
+      id: "rickandmorty",
+      title: "Rick and Morty",
+      description: "Characters, locations og episodes i Postgres.",
+    },
+    {
+      id: "starwars",
+      title: "Star Wars",
+      description: "People, planets, films, species og starships (SWAPI).",
+    },
+    {
+      id: "terraria",
+      title: "Terraria",
+      description: "Items, crafting og bosses — wiki-tekst (CC BY-NC-SA).",
+    },
+    {
+      id: "platform",
+      title: "Platform & status",
+      description: "Health, Swagger, brugere, quizzes og highscores.",
+    },
+  ],
   endpoints: [
     {
       method: "GET",
@@ -26,6 +73,7 @@ window.APIER_CATALOG = {
       summary: "Historiske dieselpriser til øvelser i parsing og visualisering.",
       source: { type: "json", detail: "JSON/diesel.json (fil i image)" },
       backend: "dotnet",
+      category: "opgaver",
     },
     {
       method: "GET",
@@ -34,6 +82,7 @@ window.APIER_CATALOG = {
       summary: "Benzinpriser (Miles95) som statisk JSON-datasæt.",
       source: { type: "json", detail: "JSON/miles95.json" },
       backend: "dotnet",
+      category: "opgaver",
     },
     {
       method: "GET",
@@ -42,6 +91,7 @@ window.APIER_CATALOG = {
       summary: "Udklip / struktureret data inspireret af bilannoncer.",
       source: { type: "json", detail: "JSON/bilbasen.json" },
       backend: "dotnet",
+      category: "opgaver",
     },
     {
       method: "GET",
@@ -50,6 +100,7 @@ window.APIER_CATALOG = {
       summary: "Ordliste til Wordle-lignende opgaver.",
       source: { type: "json", detail: "JSON/wordle.json (+ Tx/Wordle.txt)" },
       backend: "dotnet",
+      category: "opgaver",
     },
     {
       method: "GET",
@@ -58,6 +109,7 @@ window.APIER_CATALOG = {
       summary: "Rå lande-fil uden database — god til første fetch-øvelse.",
       source: { type: "json", detail: "JSON/countries.json" },
       backend: "dotnet",
+      category: "opgaver",
     },
     {
       method: "GET",
@@ -66,6 +118,7 @@ window.APIER_CATALOG = {
       summary: "Tæller kald til Opgaver-endpoints i den kørende proces.",
       source: { type: "memory", detail: "In-memory counters i .NET" },
       backend: "dotnet",
+      category: "opgaver",
     },
     {
       method: "GET",
@@ -74,6 +127,7 @@ window.APIER_CATALOG = {
       summary: "Fuld lande-model med flag, maps, population m.m. Seedet fra RestCountries v5.",
       source: { type: "mongodb", detail: "opgaverapi.countries" },
       backend: "dotnet",
+      category: "countries",
     },
     {
       method: "GET",
@@ -82,6 +136,7 @@ window.APIER_CATALOG = {
       summary: "Lettere payload: navn, flag, cca3.",
       source: { type: "mongodb", detail: "opgaverapi.countries (projektion)" },
       backend: "dotnet",
+      category: "countries",
     },
     {
       method: "GET",
@@ -90,6 +145,7 @@ window.APIER_CATALOG = {
       summary: "Filtrér lande på region, fx Europe.",
       source: { type: "mongodb", detail: "Query på countries.region" },
       backend: "dotnet",
+      category: "countries",
     },
     {
       method: "GET",
@@ -98,6 +154,7 @@ window.APIER_CATALOG = {
       summary: "People, planets, films, species, starships — seedet fra SWAPI.",
       source: { type: "postgres", detail: "StarWars*-tabeller" },
       backend: "dotnet",
+      category: "starwars",
     },
     {
       method: "GET",
@@ -106,6 +163,7 @@ window.APIER_CATALOG = {
       summary: "Karakterer med homeworld/films/starships-URL'er. Query: name, gender, q.",
       source: { type: "postgres", detail: "StarWarsPeople" },
       backend: "dotnet",
+      category: "starwars",
     },
     {
       method: "GET",
@@ -114,6 +172,7 @@ window.APIER_CATALOG = {
       summary: "Planeter. Query: name, climate, terrain, q.",
       source: { type: "postgres", detail: "StarWarsPlanets" },
       backend: "dotnet",
+      category: "starwars",
     },
     {
       method: "GET",
@@ -122,6 +181,7 @@ window.APIER_CATALOG = {
       summary: "Film med episode_id og relationer. Se også /films/episode/{n}.",
       source: { type: "postgres", detail: "StarWarsFilms" },
       backend: "dotnet",
+      category: "starwars",
     },
     {
       method: "GET",
@@ -130,6 +190,7 @@ window.APIER_CATALOG = {
       summary: "Arter. Query: name, classification, q.",
       source: { type: "postgres", detail: "StarWarsSpecies" },
       backend: "dotnet",
+      category: "starwars",
     },
     {
       method: "GET",
@@ -138,6 +199,7 @@ window.APIER_CATALOG = {
       summary: "Rumskibe. Query: name, starshipClass, manufacturer, q.",
       source: { type: "postgres", detail: "StarWarsStarships" },
       backend: "dotnet",
+      category: "starwars",
     },
     {
       method: "GET",
@@ -147,6 +209,7 @@ window.APIER_CATALOG = {
         "Items, recipes, bosses. CC BY-NC-SA tekstdata fra Terraria Wiki — ingen spilbilleder hostes.",
       source: { type: "postgres", detail: "TerrariaItems/Recipes/Npcs" },
       backend: "dotnet",
+      category: "terraria",
     },
     {
       method: "GET",
@@ -155,6 +218,7 @@ window.APIER_CATALOG = {
       summary: "Query: category (weapon|armor|…), damageType, craftable, q.",
       source: { type: "postgres", detail: "TerrariaItems" },
       backend: "dotnet",
+      category: "terraria",
     },
     {
       method: "GET",
@@ -163,6 +227,7 @@ window.APIER_CATALOG = {
       summary: "Våben (category=weapon).",
       source: { type: "postgres", detail: "TerrariaItems" },
       backend: "dotnet",
+      category: "terraria",
     },
     {
       method: "GET",
@@ -171,6 +236,7 @@ window.APIER_CATALOG = {
       summary: "Crafting. Query: result, station, ingredient, q.",
       source: { type: "postgres", detail: "TerrariaRecipes" },
       backend: "dotnet",
+      category: "terraria",
     },
     {
       method: "GET",
@@ -179,6 +245,7 @@ window.APIER_CATALOG = {
       summary: "Boss progression. Query: stage (Pre-Hardmode|Hardmode|Event).",
       source: { type: "postgres", detail: "TerrariaNpcs WHERE IsBoss" },
       backend: "dotnet",
+      category: "terraria",
     },
     {
       method: "GET",
@@ -187,6 +254,7 @@ window.APIER_CATALOG = {
       summary: "Antal characters, locations og episodes i det lokale Postgres-datasæt.",
       source: { type: "postgres", detail: "RickAndMorty*-tabeller" },
       backend: "dotnet",
+      category: "rickandmorty",
     },
     {
       method: "GET",
@@ -196,6 +264,7 @@ window.APIER_CATALOG = {
         "826 characters. Query: name, status, species, type, gender, q, limit, offset.",
       source: { type: "postgres", detail: "RickAndMortyCharacters (seed fra rickandmortyapi.com)" },
       backend: "dotnet",
+      category: "rickandmorty",
     },
     {
       method: "GET",
@@ -204,6 +273,7 @@ window.APIER_CATALOG = {
       summary: "Rick Sanchez — fuld profil med origin, location og episode-URL'er.",
       source: { type: "postgres", detail: "RickAndMortyCharacters" },
       backend: "dotnet",
+      category: "rickandmorty",
     },
     {
       method: "GET",
@@ -212,6 +282,7 @@ window.APIER_CATALOG = {
       summary: "Filtrér Alive, Dead eller unknown.",
       source: { type: "postgres", detail: "RickAndMortyCharacters.Status" },
       backend: "dotnet",
+      category: "rickandmorty",
     },
     {
       method: "GET",
@@ -220,6 +291,7 @@ window.APIER_CATALOG = {
       summary: "Filtrér på species, fx Human eller Alien.",
       source: { type: "postgres", detail: "RickAndMortyCharacters.Species" },
       backend: "dotnet",
+      category: "rickandmorty",
     },
     {
       method: "GET",
@@ -228,6 +300,7 @@ window.APIER_CATALOG = {
       summary: "126 locations. Query: name, type, dimension, q.",
       source: { type: "postgres", detail: "RickAndMortyLocations" },
       backend: "dotnet",
+      category: "rickandmorty",
     },
     {
       method: "GET",
@@ -236,6 +309,7 @@ window.APIER_CATALOG = {
       summary: "51 episodes. Query: name, episode (kode), q. Se også /episodes/season/{n}.",
       source: { type: "postgres", detail: "RickAndMortyEpisodes" },
       backend: "dotnet",
+      category: "rickandmorty",
     },
     {
       method: "GET",
@@ -245,6 +319,7 @@ window.APIER_CATALOG = {
       source: { type: "postgres", detail: "Tabel Champions" },
       backend: "dotnet",
       auth: "apiKey",
+      category: "lol",
     },
     {
       method: "GET",
@@ -254,6 +329,7 @@ window.APIER_CATALOG = {
       source: { type: "postgres", detail: "Distinct Classes fra Champions" },
       backend: "dotnet",
       auth: "apiKey",
+      category: "lol",
     },
     {
       method: "GET",
@@ -263,6 +339,7 @@ window.APIER_CATALOG = {
       source: { type: "postgres", detail: "Tabel Champions" },
       backend: "dotnet",
       auth: "apiKey",
+      category: "lol",
     },
     {
       method: "GET",
@@ -272,6 +349,7 @@ window.APIER_CATALOG = {
       source: { type: "postgres", detail: "Tabel Champions" },
       backend: "dotnet",
       auth: "apiKey",
+      category: "lol",
     },
     {
       method: "GET",
@@ -280,6 +358,7 @@ window.APIER_CATALOG = {
       summary: "Quizzer lagret i Mongo — tom indtil seed.",
       source: { type: "mongodb", detail: "opgaverapi.studentQuizzes" },
       backend: "dotnet",
+      category: "platform",
     },
     {
       method: "GET",
@@ -288,6 +367,7 @@ window.APIER_CATALOG = {
       summary: "Spil-highscores — kræver data via POST.",
       source: { type: "postgres", detail: "Games + Highscores" },
       backend: "dotnet",
+      category: "platform",
     },
     {
       method: "GET",
@@ -297,6 +377,7 @@ window.APIER_CATALOG = {
       source: { type: "postgres", detail: "Tabel Users + JWT" },
       backend: "dotnet",
       auth: "JWT (rolle Mags)",
+      category: "platform",
     },
     {
       method: "GET",
@@ -305,6 +386,7 @@ window.APIER_CATALOG = {
       summary: "Simpel health for .NET-processen.",
       source: { type: "runtime", detail: "Proces-status" },
       backend: "dotnet",
+      category: "platform",
     },
     {
       method: "GET",
@@ -313,6 +395,7 @@ window.APIER_CATALOG = {
       summary: "Ping af begge databaser bag OpgaverAPI.",
       source: { type: "runtime", detail: "Mongo + Postgres health" },
       backend: "dotnet",
+      category: "platform",
     },
     {
       method: "GET",
@@ -321,6 +404,7 @@ window.APIER_CATALOG = {
       summary: "Interaktiv OpenAPI for .NET-endpoints.",
       source: { type: "docs", detail: "Swashbuckle i OpgaverAPI" },
       backend: "dotnet",
+      category: "platform",
     },
     {
       method: "GET",
@@ -329,6 +413,7 @@ window.APIER_CATALOG = {
       summary: "Velkomst og liste over Go-routers (Pokémon + Minecraft).",
       source: { type: "runtime", detail: "go-api" },
       backend: "go",
+      category: "platform",
     },
     {
       method: "GET",
@@ -337,6 +422,7 @@ window.APIER_CATALOG = {
       summary: "Healthcheck for Golang-backend.",
       source: { type: "runtime", detail: "go-api proces" },
       backend: "go",
+      category: "platform",
     },
     {
       method: "GET",
@@ -346,6 +432,7 @@ window.APIER_CATALOG = {
         "Liste med stats, abilities, generation m.m. Query: generation, type, legendary, mythical, q, limit, offset.",
       source: { type: "postgres", detail: "Tabel go_pokemon (PokeAPI CSV)" },
       backend: "go",
+      category: "pokemon",
     },
     {
       method: "GET",
@@ -355,6 +442,7 @@ window.APIER_CATALOG = {
         "Fuld profil: stats, abilities, genus, flavor text, color/habitat/shape, egg groups, shiny sprite.",
       source: { type: "postgres", detail: "go_pokemon" },
       backend: "go",
+      category: "pokemon",
     },
     {
       method: "GET",
@@ -363,6 +451,7 @@ window.APIER_CATALOG = {
       summary: "Unikke typer (fire, water, …).",
       source: { type: "postgres", detail: "Distinct types fra go_pokemon" },
       backend: "go",
+      category: "pokemon",
     },
     {
       method: "GET",
@@ -371,6 +460,7 @@ window.APIER_CATALOG = {
       summary: "Antal default-forms pr. generation (1–9).",
       source: { type: "postgres", detail: "go_pokemon.generation" },
       backend: "go",
+      category: "pokemon",
     },
     {
       method: "GET",
@@ -379,6 +469,7 @@ window.APIER_CATALOG = {
       summary: "Alle default-forms i en generation.",
       source: { type: "postgres", detail: "go_pokemon.generation" },
       backend: "go",
+      category: "pokemon",
     },
     {
       method: "GET",
@@ -387,6 +478,7 @@ window.APIER_CATALOG = {
       summary: "Legendary (valgfrit includeMythical=true).",
       source: { type: "postgres", detail: "is_legendary / is_mythical" },
       backend: "go",
+      category: "pokemon",
     },
     {
       method: "GET",
@@ -395,6 +487,7 @@ window.APIER_CATALOG = {
       summary: "Filtrér på type, fx fire eller water.",
       source: { type: "postgres", detail: "go_pokemon.types" },
       backend: "go",
+      category: "pokemon",
     },
     {
       method: "GET",
@@ -403,6 +496,7 @@ window.APIER_CATALOG = {
       summary: "Hele evolutionskæden for en Pokémon.",
       source: { type: "postgres", detail: "evolution_chain_id" },
       backend: "go",
+      category: "pokemon",
     },
     {
       method: "GET",
@@ -411,6 +505,7 @@ window.APIER_CATALOG = {
       summary: "Items fra PrismarineJS minecraft-data (PC 1.20.4).",
       source: { type: "postgres", detail: "Tabel go_mc_items" },
       backend: "go",
+      category: "minecraft",
     },
     {
       method: "GET",
@@ -419,6 +514,7 @@ window.APIER_CATALOG = {
       summary: "Blocks med hardness, diggable m.m.",
       source: { type: "postgres", detail: "Tabel go_mc_blocks" },
       backend: "go",
+      category: "minecraft",
     },
     {
       method: "GET",
@@ -427,6 +523,7 @@ window.APIER_CATALOG = {
       summary: "Living entities / mobs fra entities.json.",
       source: { type: "postgres", detail: "Tabel go_mc_mobs" },
       backend: "go",
+      category: "minecraft",
     },
     {
       method: "GET",
@@ -435,6 +532,7 @@ window.APIER_CATALOG = {
       summary: "Biomes med temperatur og rainfall.",
       source: { type: "postgres", detail: "Tabel go_mc_biomes" },
       backend: "go",
+      category: "minecraft",
     },
     {
       method: "GET",
@@ -443,6 +541,7 @@ window.APIER_CATALOG = {
       summary: "Crafting-opskrifter (begrænset via ?limit=).",
       source: { type: "postgres", detail: "Tabel go_mc_recipes" },
       backend: "go",
+      category: "minecraft",
     },
     {
       method: "GET",
@@ -451,6 +550,7 @@ window.APIER_CATALOG = {
       summary: "Opskrifter for et bestemt item-navn.",
       source: { type: "postgres", detail: "go_mc_recipes.result_name" },
       backend: "go",
+      category: "minecraft",
     },
   ],
 };

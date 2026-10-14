@@ -711,10 +711,17 @@ ${goAuth ? `\t` + goAuth + `\n` : ""}\tres, err := http.DefaultClient.Do(req)
       .join("");
   }
 
+  const categoryById = Object.fromEntries((catalog.categories || []).map((c) => [c.id, c]));
+
   function renderFilters() {
     const sources = [...new Set(catalog.endpoints.map((e) => e.source.type))];
+    const catButtons = (catalog.categories || []).map((c) => ({
+      id: `category:${c.id}`,
+      label: c.title,
+    }));
     const buttons = [
       { id: "all", label: "Alle" },
+      ...catButtons,
       ...catalog.backends.map((b) => ({ id: `backend:${b.id}`, label: b.language })),
       ...sources.map((s) => ({ id: `source:${s}`, label: sourceLabel[s] || s })),
     ];
@@ -722,7 +729,7 @@ ${goAuth ? `\t` + goAuth + `\n` : ""}\tres, err := http.DefaultClient.Do(req)
     filtersEl.innerHTML = buttons
       .map(
         (b) =>
-          `<button type="button" class="filter-btn${b.id === activeFilter ? " active" : ""}" data-filter="${b.id}">${escapeHtml(b.label)}</button>`
+          `<button type="button" class="filter-btn${b.id === activeFilter ? " active" : ""}" data-filter="${escapeHtml(b.id)}">${escapeHtml(b.label)}</button>`
       )
       .join("");
 
@@ -737,6 +744,9 @@ ${goAuth ? `\t` + goAuth + `\n` : ""}\tres, err := http.DefaultClient.Do(req)
 
   function matchesFilter(ep) {
     if (activeFilter === "all") return true;
+    if (activeFilter.startsWith("category:")) {
+      return (ep.category || "platform") === activeFilter.slice("category:".length);
+    }
     if (activeFilter.startsWith("backend:")) {
       return ep.backend === activeFilter.slice("backend:".length);
     }
@@ -746,12 +756,9 @@ ${goAuth ? `\t` + goAuth + `\n` : ""}\tres, err := http.DefaultClient.Do(req)
     return true;
   }
 
-  function renderEndpoints() {
-    endpointsBound = catalog.endpoints.filter(matchesFilter);
-    listEl.innerHTML = endpointsBound
-      .map((ep, i) => {
-        const backend = backendById[ep.backend];
-        return `
+  function endpointCardHtml(ep, i) {
+    const backend = backendById[ep.backend];
+    return `
         <article class="endpoint" tabindex="0" role="button" data-idx="${i}" style="animation-delay:${Math.min(i, 12) * 40}ms">
           <div class="endpoint-top">
             <span class="method">${escapeHtml(ep.method)}</span>
@@ -766,6 +773,45 @@ ${goAuth ? `\t` + goAuth + `\n` : ""}\tres, err := http.DefaultClient.Do(req)
           </div>
           <p class="source-detail">${escapeHtml(ep.source.detail)}</p>
         </article>`;
+  }
+
+  function renderEndpoints() {
+    endpointsBound = catalog.endpoints.filter(matchesFilter);
+
+    const categoryOrder = (catalog.categories || []).map((c) => c.id);
+    const groups = new Map();
+    for (const ep of endpointsBound) {
+      const id = ep.category || "platform";
+      if (!groups.has(id)) groups.set(id, []);
+      groups.get(id).push(ep);
+    }
+
+    const orderedIds = [
+      ...categoryOrder.filter((id) => groups.has(id)),
+      ...[...groups.keys()].filter((id) => !categoryOrder.includes(id)),
+    ];
+
+    // Flat index map for openDemo (data-idx → endpointsBound)
+    const indexByEp = new Map(endpointsBound.map((ep, i) => [ep, i]));
+
+    listEl.innerHTML = orderedIds
+      .map((catId) => {
+        const meta = categoryById[catId] || {
+          title: catId,
+          description: "",
+        };
+        const eps = groups.get(catId) || [];
+        return `
+        <section class="endpoint-category" id="cat-${escapeHtml(catId)}" aria-labelledby="cat-title-${escapeHtml(catId)}">
+          <header class="category-head">
+            <h3 id="cat-title-${escapeHtml(catId)}">${escapeHtml(meta.title)}</h3>
+            ${meta.description ? `<p>${escapeHtml(meta.description)}</p>` : ""}
+            <span class="category-count">${eps.length} endpoint${eps.length === 1 ? "" : "s"}</span>
+          </header>
+          <div class="category-endpoints">
+            ${eps.map((ep) => endpointCardHtml(ep, indexByEp.get(ep))).join("")}
+          </div>
+        </section>`;
       })
       .join("");
 
