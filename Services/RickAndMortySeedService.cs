@@ -91,15 +91,44 @@ namespace OpgaverAPI.Services
         {
             var all = new List<T>();
             string? url = firstUrl;
+            var pageIndex = 0;
             while (!string.IsNullOrEmpty(url))
             {
-                var page = await client.GetFromJsonAsync<ApiPage<T>>(url, ct)
-                    ?? throw new InvalidOperationException($"Tomt svar fra {url}");
+                // Respektér rate limit på rickandmortyapi.com
+                if (pageIndex > 0)
+                    await Task.Delay(350, ct);
+
+                var page = await GetPageWithRetryAsync<T>(client, url, ct);
                 if (page.Results != null)
                     all.AddRange(page.Results);
                 url = page.Info?.Next;
+                pageIndex++;
             }
             return all;
+        }
+
+        private static async Task<ApiPage<T>> GetPageWithRetryAsync<T>(
+            HttpClient client,
+            string url,
+            CancellationToken ct)
+        {
+            const int maxAttempts = 6;
+            for (var attempt = 1; attempt <= maxAttempts; attempt++)
+            {
+                using var response = await client.GetAsync(url, ct);
+                if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+                {
+                    var delayMs = Math.Min(10_000, 500 * (1 << attempt));
+                    await Task.Delay(delayMs, ct);
+                    continue;
+                }
+
+                response.EnsureSuccessStatusCode();
+                var page = await response.Content.ReadFromJsonAsync<ApiPage<T>>(cancellationToken: ct);
+                return page ?? throw new InvalidOperationException($"Tomt svar fra {url}");
+            }
+
+            throw new InvalidOperationException($"Rate limit (429) efter {maxAttempts} forsøg: {url}");
         }
 
         private static RmCharacter MapCharacter(ApiCharacter c) => new()
