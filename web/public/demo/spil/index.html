@@ -4,19 +4,16 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Spil — APIer</title>
-    <meta
-      name="description"
-      content="Mini-spil oven på elev-API’erne: crafting, champions, flag, Pokémon og mere."
-    />
+    <meta name="description" content="Mini-spil oven på alle elev-API’erne." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/styles.css?v=20261014m" />
-    <link rel="stylesheet" href="/demo.css?v=20261014m" />
-    <link rel="stylesheet" href="/demo/spil/spil.css?v=20261014m" />
+    <link rel="stylesheet" href="/styles.css?v=20261014n" />
+    <link rel="stylesheet" href="/demo.css?v=20261014n" />
+    <link rel="stylesheet" href="/demo/spil/spil.css?v=20261014n" />
   </head>
   <body>
     <div class="atmosphere" aria-hidden="true"></div>
@@ -33,57 +30,40 @@
       </nav>
 
       <header class="demo-hero">
-        <p class="eyebrow">Quiz · API-data · ingen login (undtagen hvor markeret)</p>
+        <p class="eyebrow">17 quizzer · samme endpoints som kataloget</p>
         <h1 class="brand">Spil</h1>
         <p class="lede">
-          Små quizzer bygget oven på de samme endpoints som demoerne — husk opskrifter,
-          gæt champions, lande og Pokémon.
+          Crafting, champions, flag, Wordle, brændstofpriser, biomes og mere — bygget direkte på API-data.
         </p>
       </header>
 
+      <h2 class="spil-section-title">Go · Pokémon &amp; Minecraft</h2>
       <div class="demo-pick">
-        <a class="demo-pick-card" href="/demo/spil/craft">
-          <span class="eyebrow">Minecraft · /go/minecraft</span>
-          <h2>Craft-hukommelse</h2>
-          <div class="tag-row"><span class="tag">Crafting</span></div>
-          <p>Se hvad der skal laves — vælg den rigtige ingrediensliste.</p>
-          <span class="demo-pick-cta">Spil →</span>
-        </a>
-        <a class="demo-pick-card" href="/demo/spil/champ">
-          <span class="eyebrow">LoL · silhuet</span>
-          <h2>Gæt champen</h2>
-          <div class="tag-row"><span class="tag">League</span></div>
-          <p>Hvem er den sorte klods? Vælg blandt fire champions.</p>
-          <span class="demo-pick-cta">Spil →</span>
-        </a>
-        <a class="demo-pick-card" href="/demo/spil/flag">
-          <span class="eyebrow">Countries · Mongo</span>
-          <h2>Kend flaget</h2>
-          <div class="tag-row"><span class="tag">Geografi</span></div>
-          <p>Se flaget — gæt landet blandt fire muligheder.</p>
-          <span class="demo-pick-cta">Spil →</span>
-        </a>
-        <a class="demo-pick-card" href="/demo/spil/alfabet">
-          <span class="eyebrow">Countries · A–Z</span>
-          <h2>Alfabet-lande</h2>
-          <div class="tag-row"><span class="tag">Udfordring</span></div>
-          <p>Skriv ét land for hvert startbogstav der findes i datasættet.</p>
-          <span class="demo-pick-cta">Spil →</span>
-        </a>
-        <a class="demo-pick-card" href="/demo/spil/hvem">
-          <span class="eyebrow">Pokémon · /go/pokemon</span>
-          <h2>Hvem er den?</h2>
-          <div class="tag-row"><span class="tag">Silhuet</span></div>
-          <p>Klassisk silhuet-quiz med Gen 1-sprites.</p>
-          <span class="demo-pick-cta">Spil →</span>
-        </a>
-        <a class="demo-pick-card" href="/demo/spil/nabo">
-          <span class="eyebrow">Countries · borders</span>
-          <h2>Nabolande</h2>
-          <div class="tag-row"><span class="tag">Grænser</span></div>
-          <p>Hvilket land grænser op til…? Vælg den rigtige nabo.</p>
-          <span class="demo-pick-cta">Spil →</span>
-        </a>
+        <a class="demo-pick-card" href="/demo/spil/hvem"><span class="eyebrow">Pokémon</span><h2>Hvem er den?</h2><p>Silhuet-quiz med Gen 1.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/type"><span class="eyebrow">Pokémon</span><h2>Type-quiz</h2><p>Hvilken type har den?</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/evo"><span class="eyebrow">Pokémon</span><h2>Evolution</h2><p>Hvad udvikler den sig til?</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/craft"><span class="eyebrow">Minecraft</span><h2>Craft-hukommelse</h2><p>Vælg rigtige ingredienser.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/mob"><span class="eyebrow">Minecraft</span><h2>Mob-quiz</h2><p>Gæt mobben fra silhuet.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/biome"><span class="eyebrow">Minecraft</span><h2>Biome-temperatur</h2><p>Hvilken biome er varmest?</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/hardness"><span class="eyebrow">Minecraft</span><h2>Hardness</h2><p>Hvilken block er hårdest?</p><span class="demo-pick-cta">Spil →</span></a>
+      </div>
+
+      <h2 class="spil-section-title">.NET · LoL &amp; Countries</h2>
+      <div class="demo-pick">
+        <a class="demo-pick-card" href="/demo/spil/champ"><span class="eyebrow">LoL</span><h2>Gæt champen</h2><p>Silhuet blandt fire navne.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/klasse"><span class="eyebrow">LoL</span><h2>Champ-klasse</h2><p>Assassin, Mage, Fighter…?</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/flag"><span class="eyebrow">Countries</span><h2>Kend flaget</h2><p>Flag → land.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/hovedstad"><span class="eyebrow">Countries</span><h2>Hovedstad</h2><p>Hvad er hovedstaden?</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/nabo"><span class="eyebrow">Countries</span><h2>Nabolande</h2><p>Hvem grænser op til…?</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/befolkning"><span class="eyebrow">Countries</span><h2>Befolkning</h2><p>Hvem har flest indbyggere?</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/alfabet"><span class="eyebrow">Countries</span><h2>Alfabet-lande</h2><p>Ét land pr. bogstav.</p><span class="demo-pick-cta">Spil →</span></a>
+      </div>
+
+      <h2 class="spil-section-title">Opgaver · JSON-filer</h2>
+      <div class="demo-pick">
+        <a class="demo-pick-card" href="/demo/spil/wordle"><span class="eyebrow">Wordle</span><h2>Wordle</h2><p>Klassisk 5-bogstavs gæt med ordlisten.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/pris"><span class="eyebrow">Diesel / Miles95</span><h2>Pris-gæt</h2><p>Gæt brændstofpris på en dato.</p><span class="demo-pick-cta">Spil →</span></a>
+        <a class="demo-pick-card" href="/demo/spil/bil"><span class="eyebrow">Bilbasen</span><h2>Bilmærke</h2><p>Parse annonce-URL og gæt mærket.</p><span class="demo-pick-cta">Spil →</span></a>
       </div>
     </main>
   </body>
