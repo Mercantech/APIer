@@ -314,7 +314,8 @@ a:hover {
   font-size: 0.9rem;
 }
 
-.hidden {
+.hidden,
+[hidden] {
   display: none !important;
 }
 
