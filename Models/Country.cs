@@ -161,8 +161,11 @@ namespace OpgaverAPI.Models
     }
     public class Gini
     {
+        /// <summary>År → Gini-koefficient, fx { "2018": 32.5 }.</summary>
         [BsonExtraElements]
-        public Dictionary<string, object> YearValues { get; set; }
+        [System.Text.Json.Serialization.JsonExtensionData]
+        [Newtonsoft.Json.JsonExtensionData]
+        public Dictionary<string, object>? YearValues { get; set; }
     }
     public class Demonyms
     {
