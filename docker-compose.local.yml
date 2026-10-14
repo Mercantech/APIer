@@ -1,0 +1,17 @@
+# Lokal udvikling: docker compose -f docker-compose.yml -f docker-compose.local.yml up --build
+services:
+  db:
+    ports:
+      - "5433:5432"
+
+  mongo:
+    ports:
+      - "27018:27017"
+
+  opgaver-api:
+    ports:
+      - "5104:5104"
+
+networks:
+  dokploy-network:
+    external: false

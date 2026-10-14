@@ -1,0 +1,28 @@
+## .NET
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Secrets / lokal env
+.env
+.env.local
+*.local.json
+appsettings.*.local.json
+
+## OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+## Build
+*.dll
+*.pdb
+*.exe
+publish/
+artifacts/

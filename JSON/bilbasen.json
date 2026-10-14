@@ -1,0 +1,2224 @@
+[
+  {
+    "intermingleItems": [],
+    "adTypeProperties": {
+      "adnuntiusDisplay": {
+        "kv": [
+          {
+            "live_segment_audiences": []
+          },
+          {
+            "attr_classifications": ["228"]
+          },
+          {
+            "context": [
+              "https://www.bilbasen.dk/brugt/bil/porsche/911-turbo/36-coup-2d/5634532"
+            ]
+          },
+          {
+            "consent_google": ["false"]
+          },
+          {
+            "hn": ["www.bilbasen.dk"]
+          },
+          {
+            "pvm": ["bilbasen-desktop-VIP"]
+          },
+          {
+            "pt": ["VIP"]
+          },
+          {
+            "ct": ["228"]
+          },
+          {
+            "attr_category": ["Coupé"]
+          },
+          {
+            "listing_isdealerandstandardorplus": ["true"]
+          },
+          {
+            "attr_brand": ["Porsche"]
+          },
+          {
+            "attr_model": ["911 Turbo"]
+          },
+          {
+            "attr_makemodel": ["Porsche 911 Turbo 3.6 Coupé"]
+          },
+          {
+            "g_cy": ["2004"]
+          },
+          {
+            "attr_vintage": ["2004"]
+          },
+          {
+            "listing_ownertype": ["forhandler"]
+          },
+          {
+            "listing_price": ["500001-999999999"]
+          },
+          {
+            "listing_price_raw": ["698000"]
+          },
+          {
+            "g_cm": ["Porsche"]
+          },
+          {
+            "g_cmo": ["911 Turbo"]
+          },
+          {
+            "listing_contact_zipcode": ["6870"]
+          },
+          {
+            "listing_contact_municipality": ["Ringkøbing-Skjern Kommune"]
+          },
+          {
+            "listing_contact_region": ["Region Midtjylland"]
+          },
+          {
+            "Variant": ["3.6 Coupé"]
+          },
+          {
+            "attr_numberofkm": ["25001-50000"]
+          },
+          {
+            "attr_vatfree": ["inklusivmoms"]
+          },
+          {
+            "attr_fuel": ["Benzin"]
+          },
+          {
+            "attr_imagecount": ["18"]
+          },
+          {
+            "attr_imageurls": [
+              "https://billeder.bilinfo.net/bilinfo/2ff8a1de-8e82-4afc-9063-b1b4c6ce17cb.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/50235dc0-fa47-4b13-a7fe-feeb1273c121.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/dd05d36f-6a80-4cd7-9e18-34c20cc24843.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/5d52055e-b76c-43b8-bf62-d76330e5f2d2.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/14e1219e-d907-4ff2-a332-4e5fe3f96407.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/74adc5e2-240e-40e6-b667-cf166e9683e4.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/694948e2-9502-4d3d-ab25-45c4628054a6.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/39c74741-a739-4301-8bca-110af95a4d50.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/0fa7b8df-3394-49ee-ac7a-f76844375b19.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/65389d94-8a6f-4f39-95c1-490fb6a5647c.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/a34aa1f0-229f-49bf-93e9-b13f59eed618.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/bc5928ac-ab75-42f6-b56e-b98007eee83c.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/3c83eb09-b1f5-46da-92ea-ef983d922c3d.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/2f75e094-9820-4e17-9a7d-bd7fd944805d.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/6467a568-291c-4fd5-80fa-a4310e5732a3.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/1a104c46-1682-4160-8e06-3db14e7d23d0.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/62d83fff-9486-46e9-9b52-04b68c56e668.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/ce57b047-49d1-458f-8ef1-37734b303f07.jpeg"
+            ]
+          },
+          {
+            "attr_imageurl": [
+              "https://billeder.bilinfo.net/bilinfo/2ff8a1de-8e82-4afc-9063-b1b4c6ce17cb.jpeg"
+            ]
+          },
+          {
+            "attr_l1": ["P"]
+          },
+          {
+            "attr_l2": ["Porsche"]
+          },
+          {
+            "attr_l3": ["911 Turbo"]
+          },
+          {
+            "attr_l4": ["Coupé"]
+          },
+          {
+            "device_category": ["Desktop"]
+          }
+        ]
+      }
+    },
+    "positionItems": [
+      {
+        "positionName": "top",
+        "id": "top",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000164771",
+            "targetId": "top",
+            "auW": 930,
+            "auH": 180,
+            "kv": [
+              {
+                "pos": ["top"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_top_1"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "wallpaper",
+        "id": "wallpaper",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000191eeb",
+            "targetId": "wallpaper",
+            "auW": 1,
+            "auH": 1,
+            "kv": [
+              {
+                "pos": ["wallpaper"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_wallpaper"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "skyscraper-left",
+        "id": "skyscraper-left",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000191ee8",
+            "targetId": "skyscraper-left",
+            "auW": 300,
+            "auH": 600,
+            "kv": [
+              {
+                "pos": ["skyscraper-left"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_left_1"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "skyscraper-right",
+        "id": "skyscraper-right",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000191ee6",
+            "targetId": "skyscraper-right",
+            "auW": 300,
+            "auH": 600,
+            "kv": [
+              {
+                "pos": ["skyscraper-right"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_right_1"]
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "intermingleItems": [],
+    "adTypeProperties": {
+      "adnuntiusDisplay": {
+        "kv": [
+          {
+            "live_segment_audiences": []
+          },
+          {
+            "attr_classifications": ["3000"]
+          },
+          {
+            "context": [
+              "https://www.bilbasen.dk/brugt/bil/mercedes/sl500/55-aut-2d/5982534"
+            ]
+          },
+          {
+            "consent_google": ["false"]
+          },
+          {
+            "hn": ["www.bilbasen.dk"]
+          },
+          {
+            "pvm": ["bilbasen-desktop-VIP"]
+          },
+          {
+            "pt": ["VIP"]
+          },
+          {
+            "ct": ["3000"]
+          },
+          {
+            "attr_category": ["aut."]
+          },
+          {
+            "listing_isdealerandstandardorplus": ["true"]
+          },
+          {
+            "attr_brand": ["Mercedes"]
+          },
+          {
+            "attr_model": ["SL500"]
+          },
+          {
+            "attr_makemodel": ["Mercedes SL500 5.5 aut."]
+          },
+          {
+            "g_cy": ["2009"]
+          },
+          {
+            "attr_vintage": ["2009"]
+          },
+          {
+            "listing_ownertype": ["forhandler"]
+          },
+          {
+            "listing_price": ["500001-999999999"]
+          },
+          {
+            "listing_price_raw": ["529000"]
+          },
+          {
+            "g_cm": ["Mercedes"]
+          },
+          {
+            "g_cmo": ["SL500"]
+          },
+          {
+            "listing_contact_zipcode": ["7120"]
+          },
+          {
+            "listing_contact_municipality": ["Hedensted Kommune"]
+          },
+          {
+            "listing_contact_region": ["Region Midtjylland"]
+          },
+          {
+            "Variant": ["5.5 aut."]
+          },
+          {
+            "attr_numberofkm": ["100001-150000"]
+          },
+          {
+            "attr_vatfree": ["inklusivmoms"]
+          },
+          {
+            "attr_fuel": ["Benzin"]
+          },
+          {
+            "attr_imagecount": ["22"]
+          },
+          {
+            "attr_imageurls": [
+              "https://billeder.bilinfo.net/bilinfo/fa8970fa-276e-454d-a0a1-ca383d3be4ae.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/a129a9e1-fa52-4f69-b6a1-3f28e29c7299.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/46b9e1a0-cd52-4205-b3e0-6b6b165d28ea.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/22043b7e-3ff7-469c-8a10-72539d5aed68.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/8d6bfa56-2ee2-4ec3-83a8-711857f258f5.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/9c945949-5555-414c-9d28-29f764e4ebfc.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/973932bc-e66c-4988-886a-cc36a2a0403d.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/a34e4960-da68-4b1d-8e7b-faa19afb8bac.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/1234946e-5b6b-4578-8b97-8a3ae31a7f6c.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/f7cc18a9-12ac-460f-8536-178d371401ca.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/1c606ea9-58c4-481f-a62f-3812de099075.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/ffe34124-7b14-41e3-b008-7ac598078ded.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/323ec0ec-e17e-4516-ad60-ae492b10b32a.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/2e360107-8af0-4d25-9876-03ed7244cc73.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/84e73579-124a-41de-b3e1-800b692b1132.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/ea01e53e-e746-49ad-ba8e-cfe6c6018f86.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/3d38d285-29a8-47e2-9950-d1ab7c16a8fb.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/5070ac4b-becf-436f-83eb-62f6428503c7.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/e479aa0c-975d-4a42-bb19-42d4f9404f87.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/5cddfddd-148f-4197-a6fe-fa1398683783.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/199d2035-50b4-47a8-b4f2-5f5b4e3c9a89.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/b972b655-4062-4662-ac0d-b75c754f0ed7.jpeg"
+            ]
+          },
+          {
+            "attr_imageurl": [
+              "https://billeder.bilinfo.net/bilinfo/fa8970fa-276e-454d-a0a1-ca383d3be4ae.jpeg"
+            ]
+          },
+          {
+            "attr_l1": ["P"]
+          },
+          {
+            "attr_l2": ["Mercedes"]
+          },
+          {
+            "attr_l3": ["SL500"]
+          },
+          {
+            "attr_l4": ["aut."]
+          },
+          {
+            "device_category": ["Desktop"]
+          }
+        ]
+      }
+    },
+    "positionItems": [
+      {
+        "positionName": "top",
+        "id": "top",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000164771",
+            "targetId": "top",
+            "auW": 930,
+            "auH": 180,
+            "kv": [
+              {
+                "pos": ["top"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_top_1"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "wallpaper",
+        "id": "wallpaper",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000191eeb",
+            "targetId": "wallpaper",
+            "auW": 1,
+            "auH": 1,
+            "kv": [
+              {
+                "pos": ["wallpaper"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_wallpaper"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "skyscraper-left",
+        "id": "skyscraper-left",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000191ee8",
+            "targetId": "skyscraper-left",
+            "auW": 300,
+            "auH": 600,
+            "kv": [
+              {
+                "pos": ["skyscraper-left"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_left_1"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "skyscraper-right",
+        "id": "skyscraper-right",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000191ee6",
+            "targetId": "skyscraper-right",
+            "auW": 300,
+            "auH": 600,
+            "kv": [
+              {
+                "pos": ["skyscraper-right"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_right_1"]
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "intermingleItems": [],
+    "adTypeProperties": {
+      "adnuntiusDisplay": {
+        "kv": [
+          {
+            "live_segment_audiences": []
+          },
+          {
+            "attr_classifications": ["9849"]
+          },
+          {
+            "context": [
+              "https://www.bilbasen.dk/brugt/bil/aston-martin/db9/60-volante-aut-2d/5813999"
+            ]
+          },
+          {
+            "consent_google": ["false"]
+          },
+          {
+            "hn": ["www.bilbasen.dk"]
+          },
+          {
+            "pvm": ["bilbasen-desktop-VIP"]
+          },
+          {
+            "pt": ["VIP"]
+          },
+          {
+            "ct": ["9849"]
+          },
+          {
+            "attr_category": ["Volante aut."]
+          },
+          {
+            "listing_isdealerandstandardorplus": ["true"]
+          },
+          {
+            "attr_brand": ["Aston Martin"]
+          },
+          {
+            "attr_model": ["DB9"]
+          },
+          {
+            "attr_makemodel": ["Aston Martin DB9 6.0 Volante aut."]
+          },
+          {
+            "g_cy": ["2005"]
+          },
+          {
+            "attr_vintage": ["2005"]
+          },
+          {
+            "listing_ownertype": ["forhandler"]
+          },
+          {
+            "listing_price": ["500001-999999999"]
+          },
+          {
+            "listing_price_raw": ["509000"]
+          },
+          {
+            "g_cm": ["Aston Martin"]
+          },
+          {
+            "g_cmo": ["DB9"]
+          },
+          {
+            "listing_contact_zipcode": ["2100"]
+          },
+          {
+            "listing_contact_municipality": ["Københavns Kommune"]
+          },
+          {
+            "listing_contact_region": ["Region Hovedstaden"]
+          },
+          {
+            "Variant": ["6.0 Volante aut."]
+          },
+          {
+            "attr_numberofkm": ["50001-75000"]
+          },
+          {
+            "attr_vatfree": ["inklusivmoms"]
+          },
+          {
+            "attr_fuel": ["Benzin"]
+          },
+          {
+            "attr_imagecount": ["16"]
+          },
+          {
+            "attr_imageurls": [
+              "https://billeder.bilinfo.net/bilinfo/081ebe80-ca12-4323-8a1c-3af0e108f5f8.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/ccfc43ed-e88e-4bca-9ebc-72c7b638362c.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/3b2e945c-2c16-44c0-8f34-6dae62e5fd0e.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/4f439596-2a37-4b63-818d-79fbdf30e234.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/56ce519a-f613-40cb-bff9-d4a05c7c3236.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/7f11afd8-99e2-4189-97c2-91a3d3d013a5.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/aa377985-f138-4130-aa35-ad45f291a02a.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/d14b1f0a-59db-402e-b146-d9156fc19a9f.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/d1455245-2fc9-4895-9011-953019a50d07.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/9a8d6d44-e836-4c0a-ac8f-c396a96ba3d3.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/1713d8ce-221a-4ee9-9f88-635168dfd35a.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/65f5ae4d-a4d6-4977-8144-38c99c51fc82.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/a8fd54b4-cfe3-4968-8872-e081239de5e4.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/260c210c-45e0-4b20-8150-40a2e6d43a51.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/ba621c60-ebaf-4166-89f2-133670ce7b74.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/9b0ee261-b598-4055-95cb-c7b773988b53.jpeg"
+            ]
+          },
+          {
+            "attr_imageurl": [
+              "https://billeder.bilinfo.net/bilinfo/081ebe80-ca12-4323-8a1c-3af0e108f5f8.jpeg"
+            ]
+          },
+          {
+            "attr_l1": ["P"]
+          },
+          {
+            "attr_l2": ["Aston Martin"]
+          },
+          {
+            "attr_l3": ["DB9"]
+          },
+          {
+            "attr_l4": ["Volante aut."]
+          },
+          {
+            "device_category": ["Desktop"]
+          }
+        ]
+      }
+    },
+    "positionItems": [
+      {
+        "positionName": "top",
+        "id": "top",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000164771",
+            "targetId": "top",
+            "auW": 930,
+            "auH": 180,
+            "kv": [
+              {
+                "pos": ["top"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_top_1"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "wallpaper",
+        "id": "wallpaper",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000191eeb",
+            "targetId": "wallpaper",
+            "auW": 1,
+            "auH": 1,
+            "kv": [
+              {
+                "pos": ["wallpaper"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_wallpaper"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "skyscraper-left",
+        "id": "skyscraper-left",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000191ee8",
+            "targetId": "skyscraper-left",
+            "auW": 300,
+            "auH": 600,
+            "kv": [
+              {
+                "pos": ["skyscraper-left"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_left_1"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "skyscraper-right",
+        "id": "skyscraper-right",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000191ee6",
+            "targetId": "skyscraper-right",
+            "auW": 300,
+            "auH": 600,
+            "kv": [
+              {
+                "pos": ["skyscraper-right"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_right_1"]
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "intermingleItems": [],
+    "adTypeProperties": {
+      "adnuntiusDisplay": {
+        "kv": [
+          {
+            "live_segment_audiences": []
+          },
+          {
+            "attr_classifications": ["15142"]
+          },
+          {
+            "context": [
+              "https://www.bilbasen.dk/brugt/bil/audi/r8/52-fsi-spyder-quattro-r-tr-2d/5908838"
+            ]
+          },
+          {
+            "consent_google": ["false"]
+          },
+          {
+            "hn": ["www.bilbasen.dk"]
+          },
+          {
+            "pvm": ["bilbasen-desktop-VIP"]
+          },
+          {
+            "pt": ["VIP"]
+          },
+          {
+            "ct": ["15142"]
+          },
+          {
+            "attr_category": ["FSi Spyder quattro R-tr."]
+          },
+          {
+            "listing_isdealerandstandardorplus": ["true"]
+          },
+          {
+            "attr_brand": ["Audi"]
+          },
+          {
+            "attr_model": ["R8"]
+          },
+          {
+            "attr_makemodel": ["Audi R8 5.2 FSi Spyder quattro R-tr."]
+          },
+          {
+            "g_cy": ["2010"]
+          },
+          {
+            "attr_vintage": ["2010"]
+          },
+          {
+            "listing_ownertype": ["forhandler"]
+          },
+          {
+            "listing_price": ["500001-999999999"]
+          },
+          {
+            "listing_price_raw": ["595000"]
+          },
+          {
+            "g_cm": ["Audi"]
+          },
+          {
+            "g_cmo": ["R8"]
+          },
+          {
+            "listing_contact_zipcode": ["8210"]
+          },
+          {
+            "listing_contact_municipality": ["Aarhus Kommune"]
+          },
+          {
+            "listing_contact_region": ["Region Midtjylland"]
+          },
+          {
+            "Variant": ["5.2 FSi Spyder quattro R-tr."]
+          },
+          {
+            "attr_numberofkm": ["0-25000"]
+          },
+          {
+            "attr_vatfree": ["inklusivmoms"]
+          },
+          {
+            "attr_fuel": ["Benzin"]
+          },
+          {
+            "attr_imagecount": ["18"]
+          },
+          {
+            "attr_imageurls": [
+              "https://billeder.bilinfo.net/bilinfo/c4fd79da-3193-4e39-9d4e-b736166293b0.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/a1c749e4-8f76-4697-b87f-54a38f8901ff.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/c0a8560c-b953-4726-8081-685e9b4a6ee7.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/88823081-1aab-4a74-9650-8caa2f51c64d.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/742469ee-6606-4972-985c-175c20af0c26.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/da07aef4-4501-4cb6-9f56-1a96fa6cd876.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/b6afdfc7-90a0-481e-92cb-51821c774dda.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/883ded6d-0726-4698-a6c0-70bfcd016f47.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/70dab3ce-3b15-4b14-8f86-02a6481166cf.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/20034eaa-f49b-4708-b9ee-df3185165840.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/6ec100c2-e6c3-4d89-883b-beec53919bd9.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/d9d8bb3f-971f-449e-b83a-178b25664b3b.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/879264ff-25e4-43b6-bae2-22749f133a71.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/d7dc9036-2dcf-4650-8a6c-c40f2c01cf62.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/a40e8d0a-0146-4a61-a928-d67372d59117.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/a30c99e7-0af9-49f5-a3e5-49a565426291.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/b973e58b-2798-4d0a-82ab-027dcc71055e.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/3f81e37d-59c5-438b-b4c3-3cb42097ecab.jpeg"
+            ]
+          },
+          {
+            "attr_imageurl": [
+              "https://billeder.bilinfo.net/bilinfo/c4fd79da-3193-4e39-9d4e-b736166293b0.jpeg"
+            ]
+          },
+          {
+            "attr_l1": ["P"]
+          },
+          {
+            "attr_l2": ["Audi"]
+          },
+          {
+            "attr_l3": ["R8"]
+          },
+          {
+            "attr_l4": ["FSi Spyder quattro R-tr."]
+          },
+          {
+            "device_category": ["Desktop"]
+          }
+        ]
+      }
+    },
+    "positionItems": [
+      {
+        "positionName": "top",
+        "id": "top",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000164771",
+            "targetId": "top",
+            "auW": 930,
+            "auH": 180,
+            "kv": [
+              {
+                "pos": ["top"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_top_1"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "wallpaper",
+        "id": "wallpaper",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000191eeb",
+            "targetId": "wallpaper",
+            "auW": 1,
+            "auH": 1,
+            "kv": [
+              {
+                "pos": ["wallpaper"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_wallpaper"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "skyscraper-left",
+        "id": "skyscraper-left",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000191ee8",
+            "targetId": "skyscraper-left",
+            "auW": 300,
+            "auH": 600,
+            "kv": [
+              {
+                "pos": ["skyscraper-left"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_left_1"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "skyscraper-right",
+        "id": "skyscraper-right",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000191ee6",
+            "targetId": "skyscraper-right",
+            "auW": 300,
+            "auH": 600,
+            "kv": [
+              {
+                "pos": ["skyscraper-right"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_right_1"]
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "intermingleItems": [],
+    "adTypeProperties": {
+      "adnuntiusDisplay": {
+        "kv": [
+          {
+            "live_segment_audiences": []
+          },
+          {
+            "attr_classifications": ["5488"]
+          },
+          {
+            "context": [
+              "https://www.bilbasen.dk/brugt/bil/ferrari/360/36-modena-f1-2d/6032169"
+            ]
+          },
+          {
+            "consent_google": ["false"]
+          },
+          {
+            "hn": ["www.bilbasen.dk"]
+          },
+          {
+            "pvm": ["bilbasen-desktop-VIP"]
+          },
+          {
+            "pt": ["VIP"]
+          },
+          {
+            "ct": ["5488"]
+          },
+          {
+            "attr_category": ["Modena F1"]
+          },
+          {
+            "listing_isdealerandstandardorplus": ["true"]
+          },
+          {
+            "attr_brand": ["Ferrari"]
+          },
+          {
+            "attr_model": ["360"]
+          },
+          {
+            "attr_makemodel": ["Ferrari 360 3.6 Modena F1"]
+          },
+          {
+            "g_cy": ["2001"]
+          },
+          {
+            "attr_vintage": ["2001"]
+          },
+          {
+            "listing_ownertype": ["forhandler"]
+          },
+          {
+            "listing_price": ["500001-999999999"]
+          },
+          {
+            "listing_price_raw": ["600000"]
+          },
+          {
+            "g_cm": ["Ferrari"]
+          },
+          {
+            "g_cmo": ["360"]
+          },
+          {
+            "listing_contact_zipcode": ["2800"]
+          },
+          {
+            "listing_contact_municipality": ["Gentofte Kommune"]
+          },
+          {
+            "listing_contact_region": ["Region Hovedstaden"]
+          },
+          {
+            "Variant": ["3.6 Modena F1"]
+          },
+          {
+            "attr_numberofkm": ["0-25000"]
+          },
+          {
+            "attr_vatfree": ["inklusivmoms"]
+          },
+          {
+            "attr_fuel": ["Benzin"]
+          },
+          {
+            "attr_imagecount": ["18"]
+          },
+          {
+            "attr_imageurls": [
+              "https://billeder.bilinfo.net/bilinfo/49df99c2-480b-4a88-8fb3-73ca4b3d5b35.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/02d93987-893c-448e-ab22-07e3de53f424.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/078213ad-4bbd-46b1-9dc2-98baf7c23500.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/7a40f9bf-ffa4-467f-8bc9-b85e0bf07522.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/b28b34f3-6765-4777-ac39-675f2717cdb9.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/32ef5a65-83c9-40a0-b3dc-2ca79759f1a4.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/5b920709-f2ee-48ad-8d45-2107425a2353.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/22af1aaf-ba8f-4899-9726-4a6dc173b339.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/2a0ecdae-2942-491c-974c-3b302878e86f.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/a896660e-8d0f-4960-9ad6-f3fe4ffc6243.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/2f974bf9-95d9-46d6-a0b3-bce98dd668ff.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/07d5d4cc-be97-4a2b-bfe9-66a5be69a4b2.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/e66ea594-1265-4ac7-b77c-571acfd34b78.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/014ac656-2893-4ccc-b515-2ce65f4a1b2d.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/6a8c262a-e6bc-46a0-8c1c-1fb682c28519.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/fe993a05-8d32-4bc6-a4b9-e0fb55cacb55.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/244c499d-3fa1-4dca-b7e7-ba5dc17bfc22.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/511e7507-6a36-4b30-818d-cc5ace9899eb.jpeg"
+            ]
+          },
+          {
+            "attr_imageurl": [
+              "https://billeder.bilinfo.net/bilinfo/49df99c2-480b-4a88-8fb3-73ca4b3d5b35.jpeg"
+            ]
+          },
+          {
+            "attr_l1": ["P"]
+          },
+          {
+            "attr_l2": ["Ferrari"]
+          },
+          {
+            "attr_l3": ["360"]
+          },
+          {
+            "attr_l4": ["Modena F1"]
+          },
+          {
+            "device_category": ["Desktop"]
+          }
+        ]
+      }
+    },
+    "positionItems": [
+      {
+        "positionName": "top",
+        "id": "top",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000164771",
+            "targetId": "top",
+            "auW": 930,
+            "auH": 180,
+            "kv": [
+              {
+                "pos": ["top"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_top_1"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "wallpaper",
+        "id": "wallpaper",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000191eeb",
+            "targetId": "wallpaper",
+            "auW": 1,
+            "auH": 1,
+            "kv": [
+              {
+                "pos": ["wallpaper"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_wallpaper"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "skyscraper-left",
+        "id": "skyscraper-left",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000191ee8",
+            "targetId": "skyscraper-left",
+            "auW": 300,
+            "auH": 600,
+            "kv": [
+              {
+                "pos": ["skyscraper-left"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_left_1"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "skyscraper-right",
+        "id": "skyscraper-right",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000191ee6",
+            "targetId": "skyscraper-right",
+            "auW": 300,
+            "auH": 600,
+            "kv": [
+              {
+                "pos": ["skyscraper-right"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_right_1"]
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "intermingleItems": [],
+    "adTypeProperties": {
+      "adnuntiusDisplay": {
+        "kv": [
+          {
+            "live_segment_audiences": []
+          },
+          {
+            "attr_classifications": ["776566"]
+          },
+          {
+            "context": [
+              "https://www.bilbasen.dk/brugt/bil/maserati/coup/42-cambiocorsa-aut-2d/5637056"
+            ]
+          },
+          {
+            "consent_google": ["false"]
+          },
+          {
+            "hn": ["www.bilbasen.dk"]
+          },
+          {
+            "pvm": ["bilbasen-desktop-VIP"]
+          },
+          {
+            "pt": ["VIP"]
+          },
+          {
+            "ct": ["776566"]
+          },
+          {
+            "attr_category": ["Cambiocorsa aut."]
+          },
+          {
+            "listing_isdealerandstandardorplus": ["true"]
+          },
+          {
+            "attr_brand": ["Maserati"]
+          },
+          {
+            "attr_model": ["Coupé"]
+          },
+          {
+            "attr_makemodel": ["Maserati Coupé 4.2 Cambiocorsa aut."]
+          },
+          {
+            "g_cy": ["2002"]
+          },
+          {
+            "attr_vintage": ["2002"]
+          },
+          {
+            "listing_ownertype": ["forhandler"]
+          },
+          {
+            "listing_price": ["500001-999999999"]
+          },
+          {
+            "listing_price_raw": ["549900"]
+          },
+          {
+            "g_cm": ["Maserati"]
+          },
+          {
+            "g_cmo": ["Coupé"]
+          },
+          {
+            "listing_contact_zipcode": ["9440"]
+          },
+          {
+            "listing_contact_municipality": ["Brønderslev Kommune"]
+          },
+          {
+            "listing_contact_region": ["Region Nordjylland"]
+          },
+          {
+            "Variant": ["4.2 Cambiocorsa aut."]
+          },
+          {
+            "attr_numberofkm": ["50001-75000"]
+          },
+          {
+            "attr_vatfree": ["inklusivmoms"]
+          },
+          {
+            "attr_fuel": ["Benzin"]
+          },
+          {
+            "attr_imagecount": ["15"]
+          },
+          {
+            "attr_imageurls": [
+              "https://billeder.bilinfo.net/bilinfo/b0a3b4c2-aae7-47a5-9c00-f41c06edd7b8.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/26fbd4ca-24ad-46af-b68e-f21c1af75361.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/15d7dbf2-995a-4e0d-90f4-3e66e5a6e2c7.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/46669d4a-2e61-476a-866a-4d7a7227b929.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/bcff9cd9-b419-4686-93f4-4369b4da3b56.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/35151fb4-f338-4aa5-b78c-e042db64c86a.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/04b173d6-54f0-4664-b5a1-b05158008df7.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/9084faa0-7307-4e95-82b7-6fe4e8f748d5.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/7b6d34b5-4438-4333-a796-b5ef0cd02fb3.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/05e493ca-6288-4503-83ea-f4a558700b81.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/8f6b83b2-60f9-456b-a3cb-1d400b4d65cc.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/226ebad5-bb8c-4c1d-8d42-7aa1d7b18c73.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/c0af5d4a-60d9-4755-838f-6f125f4ba4f3.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/6447fc63-70ad-4585-afb2-4d4efc998a49.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/e4ef2437-f7de-4785-8cd5-539e8e47942a.jpeg"
+            ]
+          },
+          {
+            "attr_imageurl": [
+              "https://billeder.bilinfo.net/bilinfo/b0a3b4c2-aae7-47a5-9c00-f41c06edd7b8.jpeg"
+            ]
+          },
+          {
+            "attr_l1": ["P"]
+          },
+          {
+            "attr_l2": ["Maserati"]
+          },
+          {
+            "attr_l3": ["Coupé"]
+          },
+          {
+            "attr_l4": ["Cambiocorsa aut."]
+          },
+          {
+            "device_category": ["Desktop"]
+          }
+        ]
+      }
+    },
+    "positionItems": [
+      {
+        "positionName": "top",
+        "id": "top",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000164771",
+            "targetId": "top",
+            "auW": 930,
+            "auH": 180,
+            "kv": [
+              {
+                "pos": ["top"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_top_1"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "wallpaper",
+        "id": "wallpaper",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000191eeb",
+            "targetId": "wallpaper",
+            "auW": 1,
+            "auH": 1,
+            "kv": [
+              {
+                "pos": ["wallpaper"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_wallpaper"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "skyscraper-left",
+        "id": "skyscraper-left",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000191ee8",
+            "targetId": "skyscraper-left",
+            "auW": 300,
+            "auH": 600,
+            "kv": [
+              {
+                "pos": ["skyscraper-left"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_left_1"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "skyscraper-right",
+        "id": "skyscraper-right",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000191ee6",
+            "targetId": "skyscraper-right",
+            "auW": 300,
+            "auH": 600,
+            "kv": [
+              {
+                "pos": ["skyscraper-right"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_right_1"]
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "intermingleItems": [],
+    "adTypeProperties": {
+      "adnuntiusDisplay": {
+        "kv": [
+          {
+            "live_segment_audiences": []
+          },
+          {
+            "attr_classifications": ["1026"]
+          },
+          {
+            "context": [
+              "https://www.bilbasen.dk/brugt/bil/toyota/supra/30-t-turbo-3d/5954454"
+            ]
+          },
+          {
+            "consent_google": ["false"]
+          },
+          {
+            "hn": ["www.bilbasen.dk"]
+          },
+          {
+            "pvm": ["bilbasen-desktop-VIP"]
+          },
+          {
+            "pt": ["VIP"]
+          },
+          {
+            "ct": ["1026"]
+          },
+          {
+            "attr_category": ["T-Turbo"]
+          },
+          {
+            "listing_isdealerandstandardorplus": ["false"]
+          },
+          {
+            "attr_brand": ["Toyota"]
+          },
+          {
+            "attr_model": ["Supra"]
+          },
+          {
+            "attr_makemodel": ["Toyota Supra 3.0 T-Turbo"]
+          },
+          {
+            "g_cy": ["1993"]
+          },
+          {
+            "attr_vintage": ["1993"]
+          },
+          {
+            "listing_ownertype": ["privat"]
+          },
+          {
+            "listing_price": ["500001-999999999"]
+          },
+          {
+            "listing_price_raw": ["549000"]
+          },
+          {
+            "g_cm": ["Toyota"]
+          },
+          {
+            "g_cmo": ["Supra"]
+          },
+          {
+            "listing_contact_zipcode": ["3400"]
+          },
+          {
+            "listing_contact_municipality": ["Allerød Kommune"]
+          },
+          {
+            "listing_contact_region": ["Region Hovedstaden"]
+          },
+          {
+            "Variant": ["3.0 T-Turbo"]
+          },
+          {
+            "attr_numberofkm": ["150001-200000"]
+          },
+          {
+            "attr_vatfree": ["inklusivmoms"]
+          },
+          {
+            "attr_fuel": ["Benzin"]
+          },
+          {
+            "attr_imagecount": ["8"]
+          },
+          {
+            "attr_imageurls": [
+              "https://billeder.bilbasen.dk/bilbasen/66986cb5-960f-4df8-8533-3f10b6f43bb2.jpeg",
+              "https://billeder.bilbasen.dk/bilbasen/a7c3911e-e773-4ab2-a2f2-4f44149da1ae.jpeg",
+              "https://billeder.bilbasen.dk/bilbasen/1bd395fe-6319-413e-b4f0-35ca6237e942.jpeg",
+              "https://billeder.bilbasen.dk/bilbasen/dc963b54-30a8-4f5b-a9ce-8e703cb99265.jpeg",
+              "https://billeder.bilbasen.dk/bilbasen/04207e99-52c3-4f52-9748-84434af7dd4c.jpeg",
+              "https://billeder.bilbasen.dk/bilbasen/09b963a5-2cdd-4899-84fe-01877406a904.jpeg",
+              "https://billeder.bilbasen.dk/bilbasen/074e0b64-5a96-4deb-b537-0b4e78774fb7.png",
+              "https://billeder.bilbasen.dk/bilbasen/f75e2a89-3970-40da-812e-873f48503cbd.jpeg"
+            ]
+          },
+          {
+            "attr_imageurl": [
+              "https://billeder.bilbasen.dk/bilbasen/66986cb5-960f-4df8-8533-3f10b6f43bb2.jpeg"
+            ]
+          },
+          {
+            "attr_l1": ["P"]
+          },
+          {
+            "attr_l2": ["Toyota"]
+          },
+          {
+            "attr_l3": ["Supra"]
+          },
+          {
+            "attr_l4": ["T-Turbo"]
+          },
+          {
+            "device_category": ["Desktop"]
+          }
+        ]
+      }
+    },
+    "positionItems": [
+      {
+        "positionName": "article-1",
+        "id": "article-1",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "00000000001b8f7c",
+            "targetId": "article-1",
+            "auW": 300,
+            "auH": 250,
+            "kv": [
+              {
+                "pos": ["article-1"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_article_1"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "article-2",
+        "id": "article-2",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "00000000001b8f7f",
+            "targetId": "article-2",
+            "auW": 300,
+            "auH": 250,
+            "kv": [
+              {
+                "pos": ["article-2"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_article_2"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "wallpaper",
+        "id": "wallpaper",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000191eeb",
+            "targetId": "wallpaper",
+            "auW": 1,
+            "auH": 1,
+            "kv": [
+              {
+                "pos": ["wallpaper"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_wallpaper"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "top",
+        "id": "top",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000164771",
+            "targetId": "top",
+            "auW": 930,
+            "auH": 180,
+            "kv": [
+              {
+                "pos": ["top"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_top_1"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "skyscraper-left-2",
+        "id": "skyscraper-left-2",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000191ee9",
+            "targetId": "skyscraper-left-2",
+            "auW": 300,
+            "auH": 600,
+            "kv": [
+              {
+                "pos": ["skyscraper-left-2"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_left_2"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "skyscraper-right-2",
+        "id": "skyscraper-right-2",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000191eea",
+            "targetId": "skyscraper-right-2",
+            "auW": 300,
+            "auH": 600,
+            "kv": [
+              {
+                "pos": ["skyscraper-right-2"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_right_2"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "gallery-skyscraper-left",
+        "id": "gallery-skyscraper-left",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "000000000021a4b0",
+            "targetId": "gallery-skyscraper-left",
+            "auW": 300,
+            "auH": 600,
+            "requestParams": {
+              "load": "lazyRequest"
+            },
+            "kv": [
+              {
+                "pos": ["gallery-skyscraper-left"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "gallery-skyscraper-right",
+        "id": "gallery-skyscraper-right",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "000000000021a4af",
+            "targetId": "gallery-skyscraper-right",
+            "auW": 300,
+            "auH": 600,
+            "requestParams": {
+              "load": "lazyRequest"
+            },
+            "kv": [
+              {
+                "pos": ["gallery-skyscraper-right"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "skyscraper-left",
+        "id": "skyscraper-left",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000191ee8",
+            "targetId": "skyscraper-left",
+            "auW": 300,
+            "auH": 600,
+            "kv": [
+              {
+                "pos": ["skyscraper-left"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_left_1"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "skyscraper-right",
+        "id": "skyscraper-right",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000191ee6",
+            "targetId": "skyscraper-right",
+            "auW": 300,
+            "auH": 600,
+            "kv": [
+              {
+                "pos": ["skyscraper-right"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_right_1"]
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "intermingleItems": [],
+    "adTypeProperties": {
+      "adnuntiusDisplay": {
+        "kv": [
+          {
+            "live_segment_audiences": []
+          },
+          {
+            "attr_classifications": ["5340"]
+          },
+          {
+            "context": [
+              "https://www.bilbasen.dk/brugt/bil/bentley/continental-gt/60-w12-aut-2d/6014565"
+            ]
+          },
+          {
+            "consent_google": ["false"]
+          },
+          {
+            "hn": ["www.bilbasen.dk"]
+          },
+          {
+            "pvm": ["bilbasen-desktop-VIP"]
+          },
+          {
+            "pt": ["VIP"]
+          },
+          {
+            "ct": ["5340"]
+          },
+          {
+            "attr_category": ["W12 aut."]
+          },
+          {
+            "listing_isdealerandstandardorplus": ["true"]
+          },
+          {
+            "attr_brand": ["Bentley"]
+          },
+          {
+            "attr_model": ["Continental GT"]
+          },
+          {
+            "attr_makemodel": ["Bentley Continental GT 6.0 W12 aut."]
+          },
+          {
+            "g_cy": ["2019"]
+          },
+          {
+            "attr_vintage": ["2019"]
+          },
+          {
+            "listing_ownertype": ["forhandler"]
+          },
+          {
+            "listing_price": ["500001-999999999"]
+          },
+          {
+            "listing_price_raw": ["4000000"]
+          },
+          {
+            "g_cm": ["Bentley"]
+          },
+          {
+            "g_cmo": ["Continental GT"]
+          },
+          {
+            "listing_contact_zipcode": ["9560"]
+          },
+          {
+            "listing_contact_municipality": ["Rebild Kommune"]
+          },
+          {
+            "listing_contact_region": ["Region Nordjylland"]
+          },
+          {
+            "Variant": ["6.0 W12 aut."]
+          },
+          {
+            "attr_numberofkm": ["25001-50000"]
+          },
+          {
+            "attr_vatfree": ["inklusivmoms"]
+          },
+          {
+            "attr_fuel": ["Benzin"]
+          },
+          {
+            "attr_imagecount": ["24"]
+          },
+          {
+            "attr_imageurls": [
+              "https://billeder.bilbasen.dk/bilinfo/f449c257-677b-4621-a851-c86e5c820994.jpeg",
+              "https://billeder.bilbasen.dk/bilinfo/0a089b6b-fb5d-49f7-b87e-6cf635f63acf.jpeg",
+              "https://billeder.bilbasen.dk/bilinfo/4cfcb478-5066-4043-906e-d03506f3634c.jpeg",
+              "https://billeder.bilbasen.dk/bilinfo/550184ce-69a0-4338-94fd-ae413405bd51.jpeg"
+            ]
+          },
+          {
+            "attr_imageurl": [
+              "https://billeder.bilbasen.dk/bilinfo/f449c257-677b-4621-a851-c86e5c820994.jpeg"
+            ]
+          },
+          {
+            "attr_l1": ["P"]
+          },
+          {
+            "attr_l2": ["Bentley"]
+          },
+          {
+            "attr_l3": ["Continental GT"]
+          },
+          {
+            "attr_l4": ["W12 aut."]
+          },
+          {
+            "device_category": ["Desktop"]
+          }
+        ]
+      }
+    },
+    "positionItems": [
+      {
+        "positionName": "top",
+        "id": "top",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000164771",
+            "targetId": "top",
+            "auW": 930,
+            "auH": 180,
+            "kv": [
+              {
+                "pos": ["top"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_top_1"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "wallpaper",
+        "id": "wallpaper",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000191eeb",
+            "targetId": "wallpaper",
+            "auW": 1,
+            "auH": 1,
+            "kv": [
+              {
+                "pos": ["wallpaper"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_wallpaper"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "skyscraper-left",
+        "id": "skyscraper-left",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000191ee8",
+            "targetId": "skyscraper-left",
+            "auW": 300,
+            "auH": 600,
+            "kv": [
+              {
+                "pos": ["skyscraper-left"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_left_1"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "skyscraper-right",
+        "id": "skyscraper-right",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000191ee6",
+            "targetId": "skyscraper-right",
+            "auW": 300,
+            "auH": 600,
+            "kv": [
+              {
+                "pos": ["skyscraper-right"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_right_1"]
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "intermingleItems": [],
+    "adTypeProperties": {
+      "adnuntiusDisplay": {
+        "kv": [
+          {
+            "live_segment_audiences": []
+          },
+          {
+            "attr_classifications": ["26088"]
+          },
+          {
+            "context": [
+              "https://www.bilbasen.dk/brugt/bil/ferrari/488-gtb/39-dct-2d/5850464"
+            ]
+          },
+          {
+            "consent_google": ["false"]
+          },
+          {
+            "hn": ["www.bilbasen.dk"]
+          },
+          {
+            "pvm": ["bilbasen-desktop-VIP"]
+          },
+          {
+            "pt": ["VIP"]
+          },
+          {
+            "ct": ["26088"]
+          },
+          {
+            "attr_category": ["DCT"]
+          },
+          {
+            "listing_isdealerandstandardorplus": ["true"]
+          },
+          {
+            "attr_brand": ["Ferrari"]
+          },
+          {
+            "attr_model": ["488 GTB"]
+          },
+          {
+            "attr_makemodel": ["Ferrari 488 GTB 3.9 DCT"]
+          },
+          {
+            "g_cy": ["2017"]
+          },
+          {
+            "attr_vintage": ["2017"]
+          },
+          {
+            "listing_ownertype": ["forhandler"]
+          },
+          {
+            "listing_price": ["500001-999999999"]
+          },
+          {
+            "listing_price_raw": ["2648300"]
+          },
+          {
+            "g_cm": ["Ferrari"]
+          },
+          {
+            "g_cmo": ["488 GTB"]
+          },
+          {
+            "listing_contact_zipcode": ["2800"]
+          },
+          {
+            "listing_contact_municipality": ["Gentofte Kommune"]
+          },
+          {
+            "listing_contact_region": ["Region Hovedstaden"]
+          },
+          {
+            "Variant": ["3.9 DCT"]
+          },
+          {
+            "attr_numberofkm": ["0-25000"]
+          },
+          {
+            "attr_vatfree": ["inklusivmoms"]
+          },
+          {
+            "attr_fuel": ["Benzin"]
+          },
+          {
+            "attr_imagecount": ["18"]
+          },
+          {
+            "attr_imageurls": [
+              "https://billeder.bilinfo.net/bilinfo/8a8d7fd9-90b1-4876-abe6-cf97664aa7aa.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/ee8ca052-d649-4d53-8fd7-95fadc4666fa.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/e25b0c48-1f7b-450c-a61d-78440a8fb44d.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/c22bdae5-cf87-4426-a12d-c053ea8f9fd8.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/b6ce52d1-2dc7-4b2b-8bcc-a607fb91b62e.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/37cc5d05-9af3-4651-92fc-a08723235042.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/8af7dcd1-6b2f-4808-8ae0-afdca8d11fb8.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/0f511799-705f-4c64-90f7-0b1301e6b72f.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/24f7a792-24cb-424d-8f3f-32d66d1c93f2.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/a632ac58-a802-4fcd-b726-711d77fe07ba.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/d016dc9f-f7a5-42d1-bf71-ad899cb95ee2.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/adece65c-d300-4ff5-9ca6-51b7c8a2afa3.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/32ce52dd-fca3-4375-aba4-e0e6b766342c.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/a92ad12b-b5ca-4552-9ef5-12667c6173d2.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/b16a7fd5-d8fb-46bc-9958-f6e6d25584f9.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/10a91677-887e-4c73-bb49-bdc7da3dc891.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/a7ee0d6e-9377-4e17-a313-866ecdeda77b.jpeg",
+              "https://billeder.bilinfo.net/bilinfo/e68ad158-37f2-46d8-8a06-7f250408502a.jpeg"
+            ]
+          },
+          {
+            "attr_imageurl": [
+              "https://billeder.bilinfo.net/bilinfo/8a8d7fd9-90b1-4876-abe6-cf97664aa7aa.jpeg"
+            ]
+          },
+          {
+            "attr_l1": ["P"]
+          },
+          {
+            "attr_l2": ["Ferrari"]
+          },
+          {
+            "attr_l3": ["488 GTB"]
+          },
+          {
+            "attr_l4": ["DCT"]
+          },
+          {
+            "device_category": ["Desktop"]
+          }
+        ]
+      }
+    },
+    "positionItems": [
+      {
+        "positionName": "top",
+        "id": "top",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000164771",
+            "targetId": "top",
+            "auW": 930,
+            "auH": 180,
+            "kv": [
+              {
+                "pos": ["top"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_top_1"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "wallpaper",
+        "id": "wallpaper",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000191eeb",
+            "targetId": "wallpaper",
+            "auW": 1,
+            "auH": 1,
+            "kv": [
+              {
+                "pos": ["wallpaper"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_wallpaper"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "skyscraper-left",
+        "id": "skyscraper-left",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000191ee8",
+            "targetId": "skyscraper-left",
+            "auW": 300,
+            "auH": 600,
+            "kv": [
+              {
+                "pos": ["skyscraper-left"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_left_1"]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "positionName": "skyscraper-right",
+        "id": "skyscraper-right",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000191ee6",
+            "targetId": "skyscraper-right",
+            "auW": 300,
+            "auH": 600,
+            "kv": [
+              {
+                "pos": ["skyscraper-right"]
+              },
+              {
+                "nmp_placement": ["dk-bilbasen-mobility-wde-object_right_1"]
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "intermingleItems": [],
+    "adTypeProperties": {
+      "adnuntiusDisplay": {
+        "kv": [
+          { "live_segment_audiences": [] },
+          { "attr_classifications": ["1615"] },
+          {
+            "context": [
+              "https://www.bilbasen.dk/brugt/bil/land-rover/range-rover-sport/40-phev-aut-5d/6020186"
+            ]
+          },
+          { "consent_google": ["false"] },
+          { "hn": ["www.bilbasen.dk"] },
+          { "pvm": ["bilbasen-desktop-VIP"] },
+          { "pt": ["VIP"] },
+          { "ct": ["1615"] },
+          { "attr_category": ["PHEV aut."] },
+          { "listing_isdealerandstandardorplus": ["true"] },
+          { "attr_brand": ["Land Rover"] },
+          { "attr_model": ["Range Rover Sport"] },
+          { "attr_makemodel": ["Land Rover Range Rover Sport 4.0 PHEV aut."] },
+          { "g_cy": ["2022"] },
+          { "attr_vintage": ["2022"] },
+          { "listing_ownertype": ["forhandler"] },
+          { "listing_price": ["500001-999999999"] },
+          { "listing_price_raw": ["1998000"] },
+          { "g_cm": ["Land Rover"] },
+          { "g_cmo": ["Range Rover Sport"] },
+          { "listing_contact_zipcode": ["3450"] },
+          { "listing_contact_municipality": ["Allerød Kommune"] },
+          { "listing_contact_region": ["Region Hovedstaden"] },
+          { "Variant": ["4.0 PHEV aut."] },
+          { "attr_numberofkm": ["0-25000"] },
+          { "attr_vatfree": ["inklusivmoms"] },
+          { "attr_fuel": ["Benzin"] },
+          { "attr_imagecount": ["20"] },
+          {
+            "attr_imageurls": [
+              "https://billeder.bilbasen.dk/bilinfo/bd81a7c5-31ab-470e-843b-7ca49865f9f0.jpeg",
+              "https://billeder.bilbasen.dk/bilinfo/aa6a8e54-c79b-4734-8d59-b893a173a05d.jpeg",
+              "https://billeder.bilbasen.dk/bilinfo/629f2977-9636-4f0c-9206-2f11c30abbd0.jpeg",
+              "https://billeder.bilbasen.dk/bilinfo/2970250e-313a-407e-9dec-cb0822264ce1.jpeg",
+              "https://billeder.bilbasen.dk/bilinfo/6e9776b4-2040-412d-9ce3-42ce725164fe.jpeg",
+              "https://billeder.bilbasen.dk/bilinfo/4f13a773-8621-4f2f-877e-33df19b66c44.jpeg",
+              "https://billeder.bilbasen.dk/bilinfo/a7e8e042-c8a4-46bd-b600-e89b761bfcf7.jpeg"
+            ]
+          }
+        ]
+      }
+    },
+    "positionItems": [
+      {
+        "positionName": "top",
+        "id": "top",
+        "item": {
+          "type": "AdnuntiusDisplay",
+          "fallbacks": [],
+          "adnuntiusDisplay": {
+            "auId": "0000000000164771",
+            "targetId": "top",
+            "auW": 930,
+            "auH": 180,
+            "kv": [
+              { "pos": ["top"] },
+              { "nmp_placement": ["dk-bilbasen-mobility-wde-object_top_1"] }
+            ]
+          }
+        }
+      }
+    ]
+  }
+]

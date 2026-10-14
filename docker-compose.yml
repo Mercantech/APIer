@@ -1,0 +1,71 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-opgaver}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD required}
+      POSTGRES_DB: ${POSTGRES_DB:-opgaver}
+    volumes:
+      - opgaver_pgdata:/var/lib/postgresql/data
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-opgaver} -d ${POSTGRES_DB:-opgaver}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-opgaver}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:?MONGO_PASSWORD required}
+    volumes:
+      - opgaver_mongodata:/data/db
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand({ ping: 1 }).ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  opgaver-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      mongo:
+        condition: service_started
+    environment:
+      ASPNETCORE_URLS: http://+:5104
+      ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=${POSTGRES_DB:-opgaver};Username=${POSTGRES_USER:-opgaver};Password=${POSTGRES_PASSWORD}
+      ConnectionStrings__MongoDB: mongodb://${MONGO_USER:-opgaver}:${MONGO_PASSWORD}@mongo:27017/?authSource=admin
+      Jwt__Issuer: ${JWT_ISSUER:-opgaver-api}
+      Jwt__Audience: ${JWT_AUDIENCE:-opgaver-api}
+      Jwt__Key: ${JWT_KEY:?JWT_KEY required}
+    networks:
+      - internal
+      - dokploy-network
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.opgaver-api.rule=Host(`api-opgaver.mercantec.tech`)
+      - traefik.http.routers.opgaver-api.entrypoints=websecure
+      - traefik.http.routers.opgaver-api.tls.certresolver=letsencrypt
+      - traefik.http.services.opgaver-api.loadbalancer.server.port=5104
+
+networks:
+  internal:
+    driver: bridge
+  dokploy-network:
+    external: true
+
+volumes:
+  opgaver_pgdata:
+  opgaver_mongodata:
