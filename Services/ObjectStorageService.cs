@@ -65,6 +65,9 @@ namespace OpgaverAPI.Services
             string contentType,
             CancellationToken ct = default)
         {
+            if (content.CanSeek)
+                content.Position = 0;
+
             var req = new PutObjectRequest
             {
                 BucketName = _opt.Bucket,
