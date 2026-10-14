@@ -62,6 +62,8 @@ Browser → Cloudflare → Traefik → gateway (nginx)
 | `POST /api/Countries/bulk` | Seed lande (`X-Seed-Key`) |
 | `GET /LeagueOfLegends*` | Champions (Postgres) — kræver `X-Api-Key` |
 | `POST /LeagueOfLegends/bulk` | Seed champions (`X-Seed-Key`) |
+| `POST /LeagueOfLegends/sync-images` | Spejl champion-billeder fra Data Dragon → MinIO (`X-Seed-Key`) |
+| `GET /assets/lol/champions/{id}.png` | Lokale champion-ikoner (MinIO via gateway) |
 | `GET/POST/DELETE /api/ApiKeys` | Elev-API-nøgler (Mercantec Bearer) |
 | `/swagger` | OpenAPI UI |
 

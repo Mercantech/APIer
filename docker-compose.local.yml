@@ -25,6 +25,11 @@ services:
     ports:
       - "5104:5104"
 
+  opgaver-minio:
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+
 networks:
   default:
     name: apier-local-net

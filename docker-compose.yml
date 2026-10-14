@@ -69,6 +69,36 @@ services:
       retries: 10
       start_period: 20s
 
+  # S3-kompatibel object storage (unikt navn på dokploy-network)
+  opgaver-minio:
+    image: minio/minio:RELEASE.2025-04-22T22-12-26Z
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-apier}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-apier-minio-dev-only}
+    volumes:
+      - opgaver_minio_data:/data
+
+  opgaver-minio-init:
+    image: minio/mc:RELEASE.2025-04-16T18-13-26Z
+    depends_on:
+      - opgaver-minio
+    restart: "on-failure"
+    entrypoint: >
+      /bin/sh -c "
+      set -e;
+      echo 'Waiting for MinIO…';
+      until mc alias set local http://opgaver-minio:9000 \"$$MINIO_ROOT_USER\" \"$$MINIO_ROOT_PASSWORD\"; do sleep 2; done;
+      mc mb --ignore-existing local/$${S3_BUCKET:-apier-assets};
+      mc anonymous set download local/$${S3_BUCKET:-apier-assets};
+      echo 'Bucket klar';
+      "
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-apier}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-apier-minio-dev-only}
+      S3_BUCKET: ${S3_BUCKET:-apier-assets}
+
   opgaver-api:
     build:
       context: .
@@ -79,6 +109,10 @@ services:
         condition: service_healthy
       opgaver-mongo:
         condition: service_started
+      opgaver-minio:
+        condition: service_started
+      opgaver-minio-init:
+        condition: service_completed_successfully
     environment:
       ASPNETCORE_URLS: http://+:5104
       ConnectionStrings__DefaultConnection: Host=opgaver-db;Port=5432;Database=${POSTGRES_DB:-opgaver};Username=${POSTGRES_USER:-opgaver};Password=${POSTGRES_PASSWORD}
@@ -91,6 +125,12 @@ services:
       Auth__Issuer: ${AUTH_ISSUER:-https://auth.mercantec.tech}
       Auth__Audience: ${AUTH_AUDIENCE:-mercantec-apps}
       Auth__JwksUri: ${JWKS_URI:-https://auth.mercantec.tech/.well-known/jwks.json}
+      S3__ServiceUrl: ${S3_SERVICE_URL:-http://opgaver-minio:9000}
+      S3__AccessKey: ${MINIO_ROOT_USER:-apier}
+      S3__SecretKey: ${MINIO_ROOT_PASSWORD:-apier-minio-dev-only}
+      S3__Bucket: ${S3_BUCKET:-apier-assets}
+      S3__PublicBasePath: ${S3_PUBLIC_BASE_PATH:-/assets}
+      S3__SyncChampionsOnStartup: ${S3_SYNC_CHAMPIONS_ON_STARTUP:-true}
 
 networks:
   default:
@@ -100,3 +140,4 @@ networks:
 volumes:
   opgaver_pgdata:
   opgaver_mongodata:
+  opgaver_minio_data:

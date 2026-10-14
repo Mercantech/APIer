@@ -126,6 +126,17 @@ namespace OpgaverAPI
 
             builder.Services.AddScoped<ApiKeyService>();
 
+            builder.Services.Configure<OpgaverAPI.Services.S3Options>(
+                builder.Configuration.GetSection(OpgaverAPI.Services.S3Options.Section));
+            builder.Services.AddSingleton<OpgaverAPI.Services.ObjectStorageService>();
+            builder.Services.AddScoped<OpgaverAPI.Services.ChampionImageSyncService>();
+            builder.Services.AddHttpClient("ddragon", c =>
+            {
+                c.DefaultRequestHeaders.UserAgent.ParseAdd("APIer-OpgaverAPI/1.0");
+                c.Timeout = TimeSpan.FromSeconds(60);
+            });
+            builder.Services.AddHostedService<OpgaverAPI.Services.ChampionImageSyncHostedService>();
+
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {

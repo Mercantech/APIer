@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using OpgaverAPI.Models;
 using OpgaverAPI.Context;
 using OpgaverAPI.Attributes;
+using OpgaverAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 namespace OpgaverAPI.Controllers
 {
@@ -11,10 +12,12 @@ namespace OpgaverAPI.Controllers
     public class LeagueOfLegendsController : ControllerBase
     {
         private readonly AppDBContext _context;
+        private readonly ChampionImageSyncService _imageSync;
 
-        public LeagueOfLegendsController(AppDBContext context)
+        public LeagueOfLegendsController(AppDBContext context, ChampionImageSyncService imageSync)
         {
             _context = context;
+            _imageSync = imageSync;
         }
 
         /// <summary>
@@ -71,6 +74,18 @@ namespace OpgaverAPI.Controllers
             await _context.SaveChangesAsync();
             var total = await _context.Champions.CountAsync();
             return Ok(new { inserted = champions.Count, total, replace });
+        }
+
+        /// <summary>
+        /// Spejler manglende champion-billeder fra Riot Data Dragon til S3/MinIO.
+        /// Header: X-Seed-Key. Query force=true gen-downloader alle.
+        /// </summary>
+        [RequireSeedKey]
+        [HttpPost("sync-images")]
+        public async Task<IActionResult> SyncImages([FromQuery] bool force = false, CancellationToken ct = default)
+        {
+            var result = await _imageSync.SyncMissingAsync(force, ct);
+            return Ok(result);
         }
 
         /// <summary>
