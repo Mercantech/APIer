@@ -4,15 +4,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Pokémon-demo — APIer</title>
-    <meta name="description" content="Live demo af /go/pokemon — sprite, typer og evolutioner." />
+    <meta
+      name="description"
+      content="Live demo af /go/pokemon — stats, abilities, generationer og evolutioner."
+    />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/styles.css?v=20261014h" />
-    <link rel="stylesheet" href="/demo.css?v=20261014h" />
+    <link rel="stylesheet" href="/styles.css?v=20261014p" />
+    <link rel="stylesheet" href="/demo.css?v=20261014p" />
   </head>
   <body>
     <div class="atmosphere" aria-hidden="true"></div>
@@ -32,15 +35,27 @@
         <p class="eyebrow">Go · Postgres · PokeAPI CSV</p>
         <h1 class="brand">Pokémon</h1>
         <p class="lede">
-          Hent live data fra <code>/go/pokemon</code>. Filtrér på type, åbn en Pokémon og se
-          evolutionskæden — samme mønster elever kan bruge i egne apps.
+          Stats, abilities, generationer og legendary/mythical fra
+          <code>/go/pokemon</code> — samme endpoints elever kan bruge i egne apps.
         </p>
         <p class="demo-meta-line">Backend: go-api · Datakilde: PokeAPI CSV i Postgres</p>
       </header>
 
       <div class="demo-toolbar">
-        <input type="search" id="search" placeholder="Søg navn eller id (fx pikachu / 25)" autocomplete="off" />
-        <button type="button" class="btn primary sm" id="btnLoad">Hent liste</button>
+        <input
+          type="search"
+          id="search"
+          placeholder="Søg navn, genus eller id (fx pikachu / Mouse / 25)"
+          autocomplete="off"
+        />
+        <select id="generation" aria-label="Generation">
+          <option value="0">Alle generationer</option>
+        </select>
+        <label class="demo-check">
+          <input type="checkbox" id="legendaryOnly" />
+          Kun legendary
+        </label>
+        <button type="button" class="btn primary sm" id="btnLoad">Hent</button>
       </div>
 
       <div class="type-row" id="types" aria-label="Typer"></div>
@@ -49,6 +64,6 @@
 
       <section class="detail-panel hidden" id="detail" aria-live="polite"></section>
     </main>
-    <script src="/demo/pokemon/app.js?v=20261014h"></script>
+    <script src="/demo/pokemon/app.js?v=20261014p"></script>
   </body>
 </html>

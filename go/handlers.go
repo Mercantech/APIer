@@ -2,10 +2,12 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -61,12 +63,38 @@ func (a *api) handlePokemonList(w http.ResponseWriter, r *http.Request) {
 		limit = 2000
 	}
 	offset := queryInt(r, "offset", 0)
-	rows, err := a.db.Query(ctx, `
-SELECT id, name, height, weight, base_experience, types, evolves_from_id, evolution_chain_id, sprite_url
-FROM go_pokemon
-WHERE is_default = TRUE
-ORDER BY id
-LIMIT $1 OFFSET $2`, limit, offset)
+
+	where := []string{"is_default = TRUE"}
+	args := []any{}
+	argN := 1
+
+	if g := queryInt(r, "generation", 0); g > 0 {
+		where = append(where, fmt.Sprintf("generation = $%d", argN))
+		args = append(args, g)
+		argN++
+	}
+	if r.URL.Query().Get("legendary") == "true" {
+		where = append(where, "is_legendary = TRUE")
+	}
+	if r.URL.Query().Get("mythical") == "true" {
+		where = append(where, "is_mythical = TRUE")
+	}
+	if t := strings.TrimSpace(r.URL.Query().Get("type")); t != "" {
+		where = append(where, fmt.Sprintf("$%d = ANY(types)", argN))
+		args = append(args, strings.ToLower(t))
+		argN++
+	}
+	if q := strings.TrimSpace(r.URL.Query().Get("q")); q != "" {
+		where = append(where, fmt.Sprintf("(name ILIKE $%d OR genus ILIKE $%d)", argN, argN))
+		args = append(args, "%"+q+"%")
+		argN++
+	}
+
+	sql := `SELECT ` + pokeSelectCols + ` FROM go_pokemon WHERE ` + strings.Join(where, " AND ") +
+		fmt.Sprintf(` ORDER BY id LIMIT $%d OFFSET $%d`, argN, argN+1)
+	args = append(args, limit, offset)
+
+	rows, err := a.db.Query(ctx, sql, args...)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -75,56 +103,31 @@ LIMIT $1 OFFSET $2`, limit, offset)
 
 	list := []map[string]any{}
 	for rows.Next() {
-		var id, height, weight, baseExp int
-		var name, sprite string
-		var types []string
-		var evolvesFrom, chain *int
-		if err := rows.Scan(&id, &name, &height, &weight, &baseExp, &types, &evolvesFrom, &chain, &sprite); err != nil {
+		p, err := scanPoke(rows)
+		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		list = append(list, map[string]any{
-			"id": id, "name": name, "height": height, "weight": weight,
-			"baseExperience": baseExp, "types": types, "evolvesFromId": evolvesFrom,
-			"evolutionChainId": chain, "spriteUrl": sprite,
-		})
+		list = append(list, p.toMap(false))
 	}
 	writeJSON(w, http.StatusOK, list)
 }
 
 func (a *api) handlePokemonOne(w http.ResponseWriter, r *http.Request, idOrName string) {
 	ctx := r.Context()
-	var id int
-	var name, sprite string
-	var height, weight, baseExp int
-	var types []string
-	var evolvesFrom, chain *int
-
+	var row pgx.Row
 	if n, err := strconv.Atoi(idOrName); err == nil {
-		err = a.db.QueryRow(ctx, `
-SELECT id, name, height, weight, base_experience, types, evolves_from_id, evolution_chain_id, sprite_url
-FROM go_pokemon WHERE id=$1`, n).
-			Scan(&id, &name, &height, &weight, &baseExp, &types, &evolvesFrom, &chain, &sprite)
-		if err != nil {
-			http.NotFound(w, r)
-			return
-		}
+		row = a.db.QueryRow(ctx, `SELECT `+pokeSelectCols+` FROM go_pokemon WHERE id=$1`, n)
 	} else {
-		err = a.db.QueryRow(ctx, `
-SELECT id, name, height, weight, base_experience, types, evolves_from_id, evolution_chain_id, sprite_url
-FROM go_pokemon WHERE lower(name)=lower($1) ORDER BY id LIMIT 1`, idOrName).
-			Scan(&id, &name, &height, &weight, &baseExp, &types, &evolvesFrom, &chain, &sprite)
-		if err != nil {
-			http.NotFound(w, r)
-			return
-		}
+		row = a.db.QueryRow(ctx,
+			`SELECT `+pokeSelectCols+` FROM go_pokemon WHERE lower(name)=lower($1) ORDER BY id LIMIT 1`, idOrName)
 	}
-
-	writeJSON(w, http.StatusOK, map[string]any{
-		"id": id, "name": name, "height": height, "weight": weight,
-		"baseExperience": baseExp, "types": types, "evolvesFromId": evolvesFrom,
-		"evolutionChainId": chain, "spriteUrl": sprite,
-	})
+	p, err := scanPoke(row)
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+	writeJSON(w, http.StatusOK, p.toMap(true))
 }
 
 func (a *api) handlePokemonTypes(w http.ResponseWriter, r *http.Request) {
@@ -147,9 +150,86 @@ SELECT DISTINCT unnest(types) AS t FROM go_pokemon WHERE is_default ORDER BY t`)
 	writeJSON(w, http.StatusOK, out)
 }
 
+func (a *api) handlePokemonGenerations(w http.ResponseWriter, r *http.Request) {
+	rows, err := a.db.Query(r.Context(), `
+SELECT generation, COUNT(*) FROM go_pokemon
+WHERE is_default AND generation > 0
+GROUP BY generation ORDER BY generation`)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+	out := []map[string]any{}
+	for rows.Next() {
+		var g, n int
+		if err := rows.Scan(&g, &n); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		out = append(out, map[string]any{"generation": g, "count": n})
+	}
+	writeJSON(w, http.StatusOK, out)
+}
+
+func (a *api) handlePokemonByGeneration(w http.ResponseWriter, r *http.Request, genStr string) {
+	g, err := strconv.Atoi(genStr)
+	if err != nil || g < 1 {
+		http.Error(w, "ugyldig generation", http.StatusBadRequest)
+		return
+	}
+	rows, err := a.db.Query(r.Context(), `
+SELECT `+pokeSelectCols+`
+FROM go_pokemon WHERE is_default AND generation=$1 ORDER BY id`, g)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+	list := []map[string]any{}
+	for rows.Next() {
+		p, err := scanPoke(rows)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		list = append(list, p.toMap(false))
+	}
+	if len(list) == 0 {
+		http.NotFound(w, r)
+		return
+	}
+	writeJSON(w, http.StatusOK, list)
+}
+
+func (a *api) handlePokemonLegendary(w http.ResponseWriter, r *http.Request) {
+	mythical := r.URL.Query().Get("includeMythical") == "true"
+	sql := `SELECT ` + pokeSelectCols + ` FROM go_pokemon WHERE is_default AND is_legendary = TRUE`
+	if mythical {
+		sql = `SELECT ` + pokeSelectCols + ` FROM go_pokemon WHERE is_default AND (is_legendary OR is_mythical)`
+	}
+	sql += ` ORDER BY id`
+	rows, err := a.db.Query(r.Context(), sql)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+	list := []map[string]any{}
+	for rows.Next() {
+		p, err := scanPoke(rows)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		list = append(list, p.toMap(false))
+	}
+	writeJSON(w, http.StatusOK, list)
+}
+
 func (a *api) handlePokemonByType(w http.ResponseWriter, r *http.Request, typeName string) {
 	rows, err := a.db.Query(r.Context(), `
-SELECT id, name, types, sprite_url
+SELECT `+pokeSelectCols+`
 FROM go_pokemon
 WHERE is_default AND $1 = ANY(types)
 ORDER BY id`, strings.ToLower(typeName))
@@ -160,14 +240,12 @@ ORDER BY id`, strings.ToLower(typeName))
 	defer rows.Close()
 	list := []map[string]any{}
 	for rows.Next() {
-		var id int
-		var name, sprite string
-		var types []string
-		if err := rows.Scan(&id, &name, &types, &sprite); err != nil {
+		p, err := scanPoke(rows)
+		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		list = append(list, map[string]any{"id": id, "name": name, "types": types, "spriteUrl": sprite})
+		list = append(list, p.toMap(false))
 	}
 	if len(list) == 0 {
 		http.NotFound(w, r)
@@ -200,7 +278,7 @@ func (a *api) handlePokemonEvolutions(w http.ResponseWriter, r *http.Request, id
 	}
 
 	rows, err := a.db.Query(ctx, `
-SELECT id, name, evolves_from_id, sprite_url
+SELECT id, name, evolves_from_id, sprite_url, types
 FROM go_pokemon
 WHERE evolution_chain_id=$1 AND is_default
 ORDER BY id`, *chain)
@@ -214,12 +292,13 @@ ORDER BY id`, *chain)
 		var pid int
 		var name, sprite string
 		var from *int
-		if err := rows.Scan(&pid, &name, &from, &sprite); err != nil {
+		var types []string
+		if err := rows.Scan(&pid, &name, &from, &sprite, &types); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		chainList = append(chainList, map[string]any{
-			"id": pid, "name": name, "evolvesFromId": from, "spriteUrl": sprite,
+			"id": pid, "name": name, "evolvesFromId": from, "spriteUrl": sprite, "types": types,
 		})
 	}
 	writeJSON(w, http.StatusOK, map[string]any{

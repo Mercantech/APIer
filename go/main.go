@@ -53,6 +53,8 @@ func main() {
 	mux.HandleFunc("/go/seed", api.handleSeed)
 
 	mux.HandleFunc("/go/pokemon/types", api.handlePokemonTypes)
+	mux.HandleFunc("/go/pokemon/generations", api.handlePokemonGenerations)
+	mux.HandleFunc("/go/pokemon/legendary", api.handlePokemonLegendary)
 	mux.HandleFunc("/go/pokemon/type/", func(w http.ResponseWriter, r *http.Request) {
 		name := strings.TrimPrefix(r.URL.Path, "/go/pokemon/type/")
 		name = strings.Trim(name, "/")
@@ -61,6 +63,15 @@ func main() {
 			return
 		}
 		api.handlePokemonByType(w, r, name)
+	})
+	mux.HandleFunc("/go/pokemon/generation/", func(w http.ResponseWriter, r *http.Request) {
+		gen := strings.TrimPrefix(r.URL.Path, "/go/pokemon/generation/")
+		gen = strings.Trim(gen, "/")
+		if gen == "" {
+			http.NotFound(w, r)
+			return
+		}
+		api.handlePokemonByGeneration(w, r, gen)
 	})
 	mux.HandleFunc("/go/pokemon/", func(w http.ResponseWriter, r *http.Request) {
 		rest := strings.TrimPrefix(r.URL.Path, "/go/pokemon/")
@@ -117,8 +128,12 @@ func main() {
 				"/go/health",
 				"/go/seed",
 				"/go/pokemon",
+				"/go/pokemon?generation=1&type=fire&q=chu",
 				"/go/pokemon/{id}",
 				"/go/pokemon/types",
+				"/go/pokemon/generations",
+				"/go/pokemon/generation/{n}",
+				"/go/pokemon/legendary",
 				"/go/pokemon/type/{type}",
 				"/go/pokemon/{id}/evolutions",
 				"/go/minecraft/items",
