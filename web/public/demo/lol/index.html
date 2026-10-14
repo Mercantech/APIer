@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="da">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>League of Legends-demo — APIer</title>
+    <meta
+      name="description"
+      content="Live demo af /LeagueOfLegends — champions med X-Api-Key."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css?v=20261014g" />
+    <link rel="stylesheet" href="/demo.css?v=20261014g" />
+  </head>
+  <body>
+    <div class="atmosphere" aria-hidden="true"></div>
+    <main class="demo-shell">
+      <nav class="demo-nav">
+        <a class="back" href="/demo">← Demo</a>
+        <div class="demo-links">
+          <a class="btn ghost sm" href="/demo/pokemon">Pokémon</a>
+          <a class="btn ghost sm" href="/demo/minecraft">Minecraft</a>
+          <a class="btn primary sm" href="/demo/lol">LoL</a>
+        </div>
+      </nav>
+
+      <header class="demo-hero">
+        <p class="eyebrow">C# · Postgres · Data Dragon</p>
+        <h1 class="brand">League of Legends</h1>
+        <p class="lede">
+          Champions fra <code>/LeagueOfLegends</code> — kræver elev-API-nøgle
+          (<code>X-Api-Key</code>). Log ind, opret nøgle, og browse klasser og
+          detaljer.
+        </p>
+        <p class="demo-meta-line">Backend: api (.NET) · Datakilde: Riot Data Dragon i Postgres</p>
+      </header>
+
+      <section class="lol-gate" id="gate" aria-live="polite"></section>
+
+      <div class="demo-toolbar" id="toolbar" hidden>
+        <input
+          type="search"
+          id="search"
+          placeholder="Søg navn (fx Ahri, Yasuo)"
+          autocomplete="off"
+        />
+        <button type="button" class="btn primary sm" id="btnLoad">Hent</button>
+      </div>
+
+      <div class="type-row" id="classes" aria-label="Klasser" hidden></div>
+      <p class="demo-status" id="status"></p>
+      <div class="lol-grid" id="grid"></div>
+      <section class="detail-panel hidden" id="detail" aria-live="polite"></section>
+    </main>
+    <script src="/auth.js?v=20261014g"></script>
+    <script src="/demo/lol/app.js?v=20261014g"></script>
+  </body>
+</html>

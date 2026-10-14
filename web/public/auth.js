@@ -16,6 +16,7 @@
     apiKey: "apier_student_api_key",
     pkceVerifier: "apier_pkce_verifier",
     oauthState: "apier_oauth_state",
+    returnTo: "apier_return_to",
   };
 
   function b64url(buf) {
@@ -36,12 +37,17 @@
     return crypto.subtle.digest("SHA-256", data);
   }
 
-  async function beginLogin() {
+  async function beginLogin(returnTo) {
     const verifier = randomString(64);
     const state = randomString(32);
     const challenge = b64url(await sha256(verifier));
     sessionStorage.setItem(SK.pkceVerifier, verifier);
     sessionStorage.setItem(SK.oauthState, state);
+    const dest =
+      typeof returnTo === "string" && returnTo.startsWith("/")
+        ? returnTo
+        : `${window.location.pathname}${window.location.search}` || "/";
+    sessionStorage.setItem(SK.returnTo, dest);
 
     const params = new URLSearchParams({
       response_type: "code",
@@ -196,6 +202,12 @@
     return res;
   }
 
+  function consumeReturnTo() {
+    const dest = sessionStorage.getItem(SK.returnTo) || "/";
+    sessionStorage.removeItem(SK.returnTo);
+    return dest.startsWith("/") ? dest : "/";
+  }
+
   window.ApierAuth = {
     AUTH,
     SK,
@@ -209,5 +221,6 @@
     setStoredApiKey,
     refreshIfNeeded,
     apiFetch,
+    consumeReturnTo,
   };
 })();
