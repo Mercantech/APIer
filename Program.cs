@@ -66,6 +66,13 @@ namespace OpgaverAPI
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.ApiKey
                 });
+                c.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
+                {
+                    Description = "Elev API-nøgle (header X-Api-Key). Opret via kataloget efter Mercantec-login.",
+                    Name = "X-Api-Key",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey
+                });
 
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
@@ -107,6 +114,18 @@ namespace OpgaverAPI
             var jwtKey = Configuration["Jwt:Key"]
                 ?? throw new InvalidOperationException("Jwt:Key mangler");
 
+            var authIssuer = Configuration["Auth:Issuer"]
+                ?? Environment.GetEnvironmentVariable("AUTH_ISSUER")
+                ?? "https://auth.mercantec.tech";
+            var authAudience = Configuration["Auth:Audience"]
+                ?? Environment.GetEnvironmentVariable("AUTH_AUDIENCE")
+                ?? "mercantec-apps";
+            var jwksUri = Configuration["Auth:JwksUri"]
+                ?? Environment.GetEnvironmentVariable("JWKS_URI")
+                ?? $"{authIssuer.TrimEnd('/')}/.well-known/jwks.json";
+
+            builder.Services.AddScoped<ApiKeyService>();
+
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -120,6 +139,24 @@ namespace OpgaverAPI
                         ValidAudience = Configuration["Jwt:Audience"],
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
                     };
+                })
+                .AddJwtBearer("Mercantec", options =>
+                {
+                    options.MetadataAddress = $"{authIssuer.TrimEnd('/')}/.well-known/openid-configuration";
+                    options.RequireHttpsMetadata = true;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = authIssuer,
+                        ValidateAudience = true,
+                        ValidAudience = authAudience,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        NameClaimType = "sub",
+                        RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+                    };
+                    // JWKS hentes via OIDC metadata; eksplicit URI som fallback-dokumentation
+                    _ = jwksUri;
                 });
 
             var app = builder.Build();

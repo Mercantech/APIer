@@ -9,11 +9,23 @@ namespace OpgaverAPI.Context
         public DbSet<LolChampion> Champions { get; set; }
         public DbSet<Game> Games { get; set; }
         public DbSet<Highscore> Highscores { get; set; }
+        public DbSet<ApiKey> ApiKeys { get; set; }
 
 
         public AppDBContext(DbContextOptions<AppDBContext> options)
             : base(options)
         {
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<ApiKey>(e =>
+            {
+                e.HasIndex(x => x.KeyHash).IsUnique();
+                e.HasIndex(x => x.UserSub);
+            });
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

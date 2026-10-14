@@ -19,12 +19,25 @@
   <body>
     <div class="atmosphere" aria-hidden="true"></div>
 
+    <nav class="topbar" aria-label="Konto">
+      <div class="topbar-inner">
+        <span class="topbar-brand">APIer</span>
+        <div class="topbar-actions" id="authBar">
+          <button type="button" class="btn ghost sm" id="btnKeys" hidden>API-nøgler</button>
+          <span class="user-chip" id="userChip" hidden></span>
+          <button type="button" class="btn primary sm" id="btnLogin">Log ind</button>
+          <button type="button" class="btn ghost sm" id="btnLogout" hidden>Log ud</button>
+        </div>
+      </div>
+    </nav>
+
     <header class="hero">
       <p class="eyebrow">Mercantec · elevdata</p>
       <h1 class="brand">APIer</h1>
       <p class="lede">
         Ét host, flere backends. Se hvilken server og hvilket sprog der leverer
         hvert endpoint — og om data kommer fra JSON, Mongo, Postgres eller runtime.
+        Klik et kort for demo og live-kald.
       </p>
       <div class="hero-actions">
         <a class="btn primary" href="#katalog">Se katalog</a>
@@ -37,7 +50,7 @@
     <section class="catalog" id="katalog">
       <div class="catalog-head">
         <h2>Endpoint-katalog</h2>
-        <p>Filtrér efter backend eller datakilde. Klik et endpoint for at åbne det live.</p>
+        <p>Filtrér efter backend eller datakilde. Klik et endpoint for demo og live-svar.</p>
         <div class="filters" id="filters"></div>
       </div>
       <div class="endpoint-list" id="endpoints"></div>
@@ -50,7 +63,43 @@
       </p>
     </footer>
 
+    <!-- API-nøgler panel -->
+    <div class="drawer-backdrop" id="keysBackdrop" hidden></div>
+    <aside class="drawer" id="keysDrawer" aria-hidden="true" aria-label="API-nøgler">
+      <div class="drawer-head">
+        <h2>API-nøgler</h2>
+        <button type="button" class="icon-btn" id="keysClose" aria-label="Luk">×</button>
+      </div>
+      <div class="drawer-body">
+        <p class="drawer-note">
+          Nøglen er personlig — del den ikke. Brug header
+          <code>X-Api-Key</code> mod beskyttede endpoints (fx League of Legends).
+        </p>
+        <div class="key-create">
+          <input type="text" id="keyName" placeholder="Navn (valgfrit)" maxlength="60" />
+          <button type="button" class="btn primary sm" id="btnCreateKey">Opret nøgle</button>
+        </div>
+        <div id="keyOnce" class="key-once" hidden>
+          <p><strong>Gem denne nøgle nu</strong> — den vises ikke igen:</p>
+          <pre id="keyOnceValue"></pre>
+          <button type="button" class="btn ghost sm" id="btnCopyKey">Kopiér &amp; brug i browseren</button>
+        </div>
+        <ul class="key-list" id="keyList"></ul>
+      </div>
+    </aside>
+
+    <!-- Endpoint demo drawer -->
+    <div class="drawer-backdrop" id="demoBackdrop" hidden></div>
+    <aside class="drawer wide" id="demoDrawer" aria-hidden="true" aria-label="Endpoint demo">
+      <div class="drawer-head">
+        <h2 id="demoTitle">Endpoint</h2>
+        <button type="button" class="icon-btn" id="demoClose" aria-label="Luk">×</button>
+      </div>
+      <div class="drawer-body" id="demoBody"></div>
+    </aside>
+
     <script src="/data.js"></script>
+    <script src="/auth.js"></script>
     <script src="/app.js"></script>
   </body>
 </html>

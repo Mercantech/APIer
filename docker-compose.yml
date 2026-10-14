@@ -82,6 +82,9 @@ services:
       Jwt__Issuer: ${JWT_ISSUER:-opgaver-api}
       Jwt__Audience: ${JWT_AUDIENCE:-opgaver-api}
       Jwt__Key: ${JWT_KEY:?JWT_KEY required}
+      Auth__Issuer: ${AUTH_ISSUER:-https://auth.mercantec.tech}
+      Auth__Audience: ${AUTH_AUDIENCE:-mercantec-apps}
+      Auth__JwksUri: ${JWKS_URI:-https://auth.mercantec.tech/.well-known/jwks.json}
 
 networks:
   default:

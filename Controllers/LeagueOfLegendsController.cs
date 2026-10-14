@@ -21,6 +21,7 @@ namespace OpgaverAPI.Controllers
         /// Henter alle League of Legends champions.
         /// </summary>
         /// <returns>En liste af champions.</returns>
+        [RequireApiKey]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<LolChampion>>> GetChampions()
         {
@@ -131,6 +132,7 @@ namespace OpgaverAPI.Controllers
         /// </summary>
         /// <param name="name">Søgestrengen for champion-navn.</param>
         /// <returns>En liste af champions der matcher søgningen.</returns>
+        [RequireApiKey]
         [HttpGet("name/{name}")]
         public async Task<ActionResult<IEnumerable<LolChampion>>> GetChampionsByName(string name)
         {
@@ -151,6 +153,7 @@ namespace OpgaverAPI.Controllers
         /// </summary>
         /// <param name="className">Klassenavnet der skal søges efter.</param>
         /// <returns>En liste af champions i den specificerede klasse.</returns>
+        [RequireApiKey]
         [HttpGet("class/{className}")]
         public async Task<ActionResult<IEnumerable<LolChampion>>> GetChampionsByClass(string className)
         {
@@ -170,6 +173,7 @@ namespace OpgaverAPI.Controllers
         /// Henter en liste over alle unikke champion-klasser.
         /// </summary>
         /// <returns>En liste af klassenavne.</returns>
+        [RequireApiKey]
         [HttpGet("classes")]
         public async Task<ActionResult<IEnumerable<string>>> GetAllClasses()
         {
@@ -193,6 +197,7 @@ namespace OpgaverAPI.Controllers
         /// </summary>
         /// <param name="id">ID'et på den champion der skal hentes.</param>
         /// <returns>Champion-objektet.</returns>
+        [RequireApiKey]
         [HttpGet("{id}")]
         public async Task<ActionResult<LolChampion>> GetChampion(string id)
         {

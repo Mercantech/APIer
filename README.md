@@ -43,9 +43,17 @@ Browser → Cloudflare → Traefik → gateway (nginx)
 | `GET /Opgaver/Stats` | Kaldestatistik |
 | `GET /api/Countries` | Lande (Mongo) |
 | `POST /api/Countries/bulk` | Seed lande (`X-Seed-Key`) |
-| `GET /LeagueOfLegends` | Champions (Postgres) |
+| `GET /LeagueOfLegends*` | Champions (Postgres) — kræver `X-Api-Key` |
 | `POST /LeagueOfLegends/bulk` | Seed champions (`X-Seed-Key`) |
+| `GET/POST/DELETE /api/ApiKeys` | Elev-API-nøgler (Mercantec Bearer) |
 | `/swagger` | OpenAPI UI |
+
+## Auth og API-nøgler
+
+1. Log ind på kataloget via **Mercantec Auth** (OAuth PKCE, klient `apier-web`).
+2. Under **API-nøgler** opret en nøgle — plaintext vises **én gang**. Hold den hemmelig.
+3. Kald beskyttede endpoints med header `X-Api-Key: apier_…`.
+4. League of Legends GET er bag API-nøgle; `/Opgaver/*` m.m. er stadig offentlige.
 
 ## Lokal kørsel
 

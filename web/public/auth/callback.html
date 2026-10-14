@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="da">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Logger ind… — APIer</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="hero" style="padding-top: 4rem">
+      <h1 class="brand" style="font-size: 2.4rem">APIer</h1>
+      <p id="status" class="lede">Fuldfører login…</p>
+    </main>
+    <script src="/auth.js"></script>
+    <script>
+      (async () => {
+        const status = document.getElementById("status");
+        const params = new URLSearchParams(window.location.search);
+        const err = params.get("error");
+        if (err) {
+          status.textContent = `Login afvist: ${err}`;
+          return;
+        }
+        const code = params.get("code");
+        const state = params.get("state");
+        if (!code || !state) {
+          status.textContent = "Mangler authorization code.";
+          return;
+        }
+        try {
+          await window.ApierAuth.exchangeCode(code, state);
+          status.textContent = "Du er logget ind. Sender dig tilbage…";
+          window.location.replace("/");
+        } catch (e) {
+          status.textContent = e.message || "Login fejlede";
+        }
+      })();
+    </script>
+  </body>
+</html>

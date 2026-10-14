@@ -98,6 +98,7 @@ window.APIER_CATALOG = {
       summary: "173 champions seedet fra Riot Data Dragon (navn, klasse, billede, resource, range).",
       source: { type: "postgres", detail: "Tabel Champions" },
       backend: "dotnet",
+      auth: "apiKey",
     },
     {
       method: "GET",
@@ -106,6 +107,25 @@ window.APIER_CATALOG = {
       summary: "Unikke klasser (Assassin, Fighter, Mage, …).",
       source: { type: "postgres", detail: "Distinct Classes fra Champions" },
       backend: "dotnet",
+      auth: "apiKey",
+    },
+    {
+      method: "GET",
+      path: "/LeagueOfLegends/name/{name}",
+      title: "Champion efter navn",
+      summary: "Søg champions hvis navn indeholder strengen.",
+      source: { type: "postgres", detail: "Tabel Champions" },
+      backend: "dotnet",
+      auth: "apiKey",
+    },
+    {
+      method: "GET",
+      path: "/LeagueOfLegends/class/{className}",
+      title: "Champions efter klasse",
+      summary: "Filtrér på klasse, fx Mage eller Fighter.",
+      source: { type: "postgres", detail: "Tabel Champions" },
+      backend: "dotnet",
+      auth: "apiKey",
     },
     {
       method: "GET",
