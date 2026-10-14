@@ -760,41 +760,23 @@ button.btn {
   background: rgba(240, 180, 41, 0.07);
 }
 
-.panel-tabs {
-  display: flex;
-  gap: 0.35rem;
-  padding: 0.3rem;
-  border-radius: 12px;
-  background: rgba(0, 0, 0, 0.28);
-  border: 1px solid var(--line);
-}
-
-.panel-tab {
-  flex: 1;
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
-  color: var(--muted);
-  background: transparent;
-  border: none;
-  border-radius: 9px;
-  padding: 0.55rem 0.75rem;
-  transition: background 160ms ease, color 160ms ease;
-}
-
-.panel-tab:hover {
-  color: var(--text);
-}
-
-.panel-tab.active {
-  color: var(--ink);
-  background: var(--accent);
-}
-
-.panel-body {
+.panel-stack {
   display: grid;
-  gap: 0.85rem;
+  gap: 1.5rem;
   animation: rise 360ms ease both;
+}
+
+.demo-section {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.demo-section-title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--text);
 }
 
 .lang-tabs {

@@ -442,59 +442,58 @@ ${goAuth ? `\t` + goAuth + `\n` : ""}\tres, err := http.DefaultClient.Do(req)
     </div>`;
   }
 
-  let demoState = { ep: null, path: "", lang: "curl", panel: "code", snippets: null, live: null };
+  let demoState = { ep: null, path: "", lang: "curl", snippets: null, live: null };
 
   function renderCodePanel() {
     const { lang, snippets } = demoState;
     const code = snippets?.[lang] || "";
     const highlightLang = lang === "curl" ? "curl" : lang === "js" ? "js" : lang;
     return `
-      <div class="lang-tabs" role="tablist" aria-label="Sprog">
-        ${CODE_LANGS.map(
-          (l) =>
-            `<button type="button" class="lang-tab${l.id === lang ? " active" : ""}" data-lang="${l.id}" role="tab" aria-selected="${l.id === lang}">${l.label}</button>`
-        ).join("")}
-      </div>
-      <div class="code-frame">
-        <div class="code-toolbar">
-          <span class="code-lang-label">${escapeHtml(CODE_LANGS.find((l) => l.id === lang)?.label || lang)}</span>
-          <button type="button" class="btn ghost sm" id="demoCopyCode">Kopiér</button>
+      <section class="demo-section" aria-labelledby="demoCodeHeading">
+        <h3 class="demo-section-title" id="demoCodeHeading">Kode</h3>
+        <div class="lang-tabs" role="tablist" aria-label="Sprog">
+          ${CODE_LANGS.map(
+            (l) =>
+              `<button type="button" class="lang-tab${l.id === lang ? " active" : ""}" data-lang="${l.id}" role="tab" aria-selected="${l.id === lang}">${l.label}</button>`
+          ).join("")}
         </div>
-        <pre class="code-block" id="demoCode"><code>${highlight(code, highlightLang)}</code></pre>
-      </div>`;
+        <div class="code-frame">
+          <div class="code-toolbar">
+            <span class="code-lang-label">${escapeHtml(CODE_LANGS.find((l) => l.id === lang)?.label || lang)}</span>
+            <button type="button" class="btn ghost sm" id="demoCopyCode">Kopiér</button>
+          </div>
+          <pre class="code-block" id="demoCode"><code>${highlight(code, highlightLang)}</code></pre>
+        </div>
+      </section>`;
   }
 
   function renderLivePanel(ep, path) {
     const canCall = ep.method === "GET" && !ep.path.includes("{");
     const live = demoState.live;
     return `
-      <div class="live-toolbar">
-        <button type="button" class="btn primary" id="demoFetch" ${canCall ? "" : "disabled"}>Kald live</button>
-        <a class="btn ghost" href="${escapeHtml(path)}" target="_blank" rel="noreferrer">Åbn i ny fane</a>
-      </div>
-      ${canCall ? "" : `<p class="drawer-note">Live-kald er kun til GET uden uopløste path-parametre. Brug kode-eksemplerne med de viste værdier.</p>`}
-      <div class="live-status${live ? ` ${escapeHtml(live.tone)}` : ""}" id="demoStatus">${live ? escapeHtml(live.status) : "Klar — tryk «Kald live» for svar"}</div>
-      <div class="code-frame">
-        <div class="code-toolbar">
-          <span class="code-lang-label">Response</span>
-          <button type="button" class="btn ghost sm" id="demoCopyJson" ${live?.raw ? "" : "hidden"}>Kopiér JSON</button>
+      <section class="demo-section" aria-labelledby="demoLiveHeading">
+        <h3 class="demo-section-title" id="demoLiveHeading">Live svar</h3>
+        <div class="live-toolbar">
+          <button type="button" class="btn primary" id="demoFetch" ${canCall ? "" : "disabled"}>Kald live</button>
+          <a class="btn ghost" href="${escapeHtml(path)}" target="_blank" rel="noreferrer">Åbn i ny fane</a>
         </div>
-        <pre class="code-block response" id="demoJson"><code>${
-          live?.html || `<span class="tok-comment">// Intet svar endnu</span>`
-        }</code></pre>
-      </div>`;
+        ${canCall ? "" : `<p class="drawer-note">Live-kald er kun til GET uden uopløste path-parametre. Brug kode-eksemplerne med de viste værdier.</p>`}
+        <div class="live-status${live ? ` ${escapeHtml(live.tone)}` : ""}" id="demoStatus">${live ? escapeHtml(live.status) : "Klar — tryk «Kald live» for svar"}</div>
+        <div class="code-frame">
+          <div class="code-toolbar">
+            <span class="code-lang-label">Response</span>
+            <button type="button" class="btn ghost sm" id="demoCopyJson" ${live?.raw ? "" : "hidden"}>Kopiér JSON</button>
+          </div>
+          <pre class="code-block response" id="demoJson"><code>${
+            live?.html || `<span class="tok-comment">// Intet svar endnu</span>`
+          }</code></pre>
+        </div>
+      </section>`;
   }
 
   function wireDemoPanel(ep, path) {
     document.getElementById("demoLogin")?.addEventListener("click", () => auth.beginLogin());
     document.getElementById("demoOpenKeys")?.addEventListener("click", openKeys);
-
-    demoBody.querySelectorAll("[data-panel]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        demoState.panel = btn.dataset.panel;
-        paintDemoBody(ep, path);
-      });
-    });
 
     demoBody.querySelectorAll("[data-lang]").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -530,11 +529,19 @@ ${goAuth ? `\t` + goAuth + `\n` : ""}\tres, err := http.DefaultClient.Do(req)
         /* ignore */
       }
     });
+
+    const copyJson = document.getElementById("demoCopyJson");
+    if (copyJson && demoState.live?.raw) {
+      copyJson.onclick = async () => {
+        await navigator.clipboard.writeText(demoState.live.raw);
+        copyJson.textContent = "Kopieret";
+        setTimeout(() => (copyJson.textContent = "Kopiér JSON"), 1200);
+      };
+    }
   }
 
   function paintDemoBody(ep, path) {
     const backend = backendById[ep.backend];
-    const panel = demoState.panel;
     demoBody.innerHTML = `
       <div class="call-hero">
         <div class="demo-meta">
@@ -557,12 +564,9 @@ ${goAuth ? `\t` + goAuth + `\n` : ""}\tres, err := http.DefaultClient.Do(req)
       </div>
       <p class="source-detail">${escapeHtml(ep.source.detail)}</p>
       ${authBannerHtml(ep)}
-      <div class="panel-tabs" role="tablist">
-        <button type="button" class="panel-tab${panel === "code" ? " active" : ""}" data-panel="code">Kode</button>
-        <button type="button" class="panel-tab${panel === "live" ? " active" : ""}" data-panel="live">Live svar</button>
-      </div>
-      <div class="panel-body">
-        ${panel === "code" ? renderCodePanel() : renderLivePanel(ep, path)}
+      <div class="panel-stack">
+        ${renderLivePanel(ep, path)}
+        ${renderCodePanel()}
       </div>
     `;
     wireDemoPanel(ep, path);
@@ -574,7 +578,6 @@ ${goAuth ? `\t` + goAuth + `\n` : ""}\tres, err := http.DefaultClient.Do(req)
       ep,
       path,
       lang: "curl",
-      panel: "code",
       snippets: buildSnippets(ep, path),
       live: null,
     };
