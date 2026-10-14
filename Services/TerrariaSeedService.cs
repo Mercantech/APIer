@@ -108,10 +108,14 @@ namespace OpgaverAPI.Services
 
             var items = new List<TerrariaItem>();
             var recipes = new List<TerrariaRecipe>();
+            var seenItemIds = new HashSet<int>();
 
             foreach (var raw in rawItems)
             {
                 if (!int.TryParse(raw.Id, out var itemId))
+                    continue;
+                // Wiki-dump kan have flere rækker med samme item-id — behold første
+                if (!seenItemIds.Add(itemId))
                     continue;
 
                 var type = raw.Type ?? "";
@@ -151,12 +155,17 @@ namespace OpgaverAPI.Services
                 }
             }
 
-            var npcs = rawNpcs.Select(n =>
+            var seenNpcIds = new HashSet<int>();
+            var npcs = new List<TerrariaNpc>();
+            foreach (var n in rawNpcs)
             {
-                _ = int.TryParse(n.Id, out var npcId);
+                if (!int.TryParse(n.Id, out var npcId))
+                    continue;
+                if (!seenNpcIds.Add(npcId))
+                    continue;
                 var name = n.Name ?? "";
                 var isBoss = BossStages.ContainsKey(name);
-                return new TerrariaNpc
+                npcs.Add(new TerrariaNpc
                 {
                     NpcId = npcId,
                     Name = name,
@@ -165,8 +174,8 @@ namespace OpgaverAPI.Services
                     IsBoss = isBoss,
                     Stage = isBoss ? BossStages[name] : "",
                     WikiUrl = WikiUrl(name)
-                };
-            }).ToList();
+                });
+            }
 
             // Insert i batches for mindre memory pressure
             const int batch = 500;
