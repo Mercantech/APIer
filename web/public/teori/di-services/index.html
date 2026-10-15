@@ -8,12 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015ix" />
-<link rel="stylesheet" href="/demo.css?v=20261015ix" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015ix" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015ix" />
-<link rel="stylesheet" href="/teori/widgets.css?v=20261015ix" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015ix" />
+<link rel="stylesheet" href="/styles.css?v=20261015ss" />
+<link rel="stylesheet" href="/demo.css?v=20261015ss" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015ss" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015ss" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015ss" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015ss" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -32,7 +32,7 @@
 </header>
 <div class="teori-lesson-progress" data-lesson-progress aria-hidden="true"><div class="teori-progress-fill" data-progress-bar></div></div>
 <article class="teori-lesson">
-<nav class="teori-toc" aria-label="Indhold på siden"><a href="#laeringsmaal">Læringsmål</a><a href="#tjek-dig-selv">Tjek dig selv før du går videre</a><a href="#program-cs-registrering">Program.cs — registrering</a><a href="#inject-i-komponenter">@inject i komponenter</a><a href="#lifetimes-hvornaar-hvad">Lifetimes — hvornår hvad?</a><a href="#ihttpclientfactory-og-typed-client">IHttpClientFactory og typed client</a><a href="#interfaces-og-test">Interfaces og test</a><a href="#scoped-singleton-bug">Scoped vs Singleton — konkret bug</a><a href="#mini-opgave">Mini-opgave</a><a href="#laes-hos-microsoft">Læs hos Microsoft</a><a href="#proev-med-api">Prøv med API</a></nav>
+<nav class="teori-toc" aria-label="Indhold på siden"><a href="#laeringsmaal">Læringsmål</a><a href="#tjek-dig-selv">Tjek dig selv før du går videre</a><a href="#program-cs-registrering">Program.cs — registrering</a><a href="#inject-i-komponenter">@inject i komponenter</a><a href="#lifetimes-hvornaar-hvad">Lifetimes — hvornår hvad?</a><a href="#scoped-vs-singleton">Scoped vs Singleton — hvornår forskel?</a><a href="#ihttpclientfactory-og-typed-client">IHttpClientFactory og typed client</a><a href="#interfaces-og-test">Interfaces og test</a><a href="#scoped-singleton-bug">Scoped vs Singleton — konkret bug</a><a href="#mini-opgave">Mini-opgave</a><a href="#laes-hos-microsoft">Læs hos Microsoft</a><a href="#proev-med-api">Prøv med API</a></nav>
 <h2 id="laeringsmaal">Læringsmål</h2>
 <ul>
 <li>Fortælle hvad DI løser (løs kobling, testbarhed, central konfiguration).</li>
@@ -43,7 +43,7 @@
 <p><strong>Hvornår bruger I DI?</strong> Når mere end én komponent kalder samme API, når I vil mock’e i test, eller når konfiguration (base URL, nøgle-kilde) skal samles ét sted — typisk første uge i et OpgaverAPI-projekt.</p>
 <section class="teori-check">
 <h2 id="tjek-dig-selv">Tjek dig selv før du går videre</h2>
-<ul><li>Du kan forklare Scoped vs Singleton med bruger-state-bug.</li><li>Du registrerer HttpClient via AddHttpClient — ikke new HttpClient().</li><li>Du har kørt DI-lab for alle tre lifetimes.</li></ul>
+<ul><li>Du kan forklare Scoped vs Singleton med to samtidige brugere (favorit-lab).</li><li>Du ved hvornår de <em>ser ens ud</em> (én fane) og hvornår de <em>divergerer</em> (to circuits).</li><li>Du registrerer HttpClient via AddHttpClient — ikke new HttpClient().</li><li>Du har kørt DI-lab for alle tre lifetimes.</li></ul>
 </section>
 
 <p>Når en Blazor-side skal hente Pokémon fra <code>/go/pokemon</code> og champions fra LoL med <code>X-Api-Key</code>, hører HTTP-logikken ikke hjemme direkte i markup. I opretter fx <code>IPokemonService</code> og <code>ILolService</code>, registrerer dem én gang, og injicerer dem i komponenter — samme idé som i et ASP.NET Web API-projekt.</p>
@@ -165,6 +165,107 @@ public record PokemonDto(string Name, int Id);</pre>
 <div class="teori-callout"><p><strong>Faldgrube:</strong> At registrere <code>DbContext</code> eller bruger-specifik state som <strong>Singleton</strong> deler data mellem alle brugere. At registrere <code>HttpClient</code> som Singleton uden factory kan give socket-udmattelse — brug <code>IHttpClientFactory</code>.</p></div>
 <p><strong>Hvornår Transient?</strong> Fx en stateless <code>PokemonNameFormatter</code> injiceret mange steder — billigt at oprette. <strong>Hvornår Scoped?</strong> Brugerens valgte region, indkøbskurv-lignende UI-state, eller cache der må leve i ét Blazor Server-circuit.</p>
 
+<h2 id="scoped-vs-singleton">Scoped vs Singleton — hvornår er de forskellige?</h2>
+<p class="teori-why"><strong>Hvorfor elever går galt i byen:</strong> Med <em>én</em> fane ser Scoped og Singleton ens ud — I får samme instans igen og igen. Forskellen viser sig først når der er <strong>flere brugere / circuits</strong> (to browsere, underviser + elev, eller to faner på Blazor Server).</p>
+
+<p>Tænk: <strong>Scoped = én per bruger-session (circuit)</strong>. <strong>Singleton = én for hele serveren</strong>.</p>
+
+<div class="teori-table-wrap"><table class="teori-table">
+<tr><th>Situation</th><th>Scoped</th><th>Singleton</th><th>Samme resultat?</th></tr>
+<tr>
+  <td>Én bruger, tre komponenter inject’er samme service</td>
+  <td>Samme instans i det scope</td>
+  <td>Samme instans</td>
+  <td>Ja — I kan ikke se forskel</td>
+</tr>
+<tr>
+  <td>Elev A og Elev B åbner appen samtidig (to circuits)</td>
+  <td>Hver sin instans → A’s favorit er ikke B’s</td>
+  <td>Samme instans → A’s valg overskriver B’s UI</td>
+  <td><strong>Nej — her knækker Singleton</strong></td>
+</tr>
+<tr>
+  <td>Service holder <code>SelectedRegion</code> / kurv / «sidst klikket»</td>
+  <td>Korrekt: state følger brugeren</td>
+  <td>Bug: state er fælles for alle</td>
+  <td>Nej</td>
+</tr>
+<tr>
+  <td>Read-only Pokémon-type-cache (ingen brugerdata)</td>
+  <td>Virker, men spilder hukommelse (kopi pr. bruger)</td>
+  <td>Korrekt: én delt cache</td>
+  <td>Funktionelt OK — Singleton er bedre</td>
+</tr>
+<tr>
+  <td>Tæller i felter: <code>RequestCount++</code></td>
+  <td>Tæller pr. bruger/session</td>
+  <td>Global tæller for hele appen</td>
+  <td>Nej — forskellige tal</td>
+</tr>
+</table></div>
+
+<section class="teori-anim" data-scope-battle aria-label="Scoped vs Singleton to brugere">
+  <div class="teori-anim-head">
+    <h3>To brugere — prøv selv</h3>
+    <p>Vælg lifetime. Lad Elev A og Elev B vælge favorit-Pokémon. Se om B «stjæler» A’s valg.</p>
+  </div>
+  <div class="teori-anim-controls">
+    <button type="button" class="btn ghost sm active" data-battle-mode="scoped">Scoped</button>
+    <button type="button" class="btn ghost sm" data-battle-mode="singleton">Singleton</button>
+    <button type="button" class="btn ghost sm" data-action="battle-reset">Nulstil</button>
+  </div>
+  <div class="scope-battle-grid">
+    <div class="scope-user" data-user="a">
+      <strong>Elev A</strong>
+      <p class="scope-pick" data-pick>Favorit: —</p>
+      <div class="scope-picks">
+        <button type="button" class="btn ghost sm" data-pick-id="25" data-pick-name="Pikachu">Pikachu</button>
+        <button type="button" class="btn ghost sm" data-pick-id="6" data-pick-name="Charizard">Charizard</button>
+        <button type="button" class="btn ghost sm" data-pick-id="150" data-pick-name="Mewtwo">Mewtwo</button>
+      </div>
+      <p class="scope-inst" data-inst></p>
+    </div>
+    <div class="scope-user" data-user="b">
+      <strong>Elev B</strong>
+      <p class="scope-pick" data-pick>Favorit: —</p>
+      <div class="scope-picks">
+        <button type="button" class="btn ghost sm" data-pick-id="25" data-pick-name="Pikachu">Pikachu</button>
+        <button type="button" class="btn ghost sm" data-pick-id="6" data-pick-name="Charizard">Charizard</button>
+        <button type="button" class="btn ghost sm" data-pick-id="150" data-pick-name="Mewtwo">Mewtwo</button>
+      </div>
+      <p class="scope-inst" data-inst></p>
+    </div>
+  </div>
+  <p class="scope-battle-verdict" data-verdict aria-live="polite"></p>
+</section>
+
+<div class="teori-callout">
+  <p><strong>Tre konkrete eksempler I kan huske til censor:</strong></p>
+  <ol class="teori-inline-ol">
+    <li><code>IFavoriteStore</code> med <code>SelectedId</code> → <strong>Scoped</strong> (brugerstate).</li>
+    <li><code>IPokemonTypeCache</code> der loader types én gang fra API → <strong>Singleton</strong> (delt, read-only).</li>
+    <li><code>ILolRegionPreference</code> («EUW» / «NA») i memory → <strong>Scoped</strong>. Samme klasse som Singleton? Så ser Elev B Elev A’s region.</li>
+  </ol>
+</div>
+
+<pre class="teori-code language-csharp">// Samme klasse — lifetime afgør adfærd mellem brugere
+public sealed class FavoriteStore : IFavoriteStore
+{
+    public string? SelectedName { get; private set; }
+    public void Set(string name) =&gt; SelectedName = name;
+}
+
+// ✅ Isoleret per Blazor Server-circuit / HTTP-scope
+builder.Services.AddScoped&lt;IFavoriteStore, FavoriteStore&gt;();
+
+// ❌ Alle samtidige brugere deler SelectedName
+// builder.Services.AddSingleton&lt;IFavoriteStore, FavoriteStore&gt;();
+
+// ✅ Singleton er rigtigt når der IKKE er brugerfelter:
+builder.Services.AddSingleton&lt;IPokemonTypeCache, PokemonTypeCache&gt;();</pre>
+
+<p><strong>Blazor WASM-nuance:</strong> I ren WASM kører DI i browseren — Singleton er «pr. fane», ikke «pr. elev på serveren». Scoped vs Singleton betyder stadig noget (nye scopes ved navigation), men den klassiske «Elev A stjæler Elev B»-bug er især Blazor <em>Server</em> / delt ASP.NET-host. På Server: to browsere = to circuits = Scoped adskiller dem; Singleton gør ikke.</p>
+
 <h2 id="ihttpclientfactory-og-typed-client">IHttpClientFactory og typed client</h2>
 <p>Typed clients er klasser der tager <code>HttpClient</code> i konstruktoren og kapsler endpoints. Factory’en håndterer levetid af handlers.</p>
 <pre class="teori-code language-csharp">builder.Services.AddHttpClient&lt;ILolService, LolService&gt;(client =&gt;
@@ -252,13 +353,13 @@ builder.Services.AddSingleton&lt;IPokemonTypeCache, PokemonTypeCache&gt;();</pre
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
-<script src="/teori/anim.js?v=20261015ix"></script>
-<script src="/teori/progress.js?v=20261015ix"></script>
+<script src="/teori/anim.js?v=20261015ss"></script>
+<script src="/teori/progress.js?v=20261015ss"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015ix"></script>
+<script src="/teori/highlight.js?v=20261015ss"></script>
 </body>
 </html>

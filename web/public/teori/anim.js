@@ -783,6 +783,89 @@
     });
   }
 
+  /* ——— Scoped vs Singleton two-user battle ——— */
+  function initScopeBattle(root) {
+    let mode = "scoped";
+    const stores = {
+      scoped: { a: { name: null, id: 401 }, b: { name: null, id: 402 } },
+      singleton: { shared: { name: null, id: 900 } },
+    };
+    const verdict = root.querySelector("[data-verdict]");
+
+    function storeFor(user) {
+      if (mode === "singleton") return stores.singleton.shared;
+      return stores.scoped[user];
+    }
+
+    function paint() {
+      ["a", "b"].forEach((user) => {
+        const box = root.querySelector(`[data-user="${user}"]`);
+        if (!box) return;
+        const s = storeFor(user);
+        const pick = box.querySelector("[data-pick]");
+        const inst = box.querySelector("[data-inst]");
+        if (pick) pick.textContent = s.name ? `Favorit: ${s.name}` : "Favorit: —";
+        if (inst) {
+          inst.textContent =
+            mode === "singleton"
+              ? `instance #${s.id} (delt)`
+              : `instance #${s.id} (egen)`;
+        }
+        box.classList.toggle("leaked", mode === "singleton" && !!s.name);
+      });
+
+      const a = storeFor("a").name;
+      const b = storeFor("b").name;
+      if (!verdict) return;
+      if (!a && !b) {
+        verdict.textContent = "Vælg Pokémon for Elev A eller B.";
+        verdict.className = "scope-battle-verdict";
+        return;
+      }
+      if (mode === "scoped") {
+        verdict.textContent =
+          a && b && a === b
+            ? "Scoped: samme favorit-navn — men hver sin instance. A’s Set rører ikke B’s store."
+            : "Scoped: Elev A og Elev B har hver sin FavoriteStore. Ingen læk.";
+        verdict.className = "scope-battle-verdict ok";
+      } else {
+        verdict.textContent =
+          "Singleton: begge ser samme store. Når den ene vælger, overskrives den andens favorit.";
+        verdict.className = "scope-battle-verdict bad";
+      }
+    }
+
+    root.querySelectorAll("[data-battle-mode]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        mode = btn.dataset.battleMode;
+        root.querySelectorAll("[data-battle-mode]").forEach((b) =>
+          b.classList.toggle("active", b === btn)
+        );
+        paint();
+      });
+    });
+
+    root.querySelectorAll("[data-user]").forEach((box) => {
+      const user = box.dataset.user;
+      box.querySelectorAll("[data-pick-id]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const s = storeFor(user);
+          s.name = btn.dataset.pickName;
+          paint();
+        });
+      });
+    });
+
+    root.querySelector('[data-action="battle-reset"]')?.addEventListener("click", () => {
+      stores.scoped.a.name = null;
+      stores.scoped.b.name = null;
+      stores.singleton.shared.name = null;
+      paint();
+    });
+
+    paint();
+  }
+
   function boot() {
     document.querySelectorAll("[data-http-sim]").forEach(initHttpSim);
     document.querySelectorAll("[data-hosting-anim]").forEach(initHosting);
@@ -800,6 +883,7 @@
     document.querySelectorAll("[data-event-flow]").forEach(initEventFlow);
     document.querySelectorAll("[data-query-lab]").forEach(initQueryLab);
     document.querySelectorAll("[data-reveal-lab]").forEach(initReveal);
+    document.querySelectorAll("[data-scope-battle]").forEach(initScopeBattle);
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
