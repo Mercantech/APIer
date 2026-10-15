@@ -1,0 +1,583 @@
+/* Shared teori widgets: quiz, labs, trees, timelines */
+
+.teori-goals {
+  margin: 0 0 1rem;
+  padding: 0.95rem 1.05rem;
+  border-radius: 12px;
+  border: 1px solid rgba(96, 165, 250, 0.28);
+  background: rgba(96, 165, 250, 0.07);
+}
+
+.teori-goals h2 {
+  margin: 0 0 0.45rem;
+  font-size: 1rem;
+}
+
+.teori-goals ul {
+  margin: 0;
+}
+
+.teori-pitfall {
+  border-color: rgba(240, 160, 106, 0.4);
+  background: rgba(240, 160, 106, 0.08);
+}
+
+.teori-pitfall::before {
+  content: "Faldgrube";
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #f0a06a;
+  margin-bottom: 0.35rem;
+}
+
+.teori-quiz {
+  margin: 0.75rem 0 1.25rem;
+  padding: 1.05rem 1.1rem 1.15rem;
+  border-radius: 16px;
+  border: 1px solid rgba(167, 139, 250, 0.28);
+  background:
+    radial-gradient(ellipse 70% 50% at 10% 0%, rgba(167, 139, 250, 0.1), transparent 55%),
+    rgba(7, 16, 24, 0.85);
+}
+
+.teori-quiz h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1.02rem;
+}
+
+.teori-quiz > p {
+  margin: 0 0 0.85rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.quiz-options {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.quiz-options button {
+  text-align: left;
+  font: inherit;
+  font-size: 0.9rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: rgba(18, 32, 51, 0.8);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 140ms ease, background 140ms ease;
+}
+
+.quiz-options button:hover {
+  border-color: rgba(167, 139, 250, 0.45);
+}
+
+.quiz-options button.is-correct {
+  border-color: rgba(61, 214, 198, 0.55);
+  background: rgba(61, 214, 198, 0.12);
+}
+
+.quiz-options button.is-wrong {
+  border-color: rgba(244, 114, 114, 0.55);
+  background: rgba(244, 114, 114, 0.1);
+}
+
+.quiz-feedback {
+  margin: 0.75rem 0 0;
+  min-height: 1.3em;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.quiz-feedback.ok {
+  color: #3dd6c6;
+}
+
+.quiz-feedback.bad {
+  color: #f47272;
+}
+
+/* Bind lab */
+.bind-lab {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.bind-lab-row {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.bind-lab label {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.bind-lab input {
+  font: inherit;
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #071018;
+  color: var(--text);
+}
+
+.bind-preview {
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: 1px dashed rgba(61, 214, 198, 0.35);
+  background: rgba(61, 214, 198, 0.06);
+}
+
+.bind-preview strong {
+  color: var(--accent);
+}
+
+.bind-code {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--muted);
+  white-space: pre-wrap;
+}
+
+/* Lifecycle */
+.life-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0 0 0.75rem;
+  padding: 0;
+  list-style: none;
+}
+
+.life-steps button,
+.life-steps li {
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.4rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  cursor: default;
+}
+
+.life-steps button {
+  cursor: pointer;
+}
+
+.life-steps button.active,
+.life-steps button.done,
+.life-steps li.active,
+.life-steps li.done {
+  color: var(--ink);
+  background: var(--accent);
+  border-color: transparent;
+}
+
+.async-steps {
+  margin: 0.75rem 0 0;
+  padding-left: 1.2rem;
+}
+
+.async-steps li {
+  margin: 0.35rem 0;
+  color: var(--muted);
+  transition: color 160ms ease, transform 160ms ease;
+}
+
+.async-steps li.active {
+  color: var(--accent);
+  font-weight: 600;
+  transform: translateX(4px);
+}
+
+.async-steps li.done {
+  color: #9fd68a;
+}
+
+.file-tree-list {
+  list-style: none;
+  margin: 0 0 0.75rem;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.form-lab-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  align-items: end;
+  margin-bottom: 0.5rem;
+}
+
+.form-lab-form label {
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.84rem;
+  color: var(--muted);
+  flex: 1;
+  min-width: 12rem;
+}
+
+.form-lab-form input {
+  font: inherit;
+  padding: 0.5rem 0.7rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #071018;
+  color: var(--text);
+}
+
+.form-lab-msg {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--muted);
+  min-height: 1.3em;
+}
+
+.xss-output {
+  margin-top: 0.65rem;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: #071018;
+  min-height: 2.8rem;
+  word-break: break-word;
+}
+
+.bind-lab-label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.84rem;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+
+.bind-lab-label input {
+  font: inherit;
+  padding: 0.5rem 0.7rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #071018;
+  color: var(--text);
+}
+
+.life-log {
+  margin: 0;
+  padding: 0.75rem 0.85rem;
+  border-radius: 10px;
+  background: #071018;
+  border: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  line-height: 1.55;
+  color: #d7e6f5;
+  min-height: 5.5rem;
+  white-space: pre-wrap;
+}
+
+/* DI lab */
+.di-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.55rem;
+  margin-bottom: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .di-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.di-card {
+  padding: 0.75rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: rgba(18, 32, 51, 0.75);
+  text-align: center;
+}
+
+.di-card strong {
+  display: block;
+  font-size: 0.88rem;
+  margin-bottom: 0.35rem;
+}
+
+.di-card .di-id {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--accent);
+  min-height: 1.2em;
+}
+
+.di-log {
+  margin: 0.5rem 0 0;
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  color: var(--muted);
+  white-space: pre-wrap;
+  min-height: 3.2em;
+}
+
+/* Form lab */
+.form-lab {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.form-lab input {
+  font: inherit;
+  padding: 0.55rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #071018;
+  color: var(--text);
+}
+
+.form-lab input.is-invalid {
+  border-color: #f47272;
+}
+
+.form-lab .form-err {
+  color: #f47272;
+  font-size: 0.82rem;
+  min-height: 1.2em;
+}
+
+.form-lab .form-ok {
+  color: #3dd6c6;
+  font-size: 0.88rem;
+}
+
+/* Async timeline */
+.async-track {
+  position: relative;
+  display: grid;
+  gap: 0.55rem;
+  margin: 0.5rem 0;
+}
+
+.async-row {
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+  gap: 0.65rem;
+  align-items: center;
+}
+
+.async-row span.label {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.async-bar {
+  position: relative;
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.async-bar i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #3dd6c6, #60a5fa);
+  transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.async-bar i.ui {
+  background: linear-gradient(90deg, #a78bfa, #60a5fa);
+}
+
+.async-bar i.wait {
+  background: linear-gradient(90deg, #f0a06a, #f47272);
+}
+
+.async-note {
+  margin: 0.35rem 0 0;
+  font-size: 0.84rem;
+  color: var(--muted);
+}
+
+/* XSS lab */
+.xss-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .xss-split {
+    grid-template-columns: 1fr;
+  }
+}
+
+.xss-pane {
+  padding: 0.85rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: rgba(18, 32, 51, 0.75);
+  min-height: 4.5rem;
+}
+
+.xss-pane h4 {
+  margin: 0 0 0.45rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.xss-pane .xss-out {
+  font-size: 0.95rem;
+  word-break: break-word;
+}
+
+.xss-pane.danger {
+  border-color: rgba(244, 114, 114, 0.4);
+}
+
+/* File tree */
+.file-tree {
+  display: grid;
+  grid-template-columns: minmax(160px, 220px) 1fr;
+  gap: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .file-tree {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tree-list {
+  margin: 0;
+  padding: 0.55rem;
+  list-style: none;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: #071018;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+}
+
+.tree-list button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  padding: 0.35rem 0.45rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.tree-list button:hover,
+.tree-list button.active {
+  color: var(--accent);
+  background: rgba(61, 214, 198, 0.08);
+}
+
+.tree-list .indent {
+  padding-left: 1rem;
+}
+
+.tree-detail {
+  margin: 0;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: rgba(18, 32, 51, 0.75);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.tree-detail strong {
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+/* Box model visual */
+.box-model {
+  display: grid;
+  place-items: center;
+  padding: 0.5rem;
+}
+
+.box-margin,
+.box-border,
+.box-padding,
+.box-content {
+  border-radius: 8px;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+}
+
+.box-margin {
+  padding: 1rem;
+  background: rgba(240, 160, 106, 0.15);
+  border: 1px dashed rgba(240, 160, 106, 0.5);
+  color: #f0a06a;
+}
+
+.box-border {
+  padding: 0.85rem;
+  background: rgba(167, 139, 250, 0.15);
+  border: 2px solid rgba(167, 139, 250, 0.55);
+  color: #c4b5fd;
+}
+
+.box-padding {
+  padding: 0.85rem;
+  background: rgba(96, 165, 250, 0.15);
+  color: #93c5fd;
+}
+
+.box-content {
+  padding: 1.1rem 1.4rem;
+  background: rgba(61, 214, 198, 0.2);
+  color: #3dd6c6;
+  font-weight: 600;
+}
+
+.teori-lesson {
+  max-width: 880px;
+}
+
+.teori-toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0 0 1rem;
+}
+
+.teori-toc a {
+  font-size: 0.78rem;
+  padding: 0.28rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.teori-toc a:hover {
+  color: var(--accent);
+  border-color: rgba(61, 214, 198, 0.4);
+}

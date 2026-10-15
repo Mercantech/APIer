@@ -4,15 +4,16 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Projekt-opsætning — Teori</title>
-<meta name="description" content="Opret en Blazor Web App, forstå filstrukturen og gør projektet Docker-klar." />
+<meta name="description" content="Opret en Blazor Web App, forstå filstrukturen, Program.cs og gør projektet Docker-klar." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015hl3" />
-<link rel="stylesheet" href="/demo.css?v=20261015hl3" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015hl3" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015hl3" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015hl3" />
+<link rel="stylesheet" href="/styles.css?v=20261015mega" />
+<link rel="stylesheet" href="/demo.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015mega" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -27,43 +28,141 @@
 <header class="demo-hero">
 <p class="eyebrow">Visual Studio · .NET 8/10 · Docker</p>
 <div class="teori-brand-row"><img src="/teori/assets/blazor-icon.svg" alt="" width="36" height="36" /><h1 class="brand">Projekt-opsætning</h1></div>
-<p class="lede">Opret en Blazor Web App, forstå filstrukturen og gør projektet Docker-klar.</p>
+<p class="lede">Opret en Blazor Web App, forstå filstrukturen, konfigurer Program.cs til OpgaverAPI, og gør projektet Docker-klar til Dokploy.</p>
 </header>
 <article class="teori-lesson">
 
-<p>Sørg for at Visual Studio har workloaden <strong>ASP.NET and web development</strong> (inkl. Docker-support).</p>
-<figure class="teori-figure"><img src="/teori/assets/vs-workload.png" alt="Visual Studio workload ASP.NET" loading="lazy" /><figcaption>Installer ASP.NET-workloaden.</figcaption></figure>
-<p>Opret projektet med skabelonen <strong>Blazor Web App</strong>. Brug <strong>.NET 8</strong> eller <strong>.NET 10</strong> — ældre .NET 6-guides er forældede.</p>
-<figure class="teori-figure"><img src="/teori/assets/blazor-web-app.png" alt="Vælg Blazor Web App template" loading="lazy" /><figcaption>Vælg Blazor Web App.</figcaption></figure>
-<figure class="teori-figure"><img src="/teori/assets/project-name.png" alt="Navngiv projektet" loading="lazy" /><figcaption>Giv projektet et klart navn.</figcaption></figure>
-<figure class="teori-figure"><img src="/teori/assets/project-options.png" alt="Framework og interactivity-indstillinger" loading="lazy" /><figcaption>Framework, HTTPS, interactivity (ofte Interactive Server / Global).</figcaption></figure>
-<h2>Filstruktur at kende</h2>
-<figure class="teori-figure"><img src="/teori/assets/file-structure.png" alt="Blazor Web App filstruktur" loading="lazy" /><figcaption>wwwroot, Components (Layout + Pages) og Program.cs.</figcaption></figure>
+<h2>Læringsmål</h2>
 <ul>
-<li><strong>wwwroot</strong> — CSS, favicon, statiske assets</li>
-<li><strong>Components/Layout</strong> — fælles layout og NavMenu</li>
-<li><strong>Components/Pages</strong> — sider med <code>@page "/sti"</code></li>
-<li><strong>Program.cs</strong> — starter app, DI, routing, render modes (application lifetime)</li>
+<li>Oprette Blazor Web App med korrekt workload og .NET-version.</li>
+<li>Navigere i Components, wwwroot og Program.cs.</li>
+<li>Tilføje Docker support og forstå env-baseret konfiguration.</li>
+<li>Genkende typiske fejl ved første run (HTTPS, render mode, port).</li>
 </ul>
-<div class="teori-callout"><p>Enable Docker fra starten når I senere deployer til Dokploy — samme vane som resten af Mercantec-stacken.</p></div>
+
+<p>Sørg for at Visual Studio har workloaden <strong>ASP.NET and web development</strong> (inkl. Docker-support). Brug <strong>.NET 8</strong> eller <strong>.NET 10</strong> — undervisningsmaterialet følger Blazor Web App-skabelonen, ikke legacy Blazor Server-only templates.</p>
+<figure class="teori-figure"><img src="/teori/assets/vs-workload.png" alt="Visual Studio workload ASP.NET" loading="lazy" /><figcaption>Installer ASP.NET-workloaden.</figcaption></figure>
+<p>Opret projektet med skabelonen <strong>Blazor Web App</strong>. Vælg HTTPS, «Configure for HTTPS», og interactivity: typisk <strong>Interactive Server</strong> globalt.</p>
+<figure class="teori-figure"><img src="/teori/assets/blazor-web-app.png" alt="Vælg Blazor Web App template" loading="lazy" /><figcaption>Vælg Blazor Web App.</figcaption></figure>
+<figure class="teori-figure"><img src="/teori/assets/project-name.png" alt="Navngiv projektet" loading="lazy" /><figcaption>Giv projektet et klart navn (fx PokemonDex).</figcaption></figure>
+<figure class="teori-figure"><img src="/teori/assets/project-options.png" alt="Framework og interactivity-indstillinger" loading="lazy" /><figcaption>Framework, HTTPS, interactivity.</figcaption></figure>
+
+<h2>Filstruktur — interaktivt træ</h2>
+<section class="teori-anim" data-file-tree aria-label="Projektfiler">
+  <div class="teori-anim-head">
+    <h3>Klik en fil</h3>
+    <p>Få en kort forklaring på rollen i et OpgaverAPI-venligt projekt.</p>
+  </div>
+  <ul class="file-tree-list">
+    <li><button type="button" class="btn ghost sm" data-file="program">Program.cs</button></li>
+    <li><button type="button" class="btn ghost sm" data-file="appsettings">appsettings.json</button></li>
+    <li><button type="button" class="btn ghost sm" data-file="apprazor">Components/App.razor</button></li>
+    <li><button type="button" class="btn ghost sm" data-file="routes">Components/Routes.razor</button></li>
+    <li><button type="button" class="btn ghost sm" data-file="layout">Components/Layout/MainLayout.razor</button></li>
+    <li><button type="button" class="btn ghost sm" data-file="pages">Components/Pages/*.razor</button></li>
+    <li><button type="button" class="btn ghost sm" data-file="wwwroot">wwwroot/</button></li>
+    <li><button type="button" class="btn ghost sm" data-file="docker">Dockerfile</button></li>
+  </ul>
+  <div class="tree-detail" aria-live="polite"><p class="tok-dim">Vælg en fil ovenfor.</p></div>
+</section>
+
+<figure class="teori-figure"><img src="/teori/assets/file-structure.png" alt="Blazor Web App filstruktur" loading="lazy" /><figcaption>Oversigt fra Visual Studio.</figcaption></figure>
+
+<h2>Program.cs forklaret</h2>
+<p>Program.cs er indgangen: DI-container, middleware pipeline, endpoint mapping.</p>
+<pre class="teori-code language-csharp">var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
+
+// Senere: HttpClient til OpgaverAPI
+builder.Services.AddHttpClient("opgaver", c =&gt;
+{
+    c.BaseAddress = new Uri(builder.Configuration["OpgaverApi:BaseUrl"]!);
+});
+
+var app = builder.Build();
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Error", createScopeForErrors: true);
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseAntiforgery();
+app.MapStaticAssets();
+app.MapRazorComponents&lt;App&gt;()
+    .AddInteractiveServerRenderMode();
+
+app.Run();</pre>
+
+<p><code>MapRazorComponents&lt;App&gt;</code> kobler routing til jeres komponenter. Antiforgery beskytter forms. Static assets serverer CSS fra wwwroot.</p>
+
+<h2>appsettings og secrets</h2>
+<pre class="teori-code language-json">{
+  "OpgaverApi": {
+    "BaseUrl": "https://api-opgaver.mercantec.tech"
+  }
+}</pre>
+<p>API-nøgler og OAuth secrets hører <strong>ikke</strong> i appsettings der committes — brug user secrets lokalt og env vars i Docker/Dokploy.</p>
+
+<h2>Docker</h2>
+<p>Højreklik projekt → Add → Docker Support. Dockerfile multi-stage build: restore, publish, runtime image. I Dokploy deployes typisk med <code>docker compose up -d --build</code> — samme mønster som APIer-repoet (web offentlig, api/db intern).</p>
+<div class="teori-callout"><p>Enable Docker tidligt. Det tvinger jer til at tænke porte, miljøvariabler og at appen ikke afhænger af «kun min maskine».</p></div>
+
+<h2>Typiske fejl ved første run</h2>
+<ul>
+<li><strong>HTTPS certificate</strong> — trust dev cert (<code>dotnet dev-certs https --trust</code>).</li>
+<li><strong>Tom interaktiv side</strong> — mangler render mode eller <code>AddInteractiveServerRenderMode</code>.</li>
+<li><strong>CORS</strong> — opstår når I kalder API fra forkert origin; Blazor Server kalder ofte server-side (mindre CORS), WASM kalder fra browser (CORS skal passe).</li>
+<li><strong>Hardcoded localhost API</strong> — virker ikke i container; brug config.</li>
+</ul>
+
+<div class="teori-callout"><p><strong>Faldgrube:</strong> At lægge <code>Components/Pages</code> udenfor namespace eller uden <code>@page</code> — siden vises ikke i routing. Tjek Routes.razor og at filen ligger under scannet assembly.</p></div>
+
+<section class="teori-quiz" data-quiz data-correct="2">
+  <h3>Quiz 1</h3>
+  <p class="quiz-prompt">Hvor registrerer I HttpClient og render modes?</p>
+  <div class="quiz-options">
+    <button type="button" class="btn ghost sm" data-q="0">NavMenu.razor</button>
+    <button type="button" class="btn ghost sm" data-q="1">wwwroot/index.html</button>
+    <button type="button" class="btn ghost sm" data-q="2">Program.cs</button>
+  </div>
+  <p class="quiz-feedback" aria-live="polite"></p>
+</section>
+
+<section class="teori-quiz" data-quiz data-correct="1">
+  <h3>Quiz 2</h3>
+  <p class="quiz-prompt">Hvor ligger statiske CSS-filer og favicon?</p>
+  <div class="quiz-options">
+    <button type="button" class="btn ghost sm" data-q="0">Components/Layout</button>
+    <button type="button" class="btn ghost sm" data-q="1">wwwroot</button>
+    <button type="button" class="btn ghost sm" data-q="2">Properties</button>
+  </div>
+  <p class="quiz-feedback" aria-live="polite"></p>
+</section>
+
 <section class="teori-ms"><h2>Læs hos Microsoft</h2><ul>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/tutorials/build-a-blazor-app" rel="noreferrer">Build a Blazor app</a></li>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/tooling" rel="noreferrer">Blazor tooling</a></li>
+<li><a href="https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/docker" rel="noreferrer">Docker and ASP.NET Core</a></li>
 </ul></section>
-<section class="teori-try"><h2>Eksempler</h2><ul>
-<li><a href="https://github.com/MAGS-Template/BlazorEksempler" rel="noreferrer">MAGS BlazorEksempler</a></li>
-<li><a href="https://github.com/MAGS-Template/H1-Eksempler" rel="noreferrer">H1-Eksempler</a> · <a href="https://github.com/MAGS-Template/H2-Eksempler" rel="noreferrer">H2-Eksempler</a></li>
+<section class="teori-try"><h2>Prøv med API</h2><ul>
+<li><a href="https://github.com/MAGS-Template/BlazorEksempler" rel="noreferrer">MAGS BlazorEksempler</a> · <a href="https://github.com/MAGS-Template/H1-Eksempler" rel="noreferrer">H1-Eksempler</a></li>
+<li>Opret en tom side <code>/pokemon</code> og planlæg HttpClient-registrering i Program.cs.</li>
 </ul></section>
 <section class="teori-tags" aria-label="Målpinde"><span class="teori-tag">16475 #8</span><span class="teori-tag">16475 #12</span></section>
 <nav class="teori-nav-lessons"><a class="btn ghost sm" href="/teori/intro-hosting/">← Intro</a><a class="btn primary sm" href="/teori/razor-html-css/">Razor & HTML/CSS →</a></nav>
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
+<script src="/teori/anim.js?v=20261015mega"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015hl3"></script>
+<script src="/teori/highlight.js?v=20261015mega"></script>
 </body>
 </html>

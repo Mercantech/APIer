@@ -4,15 +4,16 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Forms med EditForm — Teori</title>
-<meta name="description" content="Indsaml brugerinput med EditForm, InputText og model-klasser — OOP-struktur frem for løse DOM-felter." />
+<meta name="description" content="EditForm, DataAnnotations, ValidationMessage, EditContext og model vs viewmodel." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015hl3" />
-<link rel="stylesheet" href="/demo.css?v=20261015hl3" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015hl3" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015hl3" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015hl3" />
+<link rel="stylesheet" href="/styles.css?v=20261015mega" />
+<link rel="stylesheet" href="/demo.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015mega" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -27,52 +28,140 @@
 <header class="demo-hero">
 <p class="eyebrow">EditForm · binding · validering</p>
 <div class="teori-brand-row"><img src="/teori/assets/blazor-icon.svg" alt="" width="36" height="36" /><h1 class="brand">Forms med EditForm</h1></div>
-<p class="lede">Indsaml brugerinput med EditForm, InputText og model-klasser — OOP-struktur frem for løse DOM-felter.</p>
+<p class="lede">Indsaml brugerinput med EditForm, InputText, DataAnnotations og ValidationMessage — struktureret OOP før I poster søgninger mod OpgaverAPI.</p>
 </header>
 <article class="teori-lesson">
 
-<p>I Blazor samler I formularer med <code>&lt;EditForm&gt;</code>. Den kræver en <strong>model</strong> (klasse) og et callback som <code>OnValidSubmit</code>. Det tvinger jer til klar OOP — tungt i starten, stærkt når projektet vokser.</p>
-<pre class="teori-code">@page "/soeg"
-@using System.ComponentModel.DataAnnotations
+<h2>Læringsmål</h2>
+<ul>
+<li>Opbygge forms med <code>EditForm</code>, <code>OnValidSubmit</code> og input-komponenter.</li>
+<li>Validere med DataAnnotations og vise fejl med <code>ValidationMessage</code>.</li>
+<li>Skelne mellem model-klasse og <code>EditContext</code> til avanceret validering.</li>
+<li>Forhindre submit når data er ugyldige (min længde, required).</li>
+</ul>
 
-&lt;EditForm Model="form" OnValidSubmit="HandleValidSubmit"&gt;
+<p>I Blazor samler I formularer med <code>&lt;EditForm&gt;</code>. Den kræver en <strong>model</strong> og callbacks som <code>OnValidSubmit</code> / <code>OnInvalidSubmit</code>. Det tvinger jer til tydelige typer — godt når I senere mapper til API-DTO’er.</p>
+
+<section class="teori-anim" data-form-lab aria-label="Formular-laboratorium">
+  <div class="teori-anim-head">
+    <h3>Mini-form (min. 2 tegn)</h3>
+    <p>Skriv et Pokémon-navn og submit — labben simulerer client-validering før API-kald.</p>
+  </div>
+  <form class="form-lab-form">
+    <label>Pokémon-navn <input type="text" name="query" minlength="2" required placeholder="pi" /></label>
+    <button type="submit" class="btn primary sm">Søg API</button>
+  </form>
+  <p class="form-lab-msg" aria-live="polite"></p>
+</section>
+
+<pre class="teori-code">@page "/soeg-pokemon"
+@using System.ComponentModel.DataAnnotations
+@inject IPokemonService Pokemon
+
+&lt;EditForm Model="form" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="OnBad"&gt;
   &lt;DataAnnotationsValidator /&gt;
   &lt;ValidationSummary /&gt;
-  &lt;InputText id="q" @bind-Value="form.Query" /&gt;
-  &lt;button type="submit"&gt;Søg&lt;/button&gt;
+
+  &lt;div class="mb-3"&gt;
+    &lt;label for="q"&gt;Navn&lt;/label&gt;
+    &lt;InputText id="q" class="form-control" @bind-Value="form.Query" /&gt;
+    &lt;ValidationMessage For="@(() =&gt; form.Query)" /&gt;
+  &lt;/div&gt;
+
+  &lt;button type="submit" class="btn primary"&gt;Hent fra API&lt;/button&gt;
 &lt;/EditForm&gt;
+
+@if (results?.Count &gt; 0)
+{
+  &lt;ul&gt;@foreach (var p in results) { &lt;li&gt;@p.Name&lt;/li&gt; }&lt;/ul&gt;
+}
 
 @code {
   private SearchForm form = new();
+  List&lt;PokemonDto&gt;? results;
 
-  private void HandleValidSubmit()
+  private async Task HandleValidSubmit()
   {
-    // kald API med form.Query
+    results = await Pokemon.SearchByNameAsync(form.Query);
   }
+
+  private void OnBad() =&gt; results = null;
 
   public class SearchForm
   {
-    [Required, MinLength(2)]
+    [Required(ErrorMessage = "Navn er påkrævet")]
+    [MinLength(2, ErrorMessage = "Mindst 2 tegn")]
     public string Query { get; set; } = "";
   }
 }</pre>
-<p>Flyt gerne model-klasser til et class library / <code>Models</code>-mappe i stedet for at gemme dem inde i <code>@code</code>.</p>
+
+<h2>DataAnnotations</h2>
+<p>Attributter på properties: <code>[Required]</code>, <code>[MinLength]</code>, <code>[Range]</code>, <code>[EmailAddress]</code>, <code>[RegularExpression]</code>. <code>DataAnnotationsValidator</code> kobler dem til EditContext.</p>
+<pre class="teori-code language-csharp">public class ApiKeyForm
+{
+  [Required, StringLength(64, MinimumLength = 8)]
+  public string KeyLabel { get; set; } = "";
+}</pre>
+
+<h2>ValidationMessage vs Summary</h2>
+<ul>
+<li><code>ValidationMessage For="..."</code> — felt-specifik fejl ved input</li>
+<li><code>ValidationSummary</code> — liste øverst i form</li>
+</ul>
+
+<h2>EditContext (avanceret)</h2>
+<p>Når I skal validere på tværs af felter (fx «slutdato efter startdato»), opret I EditContext manuelt og lytter på <code>OnValidationRequested</code>.</p>
+<pre class="teori-code">var editContext = new EditContext(model);
+&lt;EditForm EditContext="editContext" OnValidSubmit="Submit"&gt;
+  ...
+&lt;/EditForm&gt;</pre>
+
+<div class="teori-callout"><p><strong>Faldgrube:</strong> At bruge plain <code>&lt;input&gt;</code> uden <code>InputText</code> / <code>@bind</code> korrekt — EditContext opdateres ikke, og validering kører på gammel state. Brug Blazor input-komponenter eller <code>@bind</code> med korrekt event.</p></div>
+
+<h2>Model vs API-DTO</h2>
+<p>Form-model behøver ikke matche JSON 1:1. Map i <code>OnValidSubmit</code> til det DTO I sender med POST — fx opret favorit-Pokémon med kun <code>name</code> og <code>id</code>.</p>
+
+<section class="teori-quiz" data-quiz data-correct="2">
+  <h3>Quiz 1</h3>
+  <p class="quiz-prompt">Hvornår kører <code>OnValidSubmit</code>?</p>
+  <div class="quiz-options">
+    <button type="button" class="btn ghost sm" data-q="0">Ved hvert tastetryk</button>
+    <button type="button" class="btn ghost sm" data-q="1">Altid ved submit uanset fejl</button>
+    <button type="button" class="btn ghost sm" data-q="2">Kun når DataAnnotations-validering passerer</button>
+  </div>
+  <p class="quiz-feedback" aria-live="polite"></p>
+</section>
+
+<section class="teori-quiz" data-quiz data-correct="1">
+  <h3>Quiz 2</h3>
+  <p class="quiz-prompt">Hvilken komponent viser fejl for ét felt?</p>
+  <div class="quiz-options">
+    <button type="button" class="btn ghost sm" data-q="0">ValidationSummary alene</button>
+    <button type="button" class="btn ghost sm" data-q="1">ValidationMessage med For=</button>
+    <button type="button" class="btn ghost sm" data-q="2">NavLink</button>
+  </div>
+  <p class="quiz-feedback" aria-live="polite"></p>
+</section>
+
 <section class="teori-ms"><h2>Læs hos Microsoft</h2><ul>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/forms-and-input-components" rel="noreferrer">Forms and input components</a></li>
+<li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/forms/validation" rel="noreferrer">Form validation</a></li>
 </ul></section>
 <section class="teori-try"><h2>Prøv med API</h2><ul>
-<li>Lav en søgeformular der kalder <code>/go/pokemon?name=...</code> eller <a href="/demo/countries">Countries</a>.</li>
+<li>Søgeformular mod <code>/go/pokemon?name=...</code> eller <a href="/demo/countries">Countries</a>.</li>
+<li>Tilføj validering så tom streng ikke sender unødigt HTTP-kald.</li>
 </ul></section>
 <section class="teori-tags" aria-label="Målpinde"><span class="teori-tag">16476 #5</span><span class="teori-tag">16475 #4</span><span class="teori-tag">16475 #5</span></section>
 <nav class="teori-nav-lessons"><a class="btn ghost sm" href="/teori/razor-html-css/">← Razor</a><a class="btn primary sm" href="/teori/komponenter-events/">Komponenter →</a></nav>
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
+<script src="/teori/anim.js?v=20261015mega"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015hl3"></script>
+<script src="/teori/highlight.js?v=20261015mega"></script>
 </body>
 </html>

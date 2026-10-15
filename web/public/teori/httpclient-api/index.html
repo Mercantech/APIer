@@ -4,15 +4,16 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>HttpClient og API-kald — Teori</title>
-<meta name="description" content="Kald OpgaverAPI asynkront fra Blazor med HttpClient — CRUD over HTTP i stedet for jQuery AJAX." />
+<meta name="description" content="HttpClient, async/await, fejlhåndtering, DTO og typed clients mod OpgaverAPI." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015hl3" />
-<link rel="stylesheet" href="/demo.css?v=20261015hl3" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015hl3" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015hl3" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015hl3" />
+<link rel="stylesheet" href="/styles.css?v=20261015mega" />
+<link rel="stylesheet" href="/demo.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015mega" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -27,11 +28,19 @@
 <header class="demo-hero">
 <p class="eyebrow">GET · POST · X-Api-Key · async</p>
 <div class="teori-brand-row"><img src="/teori/assets/blazor-icon.svg" alt="" width="36" height="36" /><h1 class="brand">HttpClient og API-kald</h1></div>
-<p class="lede">Kald OpgaverAPI asynkront fra Blazor med HttpClient — CRUD over HTTP i stedet for jQuery AJAX.</p>
+<p class="lede">Kald OpgaverAPI asynkront med HttpClient — CRUD over HTTP, DTO’er, typed clients og robust fejlhåndtering.</p>
 </header>
 <article class="teori-lesson">
 
-<p>CRUD over HTTP mapper til <code>POST</code> / <code>GET</code> / <code>PUT</code> / <code>DELETE</code>. I Blazor bruger I <code>HttpClient</code> (gerne via DI), ikke <code>new HttpClient()</code> overalt i produktion.</p>
+<h2>Læringsmål</h2>
+<ul>
+<li>Mappe CRUD til HTTP-metoder mod REST API.</li>
+<li>Bruge <code>GetFromJsonAsync</code>, <code>PostAsJsonAsync</code> med DTO/records.</li>
+<li>Håndtere <code>HttpRequestException</code>, statuskoder og tomme svar.</li>
+<li>Registrere typed HttpClient i Program.cs (se DI-lektion).</li>
+</ul>
+
+<p>CRUD over HTTP: <code>POST</code> create, <code>GET</code> read, <code>PUT/PATCH</code> update, <code>DELETE</code> delete. I Blazor er kaldene async — UI-tråden blokeres ikke mens I venter på Pokémon-JSON.</p>
 
 <section class="teori-anim" data-http-sim aria-label="Client-server HTTP-animation">
   <div class="teori-anim-head">
@@ -52,11 +61,29 @@
   <pre class="cs-log" aria-live="polite"><span class="tok-dim"># Vælg scenarie og tryk Afspil</span></pre>
 </section>
 
+<section class="teori-anim" data-async-lab aria-label="Async tidslinje">
+  <div class="teori-anim-head">
+    <h3>Async-tidslinje</h3>
+    <p>Se rækkefølgen: UI viser loading → await HTTP → UI opdateres med resultat.</p>
+  </div>
+  <button type="button" class="btn primary sm" data-action="play">Afspil async-timeline</button>
+  <ol class="async-steps" aria-live="polite">
+    <li data-async-step="1">Bruger klikker «Hent Pokémon»</li>
+    <li data-async-step="2">loading = true (render)</li>
+    <li data-async-step="3">await GetFromJsonAsync — tråd frigives</li>
+    <li data-async-step="4">JSON deserialiseres til List&lt;PokeDto&gt;</li>
+    <li data-async-step="5">loading = false, liste vises</li>
+  </ol>
+</section>
+
 <figure class="teori-figure"><img src="/teori/assets/http-crud.png" alt="CRUD til HTTP-metoder" loading="lazy" /><figcaption>CRUD ↔ HTTP-metoder.</figcaption></figure>
+
 <pre class="teori-code">@page "/pokemon"
 @inject HttpClient Http
 
-&lt;button @onclick="Load"&gt;Hent Pokémon&lt;/button&gt;
+&lt;button @onclick="Load" disabled="@loading"&gt;Hent Pokémon&lt;/button&gt;
+@if (loading) { &lt;p&gt;Henter…&lt;/p&gt; }
+@if (error is not null) { &lt;p class="err"&gt;@error&lt;/p&gt; }
 @if (items is not null)
 {
   &lt;ul&gt;@foreach (var p in items) { &lt;li&gt;@p.Name&lt;/li&gt; }&lt;/ul&gt;
@@ -64,35 +91,95 @@
 
 @code {
   List&lt;PokeDto&gt;? items;
+  bool loading;
+  string? error;
 
   async Task Load()
   {
-    items = await Http.GetFromJsonAsync&lt;List&lt;PokeDto&gt;&gt;("/go/pokemon?limit=20");
+    loading = true;
+    error = null;
+    try
+    {
+      items = await Http.GetFromJsonAsync&lt;List&lt;PokeDto&gt;&gt;("/go/pokemon?limit=20");
+    }
+    catch (HttpRequestException ex)
+    {
+      error = $"API fejl: {ex.StatusCode}";
+    }
+    finally { loading = false; }
   }
 
   public record PokeDto(string Name, int Id);
 }</pre>
-<p>Beskyttede endpoints (fx LoL) kræver header <code>X-Api-Key</code> — opret nøgle via kataloget når I er logget ind.</p>
-<pre class="teori-code">Http.DefaultRequestHeaders.Add("X-Api-Key", apiKey);
-var champs = await Http.GetFromJsonAsync&lt;ChampionDto[]&gt;("/LeagueOfLegends/Champions");</pre>
-<div class="teori-callout"><p>Registrér <code>HttpClient</code> i <code>Program.cs</code> med korrekt <code>BaseAddress</code> (fx <code>https://api-opgaver.mercantec.tech</code>) — se Microsofts guide om typed clients / <code>IHttpClientFactory</code>.</p></div>
+
+<h2>DTO og JSON-shape</h2>
+<p>Property-navne skal matche JSON (case-insensitive default). Brug <code>[JsonPropertyName("id")]</code> ved behov. Records er gode til read-only API-data.</p>
+<pre class="teori-code language-csharp">public record ChampionDto(string Id, string Name);
+
+// Explicit check
+var response = await Http.GetAsync("/LeagueOfLegends/Champions");
+if (!response.IsSuccessStatusCode)
+{
+    var body = await response.Content.ReadAsStringAsync();
+    throw new InvalidOperationException($"{response.StatusCode}: {body}");
+}
+var champs = await response.Content.ReadFromJsonAsync&lt;ChampionDto[]&gt;();</pre>
+
+<h2>X-Api-Key og headers</h2>
+<pre class="teori-code">using var request = new HttpRequestMessage(HttpMethod.Get, "/LeagueOfLegends/Champions");
+request.Headers.Add("X-Api-Key", apiKey);
+var response = await Http.SendAsync(request);</pre>
+<p>Bedre: encapsuler i <code>ILolService</code> så komponenter ikke kender header-detaljer.</p>
+
+<h2>Typed client</h2>
+<pre class="teori-code language-csharp">builder.Services.AddHttpClient&lt;IPokemonApi, PokemonApi&gt;(c =&gt;
+    c.BaseAddress = new Uri("https://api-opgaver.mercantec.tech"));</pre>
+
+<div class="teori-callout"><p><strong>Faldgrube:</strong> At læse JSON ind i <code>dynamic</code> eller <code>JsonDocument</code> overalt — det skalerer dårligt. Definér DTO’er; fang mismatches tidligt med tests eller tydelige fejl i UI.</p></div>
+
+<div class="teori-callout"><p><strong>Faldgrube:</strong> Glemt trailing slash i BaseAddress + absolute path — dobbelte eller manglende slashes giver 404. Følg én konvention (base med slash, relative paths uden leading slash).</p></div>
+
+<section class="teori-quiz" data-quiz data-correct="0">
+  <h3>Quiz 1</h3>
+  <p class="quiz-prompt">Hvilken HTTP-metode svarer typisk til «read/list» i REST?</p>
+  <div class="quiz-options">
+    <button type="button" class="btn ghost sm" data-q="0">GET</button>
+    <button type="button" class="btn ghost sm" data-q="1">DELETE</button>
+    <button type="button" class="btn ghost sm" data-q="2">PATCH (altid)</button>
+  </div>
+  <p class="quiz-feedback" aria-live="polite"></p>
+</section>
+
+<section class="teori-quiz" data-quiz data-correct="2">
+  <h3>Quiz 2</h3>
+  <p class="quiz-prompt">LoL-endpoint returnerer 401 — mest sandsynlige årsag?</p>
+  <div class="quiz-options">
+    <button type="button" class="btn ghost sm" data-q="0">Forkert CSS</button>
+    <button type="button" class="btn ghost sm" data-q="1">Manglende @page</button>
+    <button type="button" class="btn ghost sm" data-q="2">Manglende eller ugyldig X-Api-Key</button>
+  </div>
+  <p class="quiz-feedback" aria-live="polite"></p>
+</section>
+
 <section class="teori-ms"><h2>Læs hos Microsoft</h2><ul>
-<li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/call-web-api?view=aspnetcore-10.0" rel="noreferrer">Call a web API from Blazor</a></li>
+<li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/call-web-api" rel="noreferrer">Call a web API from Blazor</a></li>
+<li><a href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-requests" rel="noreferrer">IHttpClientFactory</a></li>
 </ul></section>
 <section class="teori-try"><h2>Prøv med API</h2><ul>
 <li><a href="/">Katalog</a> · <a href="/demo/rickandmorty">Rick and Morty</a> · <a href="/demo/lol">LoL (API-nøgle)</a></li>
+<li>Implementér loading + fejltekst på alle API-sider — ingen «stille» fejl.</li>
 </ul></section>
 <section class="teori-tags" aria-label="Målpinde"><span class="teori-tag">16476 #1</span><span class="teori-tag">16476 #16</span><span class="teori-tag">16475 #15</span></section>
-<nav class="teori-nav-lessons"><a class="btn ghost sm" href="/teori/komponenter-events/">← Komponenter</a><a class="btn primary sm" href="/teori/routing-spa/">Routing →</a></nav>
+<nav class="teori-nav-lessons"><a class="btn ghost sm" href="/teori/livscyklus-state/">← Livscyklus</a><a class="btn primary sm" href="/teori/routing-spa/">Routing →</a></nav>
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
-<script src="/teori/anim.js?v=20261015hl3"></script>
+<script src="/teori/anim.js?v=20261015mega"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015hl3"></script>
+<script src="/teori/highlight.js?v=20261015mega"></script>
 </body>
 </html>

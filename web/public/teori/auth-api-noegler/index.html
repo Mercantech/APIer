@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Auth og API-nøgler — Teori</title>
+<meta name="description" content="Mercantec Auth PKCE, Bearer tokens, X-Api-Key mod OpgaverAPI, og sikkert storage i browseren." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/styles.css?v=20261015mega" />
+<link rel="stylesheet" href="/demo.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015mega" />
+</head>
+<body>
+<div class="atmosphere" aria-hidden="true"></div>
+<main class="demo-shell">
+<nav class="demo-nav">
+<a class="back" href="/teori">← Teori</a>
+<div class="demo-links">
+<a class="btn ghost sm" href="/">Katalog</a>
+<a class="btn ghost sm" href="/demo">Demo</a>
+</div>
+</nav>
+<header class="demo-hero">
+<p class="eyebrow">PKCE · Bearer · X-Api-Key</p>
+<div class="teori-brand-row"><img src="/teori/assets/blazor-icon.svg" alt="" width="36" height="36" /><h1 class="brand">Auth og API-nøgler</h1></div>
+<p class="lede">To lag: log ind via Mercantec Auth (OAuth2 + PKCE) til jeres app, og kald OpgaverAPI med personlig <code>X-Api-Key</code> eller Bearer — uden at lække secrets i git.</p>
+</header>
+<article class="teori-lesson">
+
+<h2>Læringsmål</h2>
+<ul>
+<li>Skitsere authorization code + PKCE flow mod <code>auth.mercantec.tech</code>.</li>
+<li>Sætte <code>Authorization: Bearer</code> på API-kald når backend kræver JWT.</li>
+<li>Oprette og bruge <code>X-Api-Key</code> til beskyttede OpgaverAPI-routes (fx LoL).</li>
+<li>Vælge <strong>sessionStorage</strong> frem for localStorage til tokens i SPA.</li>
+<li>Forstå forskellen på «log ud af appen» vs global Auth-signout.</li>
+</ul>
+
+<h2>Mercantec Auth — overblik</h2>
+<p>Mercantec Auth er den centrale identitetsplatform. Jeres Blazor SPA er en public client: ingen client secret i browseren. Flow:</p>
+<ol>
+<li>Generér <code>code_verifier</code> + <code>code_challenge</code> (S256) og <code>state</code>.</li>
+<li>Navigér brugeren til <code>/oauth/authorize</code> (fuld page navigation — ikke fetch).</li>
+<li>Callback med <code>code</code> — validér <code>state</code>, byt code mod tokens via POST <code>/oauth/token</code>.</li>
+<li>Gem access/refresh i <strong>sessionStorage</strong>; send Bearer på API-kald.</li>
+</ol>
+<p>Autoritativ konfiguration: <a href="https://auth.mercantec.tech/.well-known/mercantec-auth.json" rel="noreferrer">mercantec-auth.json</a> · Audience typisk <code>mercantec-apps</code>.</p>
+
+<pre class="teori-code language-csharp">// Eksempel: HttpClient med Bearer fra session (pseudo)
+http.DefaultRequestHeaders.Authorization =
+    new AuthenticationHeaderValue("Bearer", accessToken);</pre>
+
+<div class="teori-callout"><p><strong>Faldgrube:</strong> Kald aldrig <code>https://auth.mercantec.tech/signout</code> fra jeres almindelige «Log ud»-knap — det logger brugeren ud af hele Auth-sessionen. App-logout = ryd tokens lokalt og gå til login-side.</p></div>
+
+<h2>X-Api-Key mod OpgaverAPI</h2>
+<p>Åbne endpoints (fx mange Pokémon-routes) kræver ikke nøgle. Beskyttede routes (fx League of Legends) returnerer <strong>401</strong> uden header. Opret nøgle i <a href="/">API-kataloget</a> når I er logget ind — gem den i sessionStorage, send som header:</p>
+<pre class="teori-code language-csharp">request.Headers.Add("X-Api-Key", apiKey);
+var champs = await http.GetFromJsonAsync&lt;ChampionDto[]&gt;("/LeagueOfLegends/Champions");</pre>
+
+<p>Commit aldrig nøgler. Brug user secrets lokalt og env i Dokploy til server-delen hvis I proxy’er.</p>
+
+<section class="teori-anim" data-http-sim aria-label="401 uden API-nøgle">
+  <div class="teori-anim-head">
+    <h3>Fail-scenarie: manglende nøgle</h3>
+    <p>Vælg GET 401 og afspil — det matcher LoL-kald uden <code>X-Api-Key</code>.</p>
+  </div>
+  <div class="teori-anim-controls">
+    <button type="button" class="btn ghost sm" data-scenario="get">GET 200</button>
+    <button type="button" class="btn ghost sm" data-scenario="post">POST 201</button>
+    <button type="button" class="btn ghost sm active" data-scenario="fail">GET 401</button>
+    <button type="button" class="btn primary sm" data-action="play">Afspil</button>
+  </div>
+  <div class="cs-stage">
+    <div class="cs-node" data-role="client"><span class="cs-icon" aria-hidden="true">💻</span><strong>Klient</strong><span>Blazor + nøgle?</span></div>
+    <div class="cs-wire"><span class="cs-packet" aria-hidden="true"></span></div>
+    <div class="cs-node" data-role="server"><span class="cs-icon" aria-hidden="true">🖥️</span><strong>OpgaverAPI</strong><span>Validerer header</span></div>
+  </div>
+  <pre class="cs-log" aria-live="polite"><span class="tok-dim"># Vælg GET 401 og Afspil</span></pre>
+</section>
+
+<h2>sessionStorage vs localStorage</h2>
+<div class="teori-table-wrap"><table class="teori-table">
+<tr><th>Storage</th><th>Levetid</th><th>Typisk brug</th></tr>
+<tr><td>sessionStorage</td><td>Tab/session</td><td>Access token, API-nøgle hint, PKCE state midlertidigt</td></tr>
+<tr><td>localStorage</td><td>Indtil slettet</td><td>Undgå til long-lived secrets — XSS-risiko</td></tr>
+<tr><td>Memory only</td><td>Indtil reload</td><td>Mest sikkert for access token hvis I accepterer re-login ved refresh</td></tr>
+</table></div>
+
+<p>PKCE <code>code_verifier</code> og <code>state</code> hører i sessionStorage indtil callback er valideret — derefter ryd midlertidige værdier.</p>
+
+<h2>Refresh og 401</h2>
+<p>Wrapper om <code>HttpClient</code>: ved 401 forsøg ét token refresh, retry request — ellers redirect til login. Roterende refresh tokens: gem altid det nye svar fra token-endpoint.</p>
+
+<section class="teori-quiz" data-quiz data-correct="2">
+  <h3>Quiz 1</h3>
+  <p class="quiz-prompt">Hvilken header bruger I til personlig OpgaverAPI-nøgle mod LoL?</p>
+  <div class="quiz-options">
+    <button type="button" class="btn ghost sm" data-q="0">Authorization: Basic</button>
+    <button type="button" class="btn ghost sm" data-q="1">Cookie: ApiKey</button>
+    <button type="button" class="btn ghost sm" data-q="2">X-Api-Key</button>
+  </div>
+  <p class="quiz-feedback" aria-live="polite"></p>
+</section>
+
+<section class="teori-quiz" data-quiz data-correct="1">
+  <h3>Quiz 2</h3>
+  <p class="quiz-prompt">Hvorfor foretrækkes sessionStorage til SPA-tokens i Mercantec-retningslinjer?</p>
+  <div class="quiz-options">
+    <button type="button" class="btn ghost sm" data-q="0">Det er krypteret automatisk</button>
+    <button type="button" class="btn ghost sm" data-q="1">Kortere levetid end localStorage; tab lukkes = mindre eksponering</button>
+    <button type="button" class="btn ghost sm" data-q="2">HttpClient kan kun læse sessionStorage</button>
+  </div>
+  <p class="quiz-feedback" aria-live="polite"></p>
+</section>
+
+<section class="teori-ms"><h2>Læs hos Microsoft</h2><ul>
+<li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/security/webassembly/additional-scenarios" rel="noreferrer">Blazor WebAssembly auth scenarios</a></li>
+<li><a href="https://learn.microsoft.com/en-us/aspnet/core/security/authentication/" rel="noreferrer">ASP.NET Core authentication</a></li>
+</ul></section>
+<section class="teori-try"><h2>Prøv med API</h2><ul>
+<li>Log ind på <a href="/">kataloget</a>, opret nøgle, kør <a href="/demo/lol">LoL-demo</a> — sammenlign med 401 i animationen ovenfor.</li>
+<li>Læs <a href="https://auth-spa.mercantec.tech/ai-prompt.html" rel="noreferrer">AI-prompt for Auth-integration</a> før I implementerer PKCE i eget projekt.</li>
+</ul></section>
+<section class="teori-tags" aria-label="Målpinde"><span class="teori-tag">16476 #16</span><span class="teori-tag">16476 #17</span><span class="teori-tag">16475 #16</span></section>
+<nav class="teori-nav-lessons"><a class="btn ghost sm" href="/teori/layout-ui/">← Layout</a><a class="btn primary sm" href="/teori/sikkerhed-performance/">Sikkerhed →</a></nav>
+<p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
+</article>
+</main>
+<script src="/teori/anim.js?v=20261015mega"></script>
+<script src="/teori/vendor/prism/prism-core.min.js"></script>
+<script src="/teori/vendor/prism/prism-clike.min.js"></script>
+<script src="/teori/vendor/prism/prism-markup.min.js"></script>
+<script src="/teori/vendor/prism/prism-csharp.min.js"></script>
+<script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
+<script src="/teori/highlight.js?v=20261015mega"></script>
+</body>
+</html>

@@ -236,10 +236,279 @@
     show("home");
   }
 
+  /* ——— Quiz ——— */
+  function initQuiz(root) {
+    const correct = Number(root.dataset.correct ?? "0");
+    const feedback = root.querySelector(".quiz-feedback");
+    const buttons = [...root.querySelectorAll(".quiz-options button")];
+    let locked = false;
+
+    buttons.forEach((btn, i) => {
+      btn.addEventListener("click", () => {
+        if (locked) return;
+        locked = true;
+        const ok = i === correct;
+        buttons.forEach((b, j) => {
+          b.classList.toggle("is-correct", j === correct);
+          b.classList.toggle("is-wrong", j === i && !ok);
+          b.disabled = true;
+        });
+        if (feedback) {
+          feedback.className = `quiz-feedback ${ok ? "ok" : "bad"}`;
+          feedback.textContent = ok
+            ? root.dataset.ok || "Korrekt."
+            : root.dataset.bad || "Ikke helt — se den grønne mulighed.";
+        }
+      });
+    });
+  }
+
+  /* ——— @bind lab ——— */
+  function initBindLab(root) {
+    const input = root.querySelector("[data-bind-input]");
+    const out = root.querySelector(".bind-preview") || root.querySelector("[data-bind-out]");
+    if (!input || !out) return;
+    const sync = () => {
+      out.textContent = input.value.trim() || "—";
+    };
+    input.addEventListener("input", sync);
+    sync();
+  }
+
+  /* ——— Lifecycle stepper ——— */
+  function initLifecycle(root) {
+    const logs = {
+      init: "# OnInitializedAsync()\n# Første load — hent starters via HttpClient.\nmons = await Api.GetStarterAsync();",
+      params:
+        "# OnParametersSetAsync()\n# Parent/route skiftede Id.\nchamp = await Lol.GetChampionAsync(Id);",
+      event:
+        "# @onclick handler\npage++;\nawait LoadPage();\n# StateHasChanged kører automatisk efter event.",
+      reset: "# Log nulstillet — prøv et trin igen.",
+      render: "# Render\n# BuildRenderTree → DOM opdateres ud fra state.",
+      dispose: "# Dispose / IAsyncDisposable\n# Stop timers, unsubscribe events.",
+    };
+    const log = root.querySelector(".life-log");
+    const steps = [...root.querySelectorAll(".life-steps [data-step], .life-steps li")];
+
+    function highlight(key) {
+      steps.forEach((li) => {
+        const id = li.dataset.step || "";
+        li.classList.toggle("active", id === key || (key === "event" && id === "event"));
+        if (key === "init" && id === "init") li.classList.add("done");
+        if (key === "params" && (id === "init" || id === "params")) li.classList.add("done");
+      });
+    }
+
+    root.querySelectorAll("[data-life-step]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const key = btn.dataset.lifeStep;
+        root.querySelectorAll("[data-life-step]").forEach((b) => b.classList.toggle("active", b === btn));
+        if (key === "reset") {
+          if (log) log.innerHTML = `<span class="tok-dim">${escapeHtml(logs.reset)}</span>`;
+          steps.forEach((li) => li.classList.remove("active", "done"));
+          return;
+        }
+        highlight(key);
+        if (log) log.textContent = logs[key] || `# ${key}`;
+      });
+    });
+  }
+
+  /* ——— DI lifetimes ——— */
+  function initDiLab(root) {
+    let mode = "transient";
+    let scopedId = null;
+    const singletonId = Math.floor(Math.random() * 900) + 100;
+    const log = root.querySelector(".di-log");
+
+    root.querySelectorAll("[data-di]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        mode = btn.dataset.di;
+        root.querySelectorAll("[data-di]").forEach((b) => b.classList.toggle("active", b === btn));
+        if (log) {
+          log.innerHTML = `<span class="tok-dim"># Mode: ${escapeHtml(mode)} — tryk Anmod ×3</span>`;
+        }
+      });
+    });
+
+    root.querySelector('[data-action="resolve"]')?.addEventListener("click", () => {
+      const lines = [];
+      for (let i = 1; i <= 3; i++) {
+        let id;
+        if (mode === "transient") id = Math.floor(Math.random() * 900) + 100;
+        else if (mode === "singleton") id = singletonId;
+        else {
+          if (scopedId == null) scopedId = Math.floor(Math.random() * 900) + 100;
+          id = scopedId;
+        }
+        lines.push(`Anmod ${i}: ${mode} → instance #${id}`);
+      }
+      if (mode === "scoped") {
+        lines.push("# Samme scoped-id inden for circuit/request. Ny scope = nyt id.");
+        scopedId = null;
+      } else if (mode === "singleton") {
+        lines.push("# Samme id for hele app-livet.");
+      } else {
+        lines.push("# Ny instans hver gang (transient).");
+      }
+      if (log) log.textContent = lines.join("\n");
+    });
+  }
+
+  /* ——— EditForm lab ——— */
+  function initFormLab(root) {
+    const form = root.querySelector("form");
+    const input = root.querySelector('input[name="query"], [data-form-input]');
+    const msg = root.querySelector(".form-lab-msg") || root.querySelector(".form-err");
+    if (!form && !input) return;
+
+    const submit = (e) => {
+      e?.preventDefault?.();
+      const v = (input?.value || "").trim();
+      const valid = v.length >= 2;
+      input?.classList.toggle("is-invalid", !valid);
+      if (!msg) return;
+      if (!valid) {
+        msg.className = (msg.className.includes("form-lab") ? "form-lab-msg" : "form-err") + " bad";
+        msg.style.color = "#f47272";
+        msg.textContent = "Validation: MinLength(2) — OnInvalidSubmit.";
+      } else {
+        msg.style.color = "#3dd6c6";
+        msg.textContent = `OnValidSubmit → GET /go/pokemon?name=${encodeURIComponent(v)}`;
+      }
+    };
+
+    form?.addEventListener("submit", submit);
+    root.querySelector("[data-form-submit]")?.addEventListener("click", submit);
+  }
+
+  /* ——— Async timeline ——— */
+  function initAsyncLab(root) {
+    const steps = [...root.querySelectorAll("[data-async-step]")];
+    const playBtn =
+      root.querySelector('[data-action="play"]') || root.querySelector('[data-action="async-play"]');
+
+    async function play() {
+      steps.forEach((s) => s.classList.remove("active", "done"));
+      for (let i = 0; i < steps.length; i++) {
+        steps[i].classList.add("active");
+        if (i > 0) steps[i - 1].classList.add("done");
+        await sleep(650);
+      }
+      steps.forEach((s) => {
+        s.classList.remove("active");
+        s.classList.add("done");
+      });
+    }
+
+    playBtn?.addEventListener("click", play);
+  }
+
+  /* ——— XSS lab ——— */
+  function initXssLab(root) {
+    const input = root.querySelector("[data-xss-input]");
+    const out = root.querySelector(".xss-output");
+    let mode = "encode";
+
+    function render() {
+      const v = input?.value || "";
+      if (!out) return;
+      if (mode === "encode") {
+        out.innerHTML = "";
+        out.textContent = v;
+        out.style.color = "#3dd6c6";
+      } else {
+        out.style.color = "#f47272";
+        out.innerHTML = v; // intentional demo of unsafe HTML
+      }
+    }
+
+    root.querySelectorAll("[data-xss-mode]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        mode = btn.dataset.xssMode;
+        root.querySelectorAll("[data-xss-mode]").forEach((b) => b.classList.toggle("active", b === btn));
+        render();
+      });
+    });
+    input?.addEventListener("input", render);
+    render();
+  }
+
+  /* ——— File tree ——— */
+  function initFileTree(root) {
+    const detail = root.querySelector(".tree-detail");
+    const buttons = [...root.querySelectorAll("[data-file], [data-tree]")];
+    const info = {
+      program: {
+        title: "Program.cs",
+        body: "Composition root: DI, middleware, MapRazorComponents. Registrér HttpClient til OpgaverAPI her.",
+      },
+      appsettings: {
+        title: "appsettings.json",
+        body: "Konfiguration — BaseUrl, logging. Secrets i User Secrets / env, ikke i git.",
+      },
+      apprazor: {
+        title: "Components/App.razor",
+        body: "Rod: Router + HeadOutlet. Binder Routes og layouts sammen.",
+      },
+      routes: {
+        title: "Components/Routes.razor",
+        body: "Router-konfiguration: found / not-found templates.",
+      },
+      layout: {
+        title: "MainLayout.razor",
+        body: "Fælles chrome (nav, footer) omkring @Body — jeres SPA-shell.",
+      },
+      pages: {
+        title: "Components/Pages/",
+        body: "Sider med @page \"/sti\". Det er jeres routes mod Pokémon, LoL, osv.",
+      },
+      wwwroot: {
+        title: "wwwroot/",
+        body: "Statiske assets: CSS, favicon, billeder. Served direkte.",
+      },
+      docker: {
+        title: "Dockerfile",
+        body: "Multi-stage build til Dokploy. Samme vane som OpgaverAPI-web.",
+      },
+      app: {
+        title: "App.razor",
+        body: "Rod-komponent for routing.",
+      },
+      css: {
+        title: "CSS",
+        body: "Global i wwwroot; scoped som Component.razor.css.",
+      },
+    };
+
+    function show(key) {
+      buttons.forEach((b) => {
+        const k = b.dataset.file || b.dataset.tree;
+        b.classList.toggle("active", k === key);
+      });
+      const d = info[key];
+      if (detail && d) {
+        detail.innerHTML = `<strong>${escapeHtml(d.title)}</strong><p>${escapeHtml(d.body)}</p>`;
+      }
+    }
+
+    buttons.forEach((b) =>
+      b.addEventListener("click", () => show(b.dataset.file || b.dataset.tree))
+    );
+  }
+
   function boot() {
     document.querySelectorAll("[data-http-sim]").forEach(initHttpSim);
     document.querySelectorAll("[data-hosting-anim]").forEach(initHosting);
     document.querySelectorAll("[data-spa-anim]").forEach(initSpa);
+    document.querySelectorAll("[data-quiz]").forEach(initQuiz);
+    document.querySelectorAll("[data-bind-lab]").forEach(initBindLab);
+    document.querySelectorAll("[data-lifecycle]").forEach(initLifecycle);
+    document.querySelectorAll("[data-di-lab]").forEach(initDiLab);
+    document.querySelectorAll("[data-form-lab]").forEach(initFormLab);
+    document.querySelectorAll("[data-async-lab]").forEach(initAsyncLab);
+    document.querySelectorAll("[data-xss-lab]").forEach(initXssLab);
+    document.querySelectorAll("[data-file-tree]").forEach(initFileTree);
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);

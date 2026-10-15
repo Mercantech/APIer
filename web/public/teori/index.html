@@ -4,15 +4,16 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Teori — Blazor · Clientside &amp; GUI</title>
-<meta name="description" content="Blazor-teori for Clientsideprogrammering (16476) og GUI-programmering (16475) med fokus på API-kald." />
+<meta name="description" content="Udvidet Blazor-pensum for Clientsideprogrammering (16476) og GUI-programmering (16475) — teori, quizzes og interaktive labs." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015hl3" />
-<link rel="stylesheet" href="/demo.css?v=20261015hl3" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015hl3" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015hl3" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015hl3" />
+<link rel="stylesheet" href="/styles.css?v=20261015mega" />
+<link rel="stylesheet" href="/demo.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015mega" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -25,15 +26,15 @@
 </div>
 </nav>
 <header class="demo-hero">
-<p class="eyebrow">16476 · 16475 · Blazor · OpgaverAPI</p>
+<p class="eyebrow">16476 · 16475 · Blazor · OpgaverAPI · 13 lektioner</p>
 <div class="teori-brand-row"><img src="/teori/assets/blazor-icon.svg" alt="" width="40" height="40" /><h1 class="brand">Teori</h1></div>
-<p class="lede">Lær clientside og GUI gennem <strong>Blazor</strong> og rigtige API-kald — ikke som en tjekliste af målpinde. Målpindene er taggede på lektionerne, så I kan dokumentere dækning.</p>
+<p class="lede">Et fuldt pensum i Blazor: hosting, Razor, forms, komponenter, DI, livscyklus, HttpClient, SPA, auth og sikkerhed — med quizzes, labs og Client↔Server-animationer. Målpindene er taggede på hver lektion.</p>
 </header>
 
 <section class="teori-anim" data-http-sim aria-label="Client-server HTTP-animation">
   <div class="teori-anim-head">
     <h3>Client ↔ Server</h3>
-    <p>Interaktiv forsmag — afspil en HTTP-runde. Flere animationer findes i Intro, HttpClient og Routing.</p>
+    <p>Afspil en HTTP-runde. Flere labs findes inde i lektionerne.</p>
   </div>
   <div class="teori-anim-controls">
     <button type="button" class="btn ghost sm active" data-scenario="get">GET 200</button>
@@ -53,39 +54,53 @@
 <article class="teori-fag">
 <p class="eyebrow">16476 · H1/H2</p>
 <h2>Clientsideprogrammering</h2>
-<p>HTML/CSS i Razor, komponenter, forms og HttpClient mod Web API — jQuery kun som historisk kontekst.</p>
+<p>HTML/CSS i Razor, EditForm, komponenter, HttpClient og sikker clientside — jQuery kun som historisk kontekst.</p>
 </article>
 <article class="teori-fag">
 <p class="eyebrow">16475 · H2/H3</p>
 <h2>GUI-programmering</h2>
-<p>SPA med Blazor: layout, routing, events, custom components, async API-kald og sikkerhed.</p>
+<p>SPA med Blazor: layout, routing, DI, livscyklus, async API-kald, auth og usability.</p>
 </article>
 </section>
 
 <section class="teori-path" aria-labelledby="path-title">
 <h2 id="path-title">Læringssti</h2>
 <ol class="teori-path-list">
-<li><a href="/teori/intro-hosting/"><div><strong>Intro og hosting</strong><span>Hvad Blazor er — inkl. interaktiv Client↔Server og Server/WASM-animation.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
-<li><a href="/teori/projekt-opsaetning/"><div><strong>Projekt-opsætning</strong><span>Opret en Blazor Web App, forstå filstrukturen og gør projektet Docker-klar.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
-<li><a href="/teori/razor-html-css/"><div><strong>Razor, HTML og CSS</strong><span>HTML-semantik og CSS i Razor-komponenter — inkl. box model, selectors og Bootstrap til responsive layouts.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
-<li><a href="/teori/forms-editform/"><div><strong>Forms med EditForm</strong><span>Indsaml brugerinput med EditForm, InputText og model-klasser — OOP-struktur frem for løse DOM-felter.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
-<li><a href="/teori/komponenter-events/"><div><strong>Komponenter og events</strong><span>Byg UI af genbrugelige komponenter med parametre, data binding og C#-events — i stedet for jQuery-DOM.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
-<li><a href="/teori/httpclient-api/"><div><strong>HttpClient og API-kald</strong><span>Kald OpgaverAPI asynkront — se GET/POST/401 animeret, før I skriver HttpClient-kode.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
-<li><a href="/teori/routing-spa/"><div><strong>Routing og SPA</strong><span>Flere «sider» uden reload — prøv den interaktive SPA-shell, før I tilføjer @page.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
-<li><a href="/teori/layout-ui/"><div><strong>Layout og UI-patterns</strong><span>Layout-containers, UI-patterns og komponentbiblioteker — plus async i stedet for klassisk multithreading.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
-<li><a href="/teori/sikkerhed-performance/"><div><strong>Sikkerhed og performance</strong><span>Clientside-risici (XSS m.m.), SPA-tokens og performance-tips for Blazor/WASM.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
-<li><a href="/teori/debug-test/"><div><strong>Debug, test og usability</strong><span>Debug en Blazor-client, dokumentér funktionalitet med simple tests, og kør en let usability-check.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
+<li><a href="/teori/intro-hosting/"><div><strong>Intro og hosting</strong><span>Blazor vs andre SPA’er · Server / WASM / Hybrid · Client↔Server-lab.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
+<li><a href="/teori/projekt-opsaetning/"><div><strong>Projekt-opsætning</strong><span>Template, filtræ-lab, Program.cs, Docker til Dokploy.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
+<li><a href="/teori/razor-html-css/"><div><strong>Razor, HTML og CSS</strong><span>Semantik, box model, CSS isolation, Bootstrap, quizzes.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
+<li><a href="/teori/forms-editform/"><div><strong>Forms med EditForm</strong><span>Model + DataAnnotations · live validerings-lab.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
+<li><a href="/teori/komponenter-events/"><div><strong>Komponenter og events</strong><span>Parameter · @bind-lab · EventCallback parent/child.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
+<li><a href="/teori/di-services/"><div><strong>Dependency Injection</strong><span>Lifetimes · IHttpClientFactory · typed clients · DI-lab.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
+<li><a href="/teori/livscyklus-state/"><div><strong>Livscyklus og state</strong><span>OnInitializedAsync · OnParametersSet · StateHasChanged.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
+<li><a href="/teori/httpclient-api/"><div><strong>HttpClient og API-kald</strong><span>CRUD · async-timeline · GET/POST/401-animation.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
+<li><a href="/teori/routing-spa/"><div><strong>Routing og SPA</strong><span>@page · NavLink · interaktiv SPA-shell.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
+<li><a href="/teori/layout-ui/"><div><strong>Layout og UI-patterns</strong><span>Master/Detail · MudBlazor · async vs threads.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
+<li><a href="/teori/auth-api-noegler/"><div><strong>Auth og API-nøgler</strong><span>Mercantec Auth PKCE · Bearer · X-Api-Key · storage.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
+<li><a href="/teori/sikkerhed-performance/"><div><strong>Sikkerhed og performance</strong><span>XSS-lab · tokens · CORS · WASM-tips.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
+<li><a href="/teori/debug-test/"><div><strong>Debug, test og usability</strong><span>DevTools · testplan · usability-script · quizzes.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
 </ol>
+</section>
+
+<section class="teori-quiz" data-quiz data-correct="1" data-ok="Præcis — DI + factory er standarden." data-bad="Tænk på levetid og sockets.">
+  <h3>Klar-quiz</h3>
+  <p>Hvad er den anbefalede måde at kalde OpgaverAPI fra Blazor på?</p>
+  <div class="quiz-options">
+    <button type="button">new HttpClient() i hver side</button>
+    <button type="button">IHttpClientFactory / typed client via DI</button>
+    <button type="button">jQuery $.ajax i wwwroot</button>
+  </div>
+  <p class="quiz-feedback" aria-live="polite"></p>
 </section>
 
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn</a>. Eksempler: <a href="https://github.com/MAGS-Template/BlazorEksempler" rel="noreferrer">BlazorEksempler</a>.</p>
 </main>
-<script src="/teori/anim.js?v=20261015hl3"></script>
+<script src="/teori/anim.js?v=20261015mega"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015hl3"></script>
+<script src="/teori/highlight.js?v=20261015mega"></script>
 </body>
 </html>

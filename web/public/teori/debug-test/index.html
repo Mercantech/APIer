@@ -4,15 +4,16 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Debug, test og usability — Teori</title>
-<meta name="description" content="Debug en Blazor-client, dokumentér funktionalitet med simple tests, og kør en let usability-check." />
+<meta name="description" content="Debug Blazor og API-kald, testplan, Network-tab og usability-test." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015hl3" />
-<link rel="stylesheet" href="/demo.css?v=20261015hl3" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015hl3" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015hl3" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015hl3" />
+<link rel="stylesheet" href="/styles.css?v=20261015mega" />
+<link rel="stylesheet" href="/demo.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015mega" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -27,36 +28,107 @@
 <header class="demo-hero">
 <p class="eyebrow">DevTools · dokumentation · usability</p>
 <div class="teori-brand-row"><img src="/teori/assets/blazor-icon.svg" alt="" width="36" height="36" /><h1 class="brand">Debug, test og usability</h1></div>
-<p class="lede">Debug en Blazor-client, dokumentér funktionalitet med simple tests, og kør en let usability-check.</p>
+<p class="lede">Systematisk fejlsøgning af Blazor + OpgaverAPI, kort testdokumentation og en enkel usability-protokol før aflevering.</p>
 </header>
 <article class="teori-lesson">
 
-<h2>Debug</h2>
+<h2>Læringsmål</h2>
 <ul>
-<li>Browser DevTools: Network (API-status/CORS), Console, Application</li>
-<li>Visual Studio: breakpoints i <code>@code</code> / services (Server er nemmest)</li>
-<li>Tjek response body når UI «virker tom» — ofte er det JSON-shape eller auth</li>
+<li>Bruge DevTools Network til status, headers og CORS-fejl.</li>
+<li>Sætte breakpoints i Razor og services (Blazor Server).</li>
+<li>Skrive en minimal testplan med forventet/faktisk resultat.</li>
+<li>Gennemføre 5-min usability-test med én opgave.</li>
 </ul>
-<h2>Test-dokumentation</h2>
-<p>Lav en kort testplan: givne inputs → forventet UI/API-svar → faktisk resultat (screenshot/statuskode). Det dækker «dokumentér funktionalitet» uden tungt testframework først.</p>
-<h2>Usability</h2>
-<p>Simpel test: bed en kammerat om at løse én opgave (fx «find Pikachu») mens I observerer uden at hjælpe. Notér forvirring, klikfejl og manglende feedback.</p>
+
+<h2>Debug-checkliste</h2>
+<ol>
+<li><strong>Reproducer</strong> — hvilken route, hvilket klik, hvilken bruger/nøgle?</li>
+<li><strong>Network</strong> — gik request af sted? Status 200/401/404? Response body?</li>
+<li><strong>Console</strong> — JS fejl, WebSocket/SignalR disconnect?</li>
+<li><strong>Application</strong> — sessionStorage: token/nøgle sat?</li>
+<li><strong>Visual Studio</strong> — breakpoint i <code>OnInitializedAsync</code> eller service.</li>
+<li><strong>Log</strong> — midlertidig <code>Console.WriteLine</code> eller ILogger (Server).</li>
+</ol>
+
+<h2>Network-fanen — trin for trin</h2>
+<p>Åbn F12 → Network → filtrer Fetch/XHR. Klik «Hent Pokémon» i jeres app:</p>
+<ul>
+<li>Tjek <strong>Request URL</strong> — korrekt base + path?</li>
+<li>Tjek <strong>Request Headers</strong> — <code>X-Api-Key</code> eller <code>Authorization</code> med?</li>
+<li>Tjek <strong>Response</strong> — JSON array eller fejlbesked?</li>
+<li>Rød linje med CORS — origin ikke tilladt på API; fix på server eller proxy via egen backend.</li>
+</ul>
+
+<pre class="teori-code language-csharp">// Midlertidig diagnostic i service
+_logger.LogInformation("Henter pokemon limit={Limit}", limit);
+var response = await _http.GetAsync(url);
+_logger.LogWarning("Status {Code}", response.StatusCode);</pre>
+
+<h2>Typiske «tom UI»-årsager</h2>
+<ul>
+<li>Deserialisering fejler silently — property navne matcher ikke JSON</li>
+<li>401 — glemt API-nøgle til LoL</li>
+<li>Exception i async metode uden try/catch — tjek Server-log</li>
+<li>Render mode — komponent ikke interaktiv, handler kører ikke</li>
+</ul>
+
+<div class="teori-callout"><p><strong>Faldgrube:</strong> At debugge kun i UI uden at læse response body — I ser «ingen fejl» mens API returnerer <code>{"error":"..."}</code> med status 400.</p></div>
+
+<h2>Test-dokumentation (let vægt)</h2>
+<p>Tabel eller liste pr. feature:</p>
+<div class="teori-table-wrap"><table class="teori-table">
+<tr><th>ID</th><th>Givet</th><th>When</th><th>Then</th><th>Resultat</th></tr>
+<tr><td>T1</td><td>Gyldig API-nøgle</td><td>Åbn /lol</td><td>Champion-liste vises</td><td>OK / fail + screenshot</td></tr>
+<tr><td>T2</td><td>Ingen nøgle</td><td>Åbn /lol</td><td>Fejlbesked 401</td><td>…</td></tr>
+<tr><td>T3</td><td>Query name=pi</td><td>Submit søg</td><td>Min 2 tegn validering</td><td>…</td></tr>
+</table></div>
+
+<h2>Usability-script (5 min)</h2>
+<p>Instruktion til testperson (uden hjælp):</p>
+<blockquote class="teori-callout"><p>«Du skal finde Pokémon #25 og gemme den som favorit. Sig højt hvad du forventer sker.»</p></blockquote>
+<p>Observer: hvor mange klik, hvor de leder efter menu, om loading feedback mangler. Notér 3 forbedringspunkter.</p>
+
+<section class="teori-quiz" data-quiz data-correct="1">
+  <h3>Quiz 1</h3>
+  <p class="quiz-prompt">UI viser tom liste — første tekniske skridt?</p>
+  <div class="quiz-options">
+    <button type="button" class="btn ghost sm" data-q="0">Geninstallér Windows</button>
+    <button type="button" class="btn ghost sm" data-q="1">Network: status + response body for API-kald</button>
+    <button type="button" class="btn ghost sm" data-q="2">Skift alle farver i CSS</button>
+  </div>
+  <p class="quiz-feedback" aria-live="polite"></p>
+</section>
+
+<section class="teori-quiz" data-quiz data-correct="0">
+  <h3>Quiz 2</h3>
+  <p class="quiz-prompt">Hvad dokumenterer en god testplan-minimum til eksamen?</p>
+  <div class="quiz-options">
+    <button type="button" class="btn ghost sm" data-q="0">Forventet vs faktisk adfærd med steps og evidens</button>
+    <button type="button" class="btn ghost sm" data-q="1">Kun kildekode uden resultater</button>
+    <button type="button" class="btn ghost sm" data-q="2">Antal linjer kode</button>
+  </div>
+  <p class="quiz-feedback" aria-live="polite"></p>
+</section>
+
 <section class="teori-ms"><h2>Læs hos Microsoft</h2><ul>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/debug" rel="noreferrer">Debug ASP.NET Core Blazor</a></li>
+<li><a href="https://learn.microsoft.com/en-us/aspnet/core/test/troubleshoot" rel="noreferrer">Test and troubleshoot</a></li>
 </ul></section>
 <section class="teori-try"><h2>Prøv med API</h2><ul>
-<li>Debug et kald i Network-fanen mens I bruger <a href="/demo/pokemon">Pokémon-demo</a> eller jeres egen Blazor-side.</li>
+<li>Debug et kald i Network mens I bruger <a href="/demo/pokemon">Pokémon-demo</a> — sammenlign headers med jeres Blazor-app.</li>
+<li>Kør usability-script på klassekammerat med jeres prototype.</li>
 </ul></section>
 <section class="teori-tags" aria-label="Målpinde"><span class="teori-tag">16476 #19</span><span class="teori-tag">16475 #10</span><span class="teori-tag">16475 #17</span></section>
-<nav class="teori-nav-lessons"><a class="btn ghost sm" href="/teori/sikkerhed-performance/">← Sikkerhed</a><a class="btn primary sm" href="/teori">Tilbage til teori</a></nav>
+<nav class="teori-nav-lessons"><a class="btn ghost sm" href="/teori/sikkerhed-performance/">← Sikkerhed</a><a class="btn primary sm" href="/teori">Teori-hub →</a></nav>
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
+<script src="/teori/anim.js?v=20261015mega"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015hl3"></script>
+<script src="/teori/highlight.js?v=20261015mega"></script>
 </body>
 </html>

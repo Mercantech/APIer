@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Livscyklus og state — Teori</title>
+<meta name="description" content="Komponentlivscyklus, OnInitializedAsync, parameters, StateHasChanged, cascading values og ShouldRender." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/styles.css?v=20261015mega" />
+<link rel="stylesheet" href="/demo.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015mega" />
+</head>
+<body>
+<div class="atmosphere" aria-hidden="true"></div>
+<main class="demo-shell">
+<nav class="demo-nav">
+<a class="back" href="/teori">← Teori</a>
+<div class="demo-links">
+<a class="btn ghost sm" href="/">Katalog</a>
+<a class="btn ghost sm" href="/demo">Demo</a>
+</div>
+</nav>
+<header class="demo-hero">
+<p class="eyebrow">Lifecycle · state · re-render</p>
+<div class="teori-brand-row"><img src="/teori/assets/blazor-icon.svg" alt="" width="36" height="36" /><h1 class="brand">Livscyklus og state</h1></div>
+<p class="lede">Forstå hvornår Blazor kalder livscyklus-metoder, hvordan parametre opdateres, og hvornår UI re-renderes — afgørende når I loader Pokémon async eller skifter filter på en LoL-liste.</p>
+</header>
+<article class="teori-lesson">
+
+<h2>Læringsmål</h2>
+<ul>
+<li>Placere datahentning i <code>OnInitializedAsync</code> vs <code>OnParametersSetAsync</code>.</li>
+<li>Forklare forskellen på first render, parameter change og event-driven opdateringer.</li>
+<li>Bruge <code>StateHasChanged</code> bevidst (og undgå unødige kald).</li>
+<li>Kende cascading parameters til tema/API-base der deles i layout.</li>
+<li>Overblik over <code>ShouldRender</code> som performance-værktøj.</li>
+</ul>
+
+<p>En komponent er ikke «bare HTML» — den har en livscyklus fra første render til destruction. Når parent sender nye parametre (fx valgt champion-id), skal child enten reagere i <code>OnParametersSet</code> eller via bound properties.</p>
+
+<h2>Typisk rækkefølge</h2>
+<ol>
+<li><strong>SetParametersAsync</strong> — parent sender parametre.</li>
+<li><strong>OnInitialized / OnInitializedAsync</strong> — én gang ved oprettelse (god til første API-kald).</li>
+<li><strong>OnParametersSet / OnParametersSetAsync</strong> — hver gang parametre ændres (god til at re-loade detail når id skifter).</li>
+<li><strong>Event handlers</strong> — bruger klikker «Hent næste side» → opdater state → render.</li>
+<li><strong>Dispose</strong> — ryd timers, unsubscribe.</li>
+</ol>
+
+<section class="teori-anim" data-lifecycle aria-label="Komponentlivscyklus">
+  <div class="teori-anim-head">
+    <h3>Livscyklus-lab</h3>
+    <p>Tryk på trinene — loggen viser hvilke metoder der kører, og hvornår UI opdateres.</p>
+  </div>
+  <ol class="life-steps">
+    <li data-step="init">OnInitializedAsync</li>
+    <li data-step="params">OnParametersSet</li>
+    <li data-step="render">Render</li>
+    <li data-step="event">Event (klik)</li>
+    <li data-step="dispose">Dispose</li>
+  </ol>
+  <div class="teori-anim-controls">
+    <button type="button" class="btn ghost sm" data-life-step="init">Simuler init</button>
+    <button type="button" class="btn ghost sm" data-life-step="params">Nye parametre</button>
+    <button type="button" class="btn ghost sm" data-life-step="event">Event + state</button>
+    <button type="button" class="btn primary sm" data-life-step="reset">Nulstil log</button>
+  </div>
+  <pre class="life-log" aria-live="polite"><span class="tok-dim"># Vælg et trin</span></pre>
+</section>
+
+<h2>OnInitializedAsync — første load</h2>
+<pre class="teori-code">@page "/pokemon-lifecycle"
+@inject IPokemonService Api
+
+&lt;h1&gt;Starter Pokémon&lt;/h1&gt;
+&lt;ul&gt;@foreach (var p in mons) { &lt;li&gt;@p.Name&lt;/li&gt; }&lt;/ul&gt;
+
+@code {
+  List&lt;Mon&gt; mons = new();
+
+  protected override async Task OnInitializedAsync()
+  {
+    mons = await Api.GetStarterAsync();
+  }
+
+  record Mon(string Name);
+}</pre>
+
+<p>Brug <code>async</code> livscyklus-metoder til I/O. Vis loading-state hvis kaldet tager tid — ellers ser brugeren en tom liste.</p>
+
+<h2>OnParametersSet — route/query ændres</h2>
+<pre class="teori-code">@* ChampionDetail.razor — [Parameter] public string Id *@
+@code {
+  Champion? champ;
+
+  protected override async Task OnParametersSetAsync()
+  {
+    champ = await Lol.GetChampionAsync(Id);
+  }
+}</pre>
+
+<p>Når parent eller router sender nyt <code>Id</code>, kører <code>OnParametersSetAsync</code> igen — uden at komponenten nødvendigvis destrueres.</p>
+
+<h2>StateHasChanged og rendering</h2>
+<p>Efter I opdaterer felter uden for en normal event (fx callback fra timer eller JS interop), kan UI mangle opdatering indtil <code>StateHasChanged()</code> kaldes. I de fleste <code>@onclick</code> / <code>@bind</code>-flows sker det automatisk.</p>
+<pre class="teori-code language-csharp">protected override bool ShouldRender()
+{
+    // Eksempel: skip render hvis kun intern debug-state ændrede sig
+    return _visibleChanged;
+}</pre>
+
+<div class="teori-callout"><p><strong>Faldgrube:</strong> At hente tung data i <code>OnParametersSet</code> <em>og</em> <code>OnInitialized</code> uden guard giver dobbelt API-kald ved første load. Tjek om parametre allerede er sat, eller brug kun <code>OnParametersSetAsync</code> med «first render»-flag.</p></div>
+
+<h2>Cascading values</h2>
+<p>Layout kan levere fælles værdier (tema, API-base, bruger-context) uden at prop-drille gennem hver komponent:</p>
+<pre class="teori-code">@* App.razor / Layout *@
+&lt;CascadingValue Value="apiBase" Name="ApiBase"&gt;
+  @Body
+&lt;/CascadingValue&gt;
+
+@* Child *@
+@code {
+  [CascadingParameter(Name = "ApiBase")]
+  public string ApiBase { get; set; } = "";
+}</pre>
+
+<section class="teori-quiz" data-quiz data-correct="0">
+  <h3>Quiz 1</h3>
+  <p class="quiz-prompt">Hvor loader I typisk første gang data til en sidekomponent med @page?</p>
+  <div class="quiz-options">
+    <button type="button" class="btn ghost sm" data-q="0">OnInitializedAsync</button>
+    <button type="button" class="btn ghost sm" data-q="1">Kun i constructoren</button>
+    <button type="button" class="btn ghost sm" data-q="2">I static Main</button>
+  </div>
+  <p class="quiz-feedback" aria-live="polite"></p>
+</section>
+
+<section class="teori-quiz" data-quiz data-correct="1">
+  <h3>Quiz 2</h3>
+  <p class="quiz-prompt">Parent ændrer <code>[Parameter] public int PokemonId</code> — hvilken metode skal re-loade detail?</p>
+  <div class="quiz-options">
+    <button type="button" class="btn ghost sm" data-q="0">Kun Dispose</button>
+    <button type="button" class="btn ghost sm" data-q="1">OnParametersSetAsync</button>
+    <button type="button" class="btn ghost sm" data-q="2">Program.cs</button>
+  </div>
+  <p class="quiz-feedback" aria-live="polite"></p>
+</section>
+
+<section class="teori-ms"><h2>Læs hos Microsoft</h2><ul>
+<li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/components/lifecycle" rel="noreferrer">Component lifecycle</a></li>
+<li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/components/cascading-values-and-parameters" rel="noreferrer">Cascading values</a></li>
+<li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/components/rendering" rel="noreferrer">Control rendering</a></li>
+</ul></section>
+<section class="teori-try"><h2>Prøv med API</h2><ul>
+<li>Lav Master/Detail: liste fra <code>/go/pokemon</code>, detail når <code>PokemonId</code> parameter skifter — observer Network for dobbelt-kald.</li>
+<li>Sammenlign med <a href="/demo/lol">LoL-demo</a>: hvornår hentes data ift. navigation?</li>
+</ul></section>
+<section class="teori-tags" aria-label="Målpinde"><span class="teori-tag">16476 #14</span><span class="teori-tag">16475 #7</span></section>
+<nav class="teori-nav-lessons"><a class="btn ghost sm" href="/teori/di-services/">← DI</a><a class="btn primary sm" href="/teori/httpclient-api/">HttpClient →</a></nav>
+<p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
+</article>
+</main>
+<script src="/teori/anim.js?v=20261015mega"></script>
+<script src="/teori/vendor/prism/prism-core.min.js"></script>
+<script src="/teori/vendor/prism/prism-clike.min.js"></script>
+<script src="/teori/vendor/prism/prism-markup.min.js"></script>
+<script src="/teori/vendor/prism/prism-csharp.min.js"></script>
+<script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
+<script src="/teori/highlight.js?v=20261015mega"></script>
+</body>
+</html>

@@ -4,15 +4,16 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Layout og UI-patterns — Teori</title>
-<meta name="description" content="Layout-containers, UI-patterns og komponentbiblioteker — plus async i stedet for klassisk multithreading." />
+<meta name="description" content="Master/Detail, async I/O, MudBlazor og UI-patterns i Blazor." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015hl3" />
-<link rel="stylesheet" href="/demo.css?v=20261015hl3" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015hl3" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015hl3" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015hl3" />
+<link rel="stylesheet" href="/styles.css?v=20261015mega" />
+<link rel="stylesheet" href="/demo.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015mega" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -27,33 +28,107 @@
 <header class="demo-hero">
 <p class="eyebrow">Containers · MudBlazor · async</p>
 <div class="teori-brand-row"><img src="/teori/assets/blazor-icon.svg" alt="" width="36" height="36" /><h1 class="brand">Layout og UI-patterns</h1></div>
-<p class="lede">Layout-containers, UI-patterns og komponentbiblioteker — plus async i stedet for klassisk multithreading.</p>
+<p class="lede">Layout-containers, Master/Detail, list+filter, MudBlazor — og hvorfor async/await er «trådning» i moderne Blazor.</p>
 </header>
 <article class="teori-lesson">
 
-<p><strong>Layout containers</strong> i web/Blazor er typisk CSS Grid/Flex eller framework-grids (Bootstrap/MudBlazor). Vælg kontroller der matcher kravet: knapper, tabeller, dialoger, forms.</p>
-<p><strong>UI design patterns</strong> I møder ofte: Master/Detail, List + filter, Wizard, Modal confirm. Implementér dem som egne komponenter.</p>
+<h2>Læringsmål</h2>
+<ul>
+<li>Implementere Master/Detail over API-data (Pokémon-liste + detail).</li>
+<li>Vælge mellem CSS grid, Bootstrap og MudBlazor til layout.</li>
+<li>Forklare async I/O vs <code>Task.Run</code> / manuelle threads i UI.</li>
+<li>Genkende Wizard, Modal confirm og List+filter patterns.</li>
+</ul>
+
+<p><strong>Layout containers</strong> strukturerer siden: sidebar + content, topnav + main. I undervisningen kombineres ofte Bootstrap grid med komponent-opdeling.</p>
+
+<h2>Master/Detail</h2>
+<p>Venstre liste (master) vælger id; højre panel (detail) henter <code>/go/pokemon/{id}</code> eller viser cached DTO. State (<code>selectedId</code>) bor i parent — child får parametre.</p>
+<pre class="teori-code">&lt;div class="row"&gt;
+  &lt;div class="col-md-4"&gt;
+    &lt;PokemonList Items="mons" OnSelect="id =&gt; selectedId = id" /&gt;
+  &lt;/div&gt;
+  &lt;div class="col-md-8"&gt;
+    @if (selectedId is int sid)
+    {
+      &lt;PokemonDetail Id="sid" /&gt;
+    }
+  &lt;/div&gt;
+&lt;/div&gt;</pre>
+
+<h2>List + filter</h2>
+<p>Søgefelt + <code>@bind</code> på filterstreng; enten client-side LINQ på hentet liste eller debounced API-kald. LoL-champions med rolle-filter er klassisk eksamen-case.</p>
+
 <h2>MudBlazor</h2>
-<p>MudBlazor er et open-source komponentbibliotek til Blazor (knapper, tabeller, dialogs, themes). Det speeder UI op uden at I tegner alt fra scratch — se <a href="https://mudblazor.com" rel="noreferrer">mudblazor.com</a>.</p>
-<h2>«Multithreading» i Blazor</h2>
-<p>I web-UI er svaret næsten altid <strong>async/await</strong> (<code>Task</code>) til I/O (API-kald), ikke manuelle threads. Undgå at blokere UI-tråden. <code>Task.Run</code> bruges sjældent i WASM og kan være forkert på Server — start med async HttpClient.</p>
+<p>MudBlazor leverer <code>MudTable</code>, <code>MudDialog</code>, <code>MudTextField</code>, theming. Install NuGet, tilføj i Program.cs:</p>
+<pre class="teori-code language-csharp">builder.Services.AddMudServices();</pre>
+<p>Wrap layout med <code>MudThemeProvider</code>, <code>MudPopoverProvider</code>, <code>MudDialogProvider</code>. Godt når I vil matche moderne admin-UI uden at skrive al CSS selv — se <a href="https://mudblazor.com" rel="noreferrer">mudblazor.com</a>.</p>
+
+<h2>Async — ikke threads i UI</h2>
+<p>Web-UI venter på netværk. <code>await Http.GetFromJsonAsync</code> frigiver tråden så Server-circuit kan betjene andre events. <code>Task.Run</code> flytter CPU-arbejde til thread pool — sjældent brugt til API-kald; på WASM begrænset.</p>
+
+<section class="teori-anim" data-async-lab aria-label="Async vs blokering">
+  <div class="teori-anim-head">
+    <h3>Async-tidslinje (UI)</h3>
+    <p>Se forskellen på await (responsiv UI) vs blokering.</p>
+  </div>
+  <button type="button" class="btn primary sm" data-action="play">Afspil async-timeline</button>
+  <ol class="async-steps" aria-live="polite">
+    <li data-async-step="1">Event: «Hent Star Wars personer»</li>
+    <li data-async-step="2">UI viser spinner (state)</li>
+    <li data-async-step="3">await Http — andre klik kan stadig queues (Server)</li>
+    <li data-async-step="4">Resultat bindes til MudTable / HTML table</li>
+    <li data-async-step="5">Spinner skjules</li>
+  </ol>
+</section>
+
+<div class="teori-callout"><p><strong>Faldgrube:</strong> <code>.Result</code> eller <code>.Wait()</code> på async Task i UI — deadlock/race på Blazor Server. Brug async hele vejen.</p></div>
+
+<h2>Modal confirm</h2>
+<p>Slet favorit? MudDialog eller simpel conditional render + fokus-trap. Bekræft før DELETE mod API.</p>
+
+<section class="teori-quiz" data-quiz data-correct="2">
+  <h3>Quiz 1</h3>
+  <p class="quiz-prompt">Hvad er typisk mønster for Pokémon-liste + detailpanel?</p>
+  <div class="quiz-options">
+    <button type="button" class="btn ghost sm" data-q="0">Singleton HttpClient i static</button>
+    <button type="button" class="btn ghost sm" data-q="1">Én @page uden state</button>
+    <button type="button" class="btn ghost sm" data-q="2">Master/Detail med selectedId i parent</button>
+  </div>
+  <p class="quiz-feedback" aria-live="polite"></p>
+</section>
+
+<section class="teori-quiz" data-quiz data-correct="1">
+  <h3>Quiz 2</h3>
+  <p class="quiz-prompt">Hvordan venter I bedst på OpgaverAPI i en event handler?</p>
+  <div class="quiz-options">
+    <button type="button" class="btn ghost sm" data-q="0">Thread.Sleep(3000)</button>
+    <button type="button" class="btn ghost sm" data-q="1">async Task + await Http.GetFromJsonAsync</button>
+    <button type="button" class="btn ghost sm" data-q="2">while(true) poll API</button>
+  </div>
+  <p class="quiz-feedback" aria-live="polite"></p>
+</section>
+
 <section class="teori-ms"><h2>Læs hos Microsoft</h2><ul>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/components/" rel="noreferrer">Components</a></li>
-<li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/fundamentals/dependency-injection" rel="noreferrer">Dependency injection</a></li>
+<li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/components/layouts" rel="noreferrer">Layouts</a></li>
+<li><a href="https://learn.microsoft.com/en-us/dotnet/csharp/asynchronous-programming/" rel="noreferrer">Async programming in C#</a></li>
 </ul></section>
 <section class="teori-try"><h2>Prøv med API</h2><ul>
-<li>Byg et Master/Detail-view over <a href="/demo/starwars">Star Wars</a> eller <a href="/demo/terraria">Terraria</a>.</li>
+<li>Master/Detail over <a href="/demo/starwars">Star Wars</a> eller <a href="/demo/terraria">Terraria</a>.</li>
+<li>Eksperimentér med MudTable på LoL-data med API-nøgle.</li>
 </ul></section>
 <section class="teori-tags" aria-label="Målpinde"><span class="teori-tag">16475 #3</span><span class="teori-tag">16475 #6</span><span class="teori-tag">16475 #7</span><span class="teori-tag">16475 #9</span></section>
-<nav class="teori-nav-lessons"><a class="btn ghost sm" href="/teori/routing-spa/">← Routing</a><a class="btn primary sm" href="/teori/sikkerhed-performance/">Sikkerhed →</a></nav>
+<nav class="teori-nav-lessons"><a class="btn ghost sm" href="/teori/routing-spa/">← Routing</a><a class="btn primary sm" href="/teori/auth-api-noegler/">Auth & nøgler →</a></nav>
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
+<script src="/teori/anim.js?v=20261015mega"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015hl3"></script>
+<script src="/teori/highlight.js?v=20261015mega"></script>
 </body>
 </html>

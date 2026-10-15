@@ -4,15 +4,16 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Sikkerhed og performance — Teori</title>
-<meta name="description" content="Clientside-risici (XSS m.m.), SPA-tokens og performance-tips for Blazor/WASM." />
+<meta name="description" content="XSS, tokens, CORS, API-nøgler og WASM performance i Blazor." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015hl3" />
-<link rel="stylesheet" href="/demo.css?v=20261015hl3" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015hl3" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015hl3" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015hl3" />
+<link rel="stylesheet" href="/styles.css?v=20261015mega" />
+<link rel="stylesheet" href="/demo.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015mega" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -25,42 +26,108 @@
 </div>
 </nav>
 <header class="demo-hero">
-<p class="eyebrow">XSS · tokens · payload</p>
+<p class="eyebrow">XSS · tokens · CORS · WASM</p>
 <div class="teori-brand-row"><img src="/teori/assets/blazor-icon.svg" alt="" width="36" height="36" /><h1 class="brand">Sikkerhed og performance</h1></div>
-<p class="lede">Clientside-risici (XSS m.m.), SPA-tokens og performance-tips for Blazor/WASM.</p>
+<p class="lede">Clientside-risici, sikker håndtering af tokens og nøgler, CORS-forståelse og performance-tips — især når alt kan inspiceres i browseren.</p>
 </header>
 <article class="teori-lesson">
 
-<h2>Sikkerhed</h2>
+<h2>Læringsmål</h2>
 <ul>
-<li><strong>XSS</strong> — stole ikke på brugerinput i HTML. Blazor encoder som udgangspunkt; pas på <code>MarkupString</code> / rå HTML.</li>
-<li><strong>API-nøgler</strong> — elev-nøgler er personlige. Gem ikke secrets i public git. Brug headers (<code>X-Api-Key</code>), ikke query-strings.</li>
-<li><strong>SPA-tokens</strong> — access tokens i memory/session er at foretrække frem for long-lived keys i localStorage. Forstå CORS og at alt i browseren kan inspiceres.</li>
-<li><strong>WASM</strong> — klientkode kan reverse-engineeres; hemmelig business-logik hører hjemme på serveren.</li>
+<li>Forklare XSS og Blazors default encoding vs <code>MarkupString</code>.</li>
+<li>Beskytte API-nøgler og Bearer tokens i SPA.</li>
+<li>Forstå CORS fra browserens perspektiv (WASM vs Server).</li>
+<li>Anvende WASM/hosting-tips til mindre payload og færre re-renders.</li>
 </ul>
+
+<h2>XSS og brugerinput</h2>
+<p>Cross-Site Scripting: angriber får script kørt i offerets browser. Blazor encoder tekst i <code>@variable</code> som standard. Farligt: rå HTML fra bruger eller API uden sanitizing.</p>
+
+<section class="teori-anim" data-xss-lab aria-label="XSS encoding lab">
+  <div class="teori-anim-head">
+    <h3>Encode vs raw</h3>
+    <p>Indtast tekst med <code>&lt;script&gt;</code> — se forskel på sikker encoding og usikker raw HTML.</p>
+  </div>
+  <label>Bruger-/API-tekst <input type="text" data-xss-input value="&lt;img onerror=alert(1)&gt;" /></label>
+  <div class="teori-anim-controls">
+    <button type="button" class="btn ghost sm active" data-xss-mode="encode">Encode (sikker)</button>
+    <button type="button" class="btn ghost sm" data-xss-mode="raw">Raw HTML (farlig)</button>
+  </div>
+  <div class="xss-output" aria-live="polite"></div>
+</section>
+
+<pre class="teori-code">@* Sikkert *@
+&lt;p&gt;@userComment&lt;/p&gt;
+
+@* Farligt hvis userComment kommer fra bruger *@
+&lt;p&gt;@((MarkupString)userComment)&lt;/p&gt;</pre>
+
+<h2>Tokens og API-nøgler</h2>
+<ul>
+<li>Commit aldrig nøgler/tokens til git — brug env og user secrets.</li>
+<li>Send <code>X-Api-Key</code> i header, ikke i URL (logs, referrer).</li>
+<li>Bearer tokens: kort levetid, sessionStorage, refresh med rotation.</li>
+<li>Alt i WASM kan inspiceres — skjul ikke «hemmeligheder» i klientkode.</li>
+</ul>
+
+<h2>CORS</h2>
+<p>Browsere håndhæver CORS på cross-origin fetch. Blazor WASM kalder API fra browser → CORS skal tillade jeres origin. Blazor Server kalder ofte HttpClient fra server-processen → CORS gælder ikke samme vej, men browseren kalder stadig SignalR til jeres app-origin.</p>
+<pre class="teori-code language-csharp">// På API ( ikke i Blazor ) — eksempel princip
+// policy.WithOrigins("https://min-app.mercantec.tech").AllowAnyHeader();</pre>
+
 <h2>Performance</h2>
 <ul>
-<li>Minimer unødige re-renders; brug parametre bevidst</li>
-<li>WASM: trim, compression, undgå store unused packages</li>
-<li>Lazy-load tunge sider; paginér API-svar (katalogets demos trimmer ofte arrays)</li>
+<li>Reducer re-renders: stabile parametre, <code>ShouldRender</code>, undgå unødige state-ændringer i loop.</li>
+<li>Virtualisér lange lister (<code>Virtualize</code> komponent) til store Pokémon-datasæt.</li>
+<li>WASM: trimming, compression (Brotli), lazy load tunge routes.</li>
+<li>Paginér API (<code>?limit=</code>) — hent ikke 10.000 records til UI.</li>
+<li>Cache read-only data kort i scoped service med etag/expiration.</li>
 </ul>
+
+<div class="teori-callout"><p><strong>Faldgrube:</strong> At gemme elev-API-nøgle i <code>appsettings.json</code> i Blazor WASM-projekt — filen downloades til klienten. Nøgler der kun må kende én bruger hører i sessionStorage efter login, eller proxyes via jeres backend.</p></div>
+
+<section class="teori-quiz" data-quiz data-correct="0">
+  <h3>Quiz 1</h3>
+  <p class="quiz-prompt">Hvordan viser I sikkert brugerkommentar i Razor?</p>
+  <div class="quiz-options">
+    <button type="button" class="btn ghost sm" data-q="0">@comment (default encoding)</button>
+    <button type="button" class="btn ghost sm" data-q="1">MarkupString uden validering</button>
+    <button type="button" class="btn ghost sm" data-q="2">innerHTML via JS interop</button>
+  </div>
+  <p class="quiz-feedback" aria-live="polite"></p>
+</section>
+
+<section class="teori-quiz" data-quiz data-correct="2">
+  <h3>Quiz 2</h3>
+  <p class="quiz-prompt">Hvorfor paginere OpgaverAPI-kald i UI?</p>
+  <div class="quiz-options">
+    <button type="button" class="btn ghost sm" data-q="0">HTTP understøtter kun 10 items</button>
+    <button type="button" class="btn ghost sm" data-q="1">Blazor kan ikke vise lister</button>
+    <button type="button" class="btn ghost sm" data-q="2">Mindre JSON, hurtigere render og bedre UX</button>
+  </div>
+  <p class="quiz-feedback" aria-live="polite"></p>
+</section>
+
 <section class="teori-ms"><h2>Læs hos Microsoft</h2><ul>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/security/" rel="noreferrer">Blazor security</a></li>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/host-and-deploy/webassembly" rel="noreferrer">Host and deploy WASM</a></li>
+<li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/performance" rel="noreferrer">Blazor performance</a></li>
 </ul></section>
 <section class="teori-try"><h2>Prøv med API</h2><ul>
-<li>Opret en nøgle under <a href="/">kataloget</a> og kald LoL — bemærk at nøglen aldrig skal committes.</li>
+<li>Opret nøgle under <a href="/">kataloget</a> — verificér den ikke ligger i git history.</li>
+<li>Sammenlign payload-størrelse: <code>limit=3</code> vs <code>limit=500</code> på Pokémon.</li>
 </ul></section>
 <section class="teori-tags" aria-label="Målpinde"><span class="teori-tag">16476 #17</span><span class="teori-tag">16476 #18</span><span class="teori-tag">16475 #16</span></section>
-<nav class="teori-nav-lessons"><a class="btn ghost sm" href="/teori/layout-ui/">← Layout</a><a class="btn primary sm" href="/teori/debug-test/">Debug & test →</a></nav>
+<nav class="teori-nav-lessons"><a class="btn ghost sm" href="/teori/auth-api-noegler/">← Auth</a><a class="btn primary sm" href="/teori/debug-test/">Debug & test →</a></nav>
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
+<script src="/teori/anim.js?v=20261015mega"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015hl3"></script>
+<script src="/teori/highlight.js?v=20261015mega"></script>
 </body>
 </html>

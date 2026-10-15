@@ -4,15 +4,16 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Razor, HTML og CSS — Teori</title>
-<meta name="description" content="HTML-semantik og CSS i Razor-komponenter — inkl. box model, selectors og Bootstrap til responsive layouts." />
+<meta name="description" content="HTML-semantik og CSS i Razor-komponenter — box model, isolation, Bootstrap grid og responsive layouts." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015hl3" />
-<link rel="stylesheet" href="/demo.css?v=20261015hl3" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015hl3" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015hl3" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015hl3" />
+<link rel="stylesheet" href="/styles.css?v=20261015mega" />
+<link rel="stylesheet" href="/demo.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015mega" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015mega" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -27,20 +28,104 @@
 <header class="demo-hero">
 <p class="eyebrow">Semantik · CSS · Bootstrap · Responsive</p>
 <div class="teori-brand-row"><img src="/teori/assets/blazor-icon.svg" alt="" width="36" height="36" /><h1 class="brand">Razor, HTML og CSS</h1></div>
-<p class="lede">HTML-semantik og CSS i Razor-komponenter — inkl. box model, selectors og Bootstrap til responsive layouts.</p>
+<p class="lede">HTML-semantik og CSS i Razor-komponenter — box model, selectors, CSS isolation og Bootstrap grid til responsive Pokémon- og LoL-lister.</p>
 </header>
 <article class="teori-lesson">
 
-<p>I Blazor er markup stadig HTML. Du bruger semantiske elementer (<code>header</code>, <code>main</code>, <code>nav</code>, <code>section</code>, <code>article</code>), lister, links, billeder og tabeller — præcis som i ren HTML, bare i en <code>.razor</code>-fil.</p>
-<figure class="teori-figure"><img src="/teori/assets/razor-structure.png" alt="Opbygning af en Razor-fil" loading="lazy" /><figcaption>Typisk Razor-fil: direktiv, markup og <code>@code</code>.</figcaption></figure>
-<h2>CSS i Blazor</h2>
+<h2>Læringsmål</h2>
 <ul>
-<li><strong>Selectors</strong> — element, klasse, id, efterkommer/sibling</li>
-<li><strong>Styling</strong> — tekst, links, lister, tabeller</li>
-<li><strong>Box model</strong> — content, padding, border, margin</li>
-<li><strong>Responsive</strong> — media queries eller et framework</li>
+<li>Skrive semantisk HTML i <code>.razor</code>-filer (header, main, nav, article).</li>
+<li>Forklare box model og bruge margin/padding bevidst.</li>
+<li>Anvende scoped CSS (<code>.razor.css</code>) uden at lække styles globalt.</li>
+<li>Bygge responsive layout med Bootstrap grid eller tilsvarende.</li>
 </ul>
-<p><strong>Bootstrap</strong> (eller MudBlazor senere) giver grid, utilities og komponenter så I hurtigt får responsive layouts uden at opfinde CSS fra bunden. Global CSS ligger typisk i <code>wwwroot</code>; scoped CSS kan følge en komponent som <code>MyComponent.razor.css</code>.</p>
+
+<p>I Blazor er markup stadig HTML. Razor tilføjer kun C#-udtryk (<code>@</code>), direktiver (<code>@page</code>, <code>@inject</code>) og kontrolstrukturer (<code>@if</code>, <code>@foreach</code>).</p>
+<figure class="teori-figure"><img src="/teori/assets/razor-structure.png" alt="Opbygning af en Razor-fil" loading="lazy" /><figcaption>Typisk Razor-fil: direktiv, markup og <code>@code</code>.</figcaption></figure>
+
+<h2>Semantisk HTML</h2>
+<p>Skærm læsere og SEO (hvor relevant) profitterer fra meningsfulde tags:</p>
+<ul>
+<li><code>&lt;header&gt;</code> — titel/toolbar for sektion eller side</li>
+<li><code>&lt;nav&gt;</code> — navigationslinks (NavMenu)</li>
+<li><code>&lt;main&gt;</code> — primært indhold (én per side)</li>
+<li><code>&lt;article&gt;</code> — selvstændigt kort (Pokémon-entry)</li>
+<li><code>&lt;section&gt;</code> — tematisk gruppe</li>
+</ul>
+<pre class="teori-code">&lt;main&gt;
+  &lt;header&gt;
+    &lt;h1&gt;Pokédex&lt;/h1&gt;
+    &lt;p&gt;Data fra OpgaverAPI&lt;/p&gt;
+  &lt;/header&gt;
+  &lt;section aria-label="Resultater"&gt;
+    @foreach (var p in pokemon)
+    {
+      &lt;article class="dex-card"&gt;
+        &lt;h2&gt;@p.Name&lt;/h2&gt;
+        &lt;img src="@p.Sprite" alt="" width="96" height="96" /&gt;
+      &lt;/article&gt;
+    }
+  &lt;/section&gt;
+&lt;/main&gt;</pre>
+
+<h2>Box model</h2>
+<p>Hvert element er en boks: <strong>content → padding → border → margin</strong>. <code>box-sizing: border-box</code> (Bootstrap default) gør bredde inkl. padding — nemmere grids.</p>
+<section class="teori-anim" aria-label="CSS box model">
+  <div class="teori-anim-head">
+    <h3>Box model — visuelt</h3>
+    <p>Yderst margin, så border, padding, og content inderst.</p>
+  </div>
+  <div class="box-model">
+    <div class="box-margin">margin
+      <div class="box-border">border
+        <div class="box-padding">padding
+          <div class="box-content">content</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="teori-callout teori-pitfall"><p>Margin collapse mellem sibling cards kan «ødelægge» vertikal rytme — brug gap i flex/grid (<code>row g-3</code> i Bootstrap) i stedet for kun margin på hvert kort.</p></div>
+
+<h2>Selectors og typografi</h2>
+<ul>
+<li>Klasser (<code>.dex-card</code>) frem for inline styles — genbrug på tværs af komponenter</li>
+<li>Undgå for dybe selectors — svære at overskrive med isolation</li>
+<li>Links: tydelig <code>:focus</code> for tastaturbrugere</li>
+</ul>
+
+<h2>CSS isolation</h2>
+<p>Filen <code>PokemonCard.razor.css</code> scopes styles til komponenten via attributter Blazor genererer:</p>
+<pre class="teori-code">/* PokemonCard.razor.css */
+.card {
+  border: 1px solid var(--border, #334);
+  border-radius: 12px;
+  padding: 1rem;
+}
+.card h3 {
+  font-size: 1.1rem;
+  margin: 0 0 0.5rem;
+}</pre>
+<p>Global CSS i <code>wwwroot/app.css</code> til tema, fonts og Bootstrap-import.</p>
+
+<h2>Bootstrap grid</h2>
+<pre class="teori-code">&lt;div class="container py-4"&gt;
+  &lt;div class="row g-3"&gt;
+    @foreach (var c in champions)
+    {
+      &lt;div class="col-12 col-md-6 col-lg-4"&gt;
+        &lt;article class="card h-100"&gt;
+          &lt;div class="card-body"&gt;
+            &lt;h3 class="card-title"&gt;@c.Name&lt;/h3&gt;
+            &lt;p class="card-text"&gt;@c.Role&lt;/p&gt;
+          &lt;/div&gt;
+        &lt;/article&gt;
+      &lt;/div&gt;
+    }
+  &lt;/div&gt;
+&lt;/div&gt;</pre>
+<p><code>col-12</code> = fuld bredde mobil; <code>col-md-6</code> = to kolonner tablet; <code>col-lg-4</code> = tre på desktop.</p>
+
 <pre class="teori-code">@page "/pokemon-kort"
 
 &lt;article class="card"&gt;
@@ -56,26 +141,51 @@
 
 @code {
   string navn = "Pikachu";
-  string sprite = "https://...";
+  string sprite = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png";
   string[] types = ["electric"];
 }</pre>
+
+<section class="teori-quiz" data-quiz data-correct="1">
+  <h3>Quiz 1</h3>
+  <p class="quiz-prompt">Hvor scopes styles til kun ét Razor-komponent?</p>
+  <div class="quiz-options">
+    <button type="button" class="btn ghost sm" data-q="0">Inline style="" på hvert element</button>
+    <button type="button" class="btn ghost sm" data-q="1">MyComponent.razor.css</button>
+    <button type="button" class="btn ghost sm" data-q="2">Program.cs</button>
+  </div>
+  <p class="quiz-feedback" aria-live="polite"></p>
+</section>
+
+<section class="teori-quiz" data-quiz data-correct="0">
+  <h3>Quiz 2</h3>
+  <p class="quiz-prompt">Hvilket element bør wrappe hovedindholdet på en side (accessibility)?</p>
+  <div class="quiz-options">
+    <button type="button" class="btn ghost sm" data-q="0">&lt;main&gt;</button>
+    <button type="button" class="btn ghost sm" data-q="1">&lt;span&gt;</button>
+    <button type="button" class="btn ghost sm" data-q="2">&lt;div class="main"&gt; uden semantik</button>
+  </div>
+  <p class="quiz-feedback" aria-live="polite"></p>
+</section>
+
 <section class="teori-ms"><h2>Læs hos Microsoft</h2><ul>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/components/" rel="noreferrer">ASP.NET Core Razor components</a></li>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/components/css-isolation" rel="noreferrer">CSS isolation</a></li>
 </ul></section>
 <section class="teori-try"><h2>Prøv med API</h2><ul>
-<li>Hent data fra <a href="/demo/pokemon">Pokémon-demo</a> og tegn et kort med semantisk HTML + CSS i Blazor.</li>
+<li>Hent data fra <a href="/demo/pokemon">Pokémon-demo</a> og tegn et responsivt grid med semantisk HTML.</li>
+<li>Sammenlign med <a href="/demo/lol">LoL</a> — samme grid, anden DTO.</li>
 </ul></section>
 <section class="teori-tags" aria-label="Målpinde"><span class="teori-tag">16476 #3</span><span class="teori-tag">16476 #4</span><span class="teori-tag">16476 #6</span><span class="teori-tag">16476 #7</span><span class="teori-tag">16476 #8</span><span class="teori-tag">16476 #9</span></section>
 <nav class="teori-nav-lessons"><a class="btn ghost sm" href="/teori/projekt-opsaetning/">← Opsætning</a><a class="btn primary sm" href="/teori/forms-editform/">Forms →</a></nav>
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
+<script src="/teori/anim.js?v=20261015mega"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015hl3"></script>
+<script src="/teori/highlight.js?v=20261015mega"></script>
 </body>
 </html>
