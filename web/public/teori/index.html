@@ -8,9 +8,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015teori" />
-<link rel="stylesheet" href="/demo.css?v=20261015teori" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015teori" />
+<link rel="stylesheet" href="/styles.css?v=20261015anim" />
+<link rel="stylesheet" href="/demo.css?v=20261015anim" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015anim" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015anim" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -28,6 +29,25 @@
 <p class="lede">Lær clientside og GUI gennem <strong>Blazor</strong> og rigtige API-kald — ikke som en tjekliste af målpinde. Målpindene er taggede på lektionerne, så I kan dokumentere dækning.</p>
 </header>
 
+<section class="teori-anim" data-http-sim aria-label="Client-server HTTP-animation">
+  <div class="teori-anim-head">
+    <h3>Client ↔ Server</h3>
+    <p>Interaktiv forsmag — afspil en HTTP-runde. Flere animationer findes i Intro, HttpClient og Routing.</p>
+  </div>
+  <div class="teori-anim-controls">
+    <button type="button" class="btn ghost sm active" data-scenario="get">GET 200</button>
+    <button type="button" class="btn ghost sm" data-scenario="post">POST 201</button>
+    <button type="button" class="btn ghost sm" data-scenario="fail">GET 401</button>
+    <button type="button" class="btn primary sm" data-action="play">Afspil</button>
+  </div>
+  <div class="cs-stage">
+    <div class="cs-node" data-role="client"><span class="cs-icon" aria-hidden="true">💻</span><strong>Klient</strong><span>Browser / Blazor</span></div>
+    <div class="cs-wire"><span class="cs-packet" aria-hidden="true"></span></div>
+    <div class="cs-node" data-role="server"><span class="cs-icon" aria-hidden="true">🖥️</span><strong>Server</strong><span>OpgaverAPI</span></div>
+  </div>
+  <pre class="cs-log" aria-live="polite"><span class="tok-dim"># Vælg scenarie og tryk Afspil</span></pre>
+</section>
+
 <section class="teori-fags" aria-label="Fag">
 <article class="teori-fag">
 <p class="eyebrow">16476 · H1/H2</p>
@@ -44,13 +64,13 @@
 <section class="teori-path" aria-labelledby="path-title">
 <h2 id="path-title">Læringssti</h2>
 <ol class="teori-path-list">
-<li><a href="/teori/intro-hosting/"><div><strong>Intro og hosting</strong><span>Hvad Blazor er, hvordan det minder om andre SPA-frameworks, og forskellen på Server, WebAssembly og Hybrid.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
+<li><a href="/teori/intro-hosting/"><div><strong>Intro og hosting</strong><span>Hvad Blazor er — inkl. interaktiv Client↔Server og Server/WASM-animation.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
 <li><a href="/teori/projekt-opsaetning/"><div><strong>Projekt-opsætning</strong><span>Opret en Blazor Web App, forstå filstrukturen og gør projektet Docker-klar.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
 <li><a href="/teori/razor-html-css/"><div><strong>Razor, HTML og CSS</strong><span>HTML-semantik og CSS i Razor-komponenter — inkl. box model, selectors og Bootstrap til responsive layouts.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
 <li><a href="/teori/forms-editform/"><div><strong>Forms med EditForm</strong><span>Indsaml brugerinput med EditForm, InputText og model-klasser — OOP-struktur frem for løse DOM-felter.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
 <li><a href="/teori/komponenter-events/"><div><strong>Komponenter og events</strong><span>Byg UI af genbrugelige komponenter med parametre, data binding og C#-events — i stedet for jQuery-DOM.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
-<li><a href="/teori/httpclient-api/"><div><strong>HttpClient og API-kald</strong><span>Kald OpgaverAPI asynkront fra Blazor med HttpClient — CRUD over HTTP i stedet for jQuery AJAX.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
-<li><a href="/teori/routing-spa/"><div><strong>Routing og SPA</strong><span>Flere «sider» i én Blazor-app med routing, layouts og navigation — SPA-arkitektur i praksis.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
+<li><a href="/teori/httpclient-api/"><div><strong>HttpClient og API-kald</strong><span>Kald OpgaverAPI asynkront — se GET/POST/401 animeret, før I skriver HttpClient-kode.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
+<li><a href="/teori/routing-spa/"><div><strong>Routing og SPA</strong><span>Flere «sider» uden reload — prøv den interaktive SPA-shell, før I tilføjer @page.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
 <li><a href="/teori/layout-ui/"><div><strong>Layout og UI-patterns</strong><span>Layout-containers, UI-patterns og komponentbiblioteker — plus async i stedet for klassisk multithreading.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
 <li><a href="/teori/sikkerhed-performance/"><div><strong>Sikkerhed og performance</strong><span>Clientside-risici (XSS m.m.), SPA-tokens og performance-tips for Blazor/WASM.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
 <li><a href="/teori/debug-test/"><div><strong>Debug, test og usability</strong><span>Debug en Blazor-client, dokumentér funktionalitet med simple tests, og kør en let usability-check.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
@@ -59,5 +79,6 @@
 
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn</a>. Eksempler: <a href="https://github.com/MAGS-Template/BlazorEksempler" rel="noreferrer">BlazorEksempler</a>.</p>
 </main>
+<script src="/teori/anim.js?v=20261015anim"></script>
 </body>
 </html>

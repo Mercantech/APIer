@@ -8,9 +8,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015teori" />
-<link rel="stylesheet" href="/demo.css?v=20261015teori" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015teori" />
+<link rel="stylesheet" href="/styles.css?v=20261015anim" />
+<link rel="stylesheet" href="/demo.css?v=20261015anim" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015anim" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015anim" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -30,6 +31,26 @@
 <article class="teori-lesson">
 
 <p>CRUD over HTTP mapper til <code>POST</code> / <code>GET</code> / <code>PUT</code> / <code>DELETE</code>. I Blazor bruger I <code>HttpClient</code> (gerne via DI), ikke <code>new HttpClient()</code> overalt i produktion.</p>
+
+<section class="teori-anim" data-http-sim aria-label="Client-server HTTP-animation">
+  <div class="teori-anim-head">
+    <h3>Se HttpClient i aktion</h3>
+    <p>Samme request din Blazor-app sender — afspil GET, POST eller 401 uden nøgle.</p>
+  </div>
+  <div class="teori-anim-controls">
+    <button type="button" class="btn ghost sm active" data-scenario="get">GET 200</button>
+    <button type="button" class="btn ghost sm" data-scenario="post">POST 201</button>
+    <button type="button" class="btn ghost sm" data-scenario="fail">GET 401</button>
+    <button type="button" class="btn primary sm" data-action="play">Afspil</button>
+  </div>
+  <div class="cs-stage">
+    <div class="cs-node" data-role="client"><span class="cs-icon" aria-hidden="true">💻</span><strong>Klient</strong><span>HttpClient</span></div>
+    <div class="cs-wire"><span class="cs-packet" aria-hidden="true"></span></div>
+    <div class="cs-node" data-role="server"><span class="cs-icon" aria-hidden="true">🖥️</span><strong>Server</strong><span>OpgaverAPI</span></div>
+  </div>
+  <pre class="cs-log" aria-live="polite"><span class="tok-dim"># Vælg scenarie og tryk Afspil</span></pre>
+</section>
+
 <figure class="teori-figure"><img src="/teori/assets/http-crud.png" alt="CRUD til HTTP-metoder" loading="lazy" /><figcaption>CRUD ↔ HTTP-metoder.</figcaption></figure>
 <pre class="teori-code">@page "/pokemon"
 @inject HttpClient Http
@@ -65,5 +86,6 @@ var champs = await Http.GetFromJsonAsync&lt;ChampionDto[]&gt;("/LeagueOfLegends/
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
+<script src="/teori/anim.js?v=20261015anim"></script>
 </body>
 </html>

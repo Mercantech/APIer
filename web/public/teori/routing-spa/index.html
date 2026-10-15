@@ -8,9 +8,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015teori" />
-<link rel="stylesheet" href="/demo.css?v=20261015teori" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015teori" />
+<link rel="stylesheet" href="/styles.css?v=20261015anim" />
+<link rel="stylesheet" href="/demo.css?v=20261015anim" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015anim" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015anim" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -30,6 +31,29 @@
 <article class="teori-lesson">
 
 <p>En SPA loader appen én gang og skifter «sider» uden fuld reload. I Blazor markerer I en komponent som side med <code>@page "/sti"</code>. Layouts (fx <code>MainLayout</code>) deler navbar mellem sider.</p>
+
+<section class="teori-anim" data-spa-anim aria-label="SPA routing-animation">
+  <div class="teori-anim-head">
+    <h3>SPA uden page-reload</h3>
+    <p>Klik i «navbaren» — kun midterindholdet skifter. Shell (layout) bliver.</p>
+  </div>
+  <div class="spa-stage">
+    <div class="spa-shell">
+      <div class="spa-chrome" role="tablist" aria-label="Simuleret NavMenu">
+        <button type="button" data-route="home" class="active">Hjem</button>
+        <button type="button" data-route="pokemon">Pokémon</button>
+        <button type="button" data-route="api">Status</button>
+      </div>
+      <div class="spa-body">
+        <div class="spa-panel active" data-panel="home"><h4>Velkommen</h4><p>MainLayout + NavMenu omslutter alle sider.</p></div>
+        <div class="spa-panel" data-panel="pokemon"><h4>@page "/pokemon"</h4><p>HttpClient henter data — URL skifter, ingen fuld reload.</p></div>
+        <div class="spa-panel" data-panel="api"><h4>@page "/status"</h4><p>Ny «side», samme app i hukommelsen.</p></div>
+      </div>
+    </div>
+    <p class="spa-note"></p>
+  </div>
+</section>
+
 <pre class="teori-code">@page "/countries"
 @layout MainLayout
 
@@ -50,5 +74,6 @@
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
+<script src="/teori/anim.js?v=20261015anim"></script>
 </body>
 </html>

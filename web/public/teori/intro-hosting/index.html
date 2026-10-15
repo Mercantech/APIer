@@ -8,9 +8,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015teori" />
-<link rel="stylesheet" href="/demo.css?v=20261015teori" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015teori" />
+<link rel="stylesheet" href="/styles.css?v=20261015anim" />
+<link rel="stylesheet" href="/demo.css?v=20261015anim" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015anim" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015anim" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -31,8 +32,50 @@
 
 <p>Blazor er Microsofts moderne web-UI-stack: du bygger genbrugelige <strong>Razor-komponenter</strong> med <strong>C#</strong>, HTML og CSS. Udvikleroplevelsen minder om React, Svelte og Vue — men logikken er C# i stedet for JavaScript.</p>
 <p>Et Razor-komponent blander markup og C# i samme fil. Det gør det nemt at opdele UI i små, genbrugelige dele der kommunikerer med et backend Web API (som OpgaverAPI).</p>
+
+<section class="teori-anim" data-http-sim aria-label="Client-server HTTP-animation">
+  <div class="teori-anim-head">
+    <h3>Client ↔ Server over HTTP</h3>
+    <p>Tryk Afspil — se request flyve til serveren og response tilbage. Skift scenarie for GET, POST eller 401.</p>
+  </div>
+  <div class="teori-anim-controls">
+    <button type="button" class="btn ghost sm active" data-scenario="get">GET 200</button>
+    <button type="button" class="btn ghost sm" data-scenario="post">POST 201</button>
+    <button type="button" class="btn ghost sm" data-scenario="fail">GET 401</button>
+    <button type="button" class="btn primary sm" data-action="play">Afspil</button>
+  </div>
+  <div class="cs-stage">
+    <div class="cs-node" data-role="client"><span class="cs-icon" aria-hidden="true">💻</span><strong>Klient</strong><span>Browser / Blazor</span></div>
+    <div class="cs-wire"><span class="cs-packet" aria-hidden="true"></span></div>
+    <div class="cs-node" data-role="server"><span class="cs-icon" aria-hidden="true">🖥️</span><strong>Server</strong><span>OpgaverAPI</span></div>
+  </div>
+  <pre class="cs-log" aria-live="polite"><span class="tok-dim"># Vælg scenarie og tryk Afspil</span></pre>
+</section>
+
 <div class="teori-callout"><p>I undervisningen bruger vi typisk <strong>Blazor Web App</strong> med interaktiv Server-render. WASM og Hybrid er vigtige at kende, så I kan vælge den rigtige model.</p></div>
 <h2>Tre hosting-modeller</h2>
+
+<section class="teori-anim" data-hosting-anim aria-label="Blazor hosting-animation">
+  <div class="teori-anim-head">
+    <h3>Hvor kører koden?</h3>
+    <p>Skift mellem Server og WASM — prikkerne viser trafikretning i realtid.</p>
+  </div>
+  <div class="host-stage">
+    <div class="host-tabs teori-anim-controls">
+      <button type="button" class="btn ghost sm active" data-host="server">Blazor Server</button>
+      <button type="button" class="btn ghost sm" data-host="wasm">Blazor WASM</button>
+    </div>
+    <div class="host-canvas host-mode-server">
+      <div class="host-row">
+        <div class="host-box client"><strong>Browser</strong><small>UI / events</small></div>
+        <div class="host-flow"><div class="host-flow-line"></div></div>
+        <div class="host-box server"><strong>ASP.NET</strong><small>.NET + Razor</small></div>
+      </div>
+    </div>
+    <p class="host-caption"></p>
+  </div>
+</section>
+
 <h3>Blazor Server</h3>
 <p>Komponenter kører på serveren. UI-events og opdateringer går over en <strong>SignalR</strong>-forbindelse. Lille download, fuld .NET på serveren — men kræver netværk for hver interaktion.</p>
 <figure class="teori-figure"><img src="/teori/assets/hosting-server.png" alt="Diagram af Blazor Server med SignalR" loading="lazy" /><figcaption>Blazor Server — UI via SignalR-kredsløb.</figcaption></figure>
@@ -63,5 +106,6 @@
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
+<script src="/teori/anim.js?v=20261015anim"></script>
 </body>
 </html>
