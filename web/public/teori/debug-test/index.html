@@ -8,12 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015pro" />
-<link rel="stylesheet" href="/demo.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/widgets.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015pro" />
+<link rel="stylesheet" href="/styles.css?v=20261015deep" />
+<link rel="stylesheet" href="/demo.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015deep" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -39,7 +39,9 @@
 <li>Sætte breakpoints i Razor og services (Blazor Server).</li>
 <li>Skrive en minimal testplan med forventet/faktisk resultat.</li>
 <li>Gennemføre 5-min usability-test med én opgave.</li>
-</ul><section class="teori-check">
+</ul>
+<p><strong>Hvornår stoppe og dokumentere?</strong> Når et flow virker manuelt — skriv testplan med screenshots af Network (200/401) før I går videre til næste feature.</p>
+<section class="teori-check">
 <h2 id="tjek-dig-selv">Tjek dig selv før du går videre</h2>
 <ul><li>Du kan bruge DevTools Network til at fejlsøge API-kald.</li><li>Du har en kort testplan for et CRUD-flow.</li><li>Du kan udføre usability-tjek på egen app.</li></ul>
 </section>
@@ -53,6 +55,7 @@
 <li><strong>Visual Studio</strong> — breakpoint i <code>OnInitializedAsync</code> eller service.</li>
 <li><strong>Log</strong> — midlertidig <code>Console.WriteLine</code> eller ILogger (Server).</li>
 </ol>
+<p>Regel: UI-symptom → bevis i Network → derefter ændr kode. Gæt ikke DTO-felter uden at åbne Response.</p>
 
 <h2 id="network-fanen-trin-for-trin">Network-fanen — trin for trin</h2>
 <p>Åbn F12 → Network → filtrer Fetch/XHR. Klik «Hent Pokémon» i jeres app:</p>
@@ -75,6 +78,7 @@ _logger.LogWarning("Status {Code}", response.StatusCode);</pre>
 <li>Exception i async metode uden try/catch — tjek Server-log</li>
 <li>Render mode — komponent ikke interaktiv, handler kører ikke</li>
 </ul>
+<div class="teori-callout teori-pitfall"><p><strong>Elev-fejl → symptom → fix:</strong> Liste binding til forkert property (<code>results</code> vs <code>items</code>) — symptom: Network 200, UI tom. Fix: breakpoint efter deserialize, tjek count.</p></div>
 
 <div class="teori-callout"><p><strong>Faldgrube:</strong> At debugge kun i UI uden at læse response body — I ser «ingen fejl» mens API returnerer <code>{"error":"..."}</code> med status 400.</p></div>
 
@@ -86,6 +90,7 @@ _logger.LogWarning("Status {Code}", response.StatusCode);</pre>
 <tr><td>T2</td><td>Ingen nøgle</td><td>Åbn /lol</td><td>Fejlbesked 401</td><td>…</td></tr>
 <tr><td>T3</td><td>Query name=pi</td><td>Submit søg</td><td>Min 2 tegn validering</td><td>…</td></tr>
 </table></div>
+<p><strong>Hvornår screenshot?</strong> Ved 401/503 og ved valid submit — censor skal se både UI og Network uden at køre jeres maskine.</p>
 
 <h2 id="usability-script-5-min">Usability-script (5 min)</h2>
 <p>Instruktion til testperson (uden hjælp):</p>
@@ -134,13 +139,13 @@ _logger.LogWarning("Status {Code}", response.StatusCode);</pre>
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
-<script src="/teori/anim.js?v=20261015pro"></script>
-<script src="/teori/progress.js?v=20261015pro"></script>
+<script src="/teori/anim.js?v=20261015deep"></script>
+<script src="/teori/progress.js?v=20261015deep"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015pro"></script>
+<script src="/teori/highlight.js?v=20261015deep"></script>
 </body>
 </html>

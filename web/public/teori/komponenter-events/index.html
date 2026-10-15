@@ -8,12 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015pro" />
-<link rel="stylesheet" href="/demo.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/widgets.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015pro" />
+<link rel="stylesheet" href="/styles.css?v=20261015deep" />
+<link rel="stylesheet" href="/demo.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015deep" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -39,7 +39,9 @@
 <li>Bruge <code>@bind</code> og <code>@bind-Value:after</code> til two-way data.</li>
 <li>Implementere <code>EventCallback</code> til events opad (valgt champion).</li>
 <li>Sammenligne Blazor-events med jQuery/DOM-manipulation.</li>
-</ul><section class="teori-check">
+</ul>
+<p><strong>Hvornår opdele i komponenter?</strong> Når samme UI gentages (Pokémon-kort, LoL-række) eller når parent skal koordinere state (valgt id + detail-panel) uden 200 linjer Razor i én fil.</p>
+<section class="teori-check">
 <h2 id="tjek-dig-selv">Tjek dig selv før du går videre</h2>
 <ul><li>Du kan forklare EventCallback vs Action med parent/child-eksempel.</li><li>Du ved hvorfor child ikke må mutere [Parameter] direkte.</li><li>Du har brugt bind-lab og forstår two-way flow.</li></ul>
 </section>
@@ -89,11 +91,15 @@
 
   record Mon(string Name, int Id);
 }</pre>
+<p><strong>EventCallback vs EventCallback&lt;T&gt;:</strong> Uden payload når parent bare skal reagere («luk modal»). Med <code>int</code> / <code>string</code> når child sender id (Pokémon #25, champion «Ahri»). Parent ejer konsekvensen — fx <code>await Lol.GetChampionAsync(id)</code>.</p>
+<p><strong>Cascading parameters</strong> (kort): når mange børn skal kende samme «valgt træner» eller tema uden at hver <code>PokemonCard</code> får 10 parametre — se livscyklus-lektionen; events opad er stadig primary for valg-handlinger.</p>
 
 <h2 id="bind-dybere">@bind dybere</h2>
 <p><code>@bind-Value="text"</code> er syntaks-sukker for value + <code>ValueChanged</code> + <code>ValueExpression</code>. Til delayed API-søgning kan I bruge <code>@bind-Value:after="Search"</code> (.NET 8+) så søgning kører efter opdatering.</p>
 <pre class="teori-code">&lt;input @bind="filter" @bind:event="oninput" /&gt;</pre>
 <p><code>@bind:event="oninput"</code> opdaterer ved hvert tastetryk (default er often onchange ved blur).</p>
+<p><strong>Hvornår @bind-Value:after?</strong> LoL-filter der kalder OpgaverAPI efter tekstfelt opdateres — undgå at kalde API inde i <code>set</code> på property; lad Blazor færdiggøre bind, derefter søg.</p>
+<pre class="teori-code">&lt;input @bind="filter" @bind:event="oninput" @bind:after="SearchAsync" /&gt;</pre>
 
 <h2 id="c-vs-javascript">C# vs JavaScript</h2>
 <ul>
@@ -107,6 +113,7 @@
 
 <h2 id="genbrug-i-stoerre-ui">Genbrug i større UI</h2>
 <p>Samme <code>ChampionRow</code> i LoL-liste og i «favoritter»-sidebar — kun parametre og callbacks skifter.</p>
+<p>Trin ved refaktorering: udtræk markup → tilføj <code>[Parameter]</code> → erstat hardcoded klik med <code>EventCallback</code> → parent injecter service og henter API-data.</p>
 
 <section class="teori-quiz" data-quiz data-correct="1" data-ok="Korrekt — godt gået." data-bad="Ikke helt — læs sektionen og prøv igen.">
   <h3>Quiz 1</h3>
@@ -169,13 +176,13 @@ private Task PickAsync() =&gt; OnPick.InvokeAsync(ChampionId);</pre>
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
-<script src="/teori/anim.js?v=20261015pro"></script>
-<script src="/teori/progress.js?v=20261015pro"></script>
+<script src="/teori/anim.js?v=20261015deep"></script>
+<script src="/teori/progress.js?v=20261015deep"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015pro"></script>
+<script src="/teori/highlight.js?v=20261015deep"></script>
 </body>
 </html>

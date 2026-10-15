@@ -8,12 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015pro" />
-<link rel="stylesheet" href="/demo.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/widgets.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015pro" />
+<link rel="stylesheet" href="/styles.css?v=20261015deep" />
+<link rel="stylesheet" href="/demo.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015deep" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -40,7 +40,9 @@
 <li>Bruge <code>StateHasChanged</code> bevidst (og undgå unødige kald).</li>
 <li>Kende cascading parameters til tema/API-base der deles i layout.</li>
 <li>Overblik over <code>ShouldRender</code> som performance-værktøj.</li>
-</ul><section class="teori-check">
+</ul>
+<p><strong>Hvornår bruger I livscyklus-metoder?</strong> Når data afhænger af route/parametre (LoL <code>/champion/{id}</code>), når parent skifter <code>[Parameter]</code>, eller når I skal undgå race conditions ved async API-kald fra OpgaverAPI.</p>
+<section class="teori-check">
 <h2 id="tjek-dig-selv">Tjek dig selv før du går videre</h2>
 <ul><li>Du kan undgå dobbelt-fetch ved første load.</li><li>Du ved hvornår OnParametersSetAsync kører igen.</li><li>Du kan nævne hvorfor CancellationToken bruges ved navigation.</li></ul>
 </section>
@@ -55,6 +57,7 @@
 <li><strong>Event handlers</strong> — bruger klikker «Hent næste side» → opdater state → render.</li>
 <li><strong>Dispose</strong> — ryd timers, unsubscribe.</li>
 </ol>
+<p>Regel: <strong>Init</strong> til data der kun hænger på siden (statisk intro). <strong>OnParametersSet</strong> til data der følger id/query fra URL. <strong>Events</strong> til bruger-initieret refresh («Hent igen»).</p>
 
 <section class="teori-anim" data-lifecycle aria-label="Komponentlivscyklus">
   <div class="teori-anim-head">
@@ -96,6 +99,7 @@
 }</pre>
 
 <p>Brug <code>async</code> livscyklus-metoder til I/O. Vis loading-state hvis kaldet tager tid — ellers ser brugeren en tom liste.</p>
+<div class="teori-callout teori-pitfall"><p><strong>Elev-fejl → symptom → fix:</strong> Data hentes i constructoren — symptom: <code>HttpClient</code> null eller ingen render. Fix: flyt til <code>OnInitializedAsync</code>.</p></div>
 
 <h2 id="onparametersset-route-query-aendres">OnParametersSet — route/query ændres</h2>
 <pre class="teori-code">@* ChampionDetail.razor — [Parameter] public string Id *@
@@ -109,6 +113,7 @@
 }</pre>
 
 <p>Når parent eller router sender nyt <code>Id</code>, kører <code>OnParametersSetAsync</code> igen — uden at komponenten nødvendigvis destrueres.</p>
+<p><strong>Hvornår OnParametersSet frem for kun Init?</strong> Master/Detail-Pokémon: parent sætter <code>PokemonId</code> ved klik — samme detail-komponent, nyt id. Router med <code>@page "/pokemon/{id:int}"</code> opfører sig tilsvarende.</p>
 
 <h2 id="statehaschanged-og-rendering">StateHasChanged og rendering</h2>
 <p>Efter I opdaterer felter uden for en normal event (fx callback fra timer eller JS interop), kan UI mangle opdatering indtil <code>StateHasChanged()</code> kaldes. I de fleste <code>@onclick</code> / <code>@bind</code>-flows sker det automatisk.</p>
@@ -117,6 +122,8 @@
     // Eksempel: skip render hvis kun intern debug-state ændrede sig
     return _visibleChanged;
 }</pre>
+<p><strong>Hvornår ShouldRender?</strong> Når en stor LoL-liste re-renderer for ofte (fx parent opdaterer et ur hvert sekund). Returnér <code>false</code> når jeres felter ikke påvirker markup — men brug det målrettet; forkert brug giver «frossen» UI.</p>
+<p><strong>EventCallback-timing:</strong> Parent opdaterer state i callback → child får nye parametre → <code>OnParametersSet</code> kan køre <em>efter</em> parent’s render. Hvis child også muterer samme state, kan I se et ekstra render-trin — derfor one-way data ned, events op.</p>
 
 <div class="teori-callout"><p><strong>Faldgrube:</strong> At hente tung data i <code>OnParametersSet</code> <em>og</em> <code>OnInitialized</code> uden guard giver dobbelt API-kald ved første load. Tjek om parametre allerede er sat, eller brug kun <code>OnParametersSetAsync</code> med «first render»-flag.</p></div>
 
@@ -132,6 +139,7 @@
   [CascadingParameter(Name = "ApiBase")]
   public string ApiBase { get; set; } = "";
 }</pre>
+<p><strong>Hvornår cascading?</strong> Når mange dybe børn skal kende samme Mercantec Auth-kontekst, tema eller read-only config — undgå at prop-drille <code>ApiBase</code> gennem fem niveauer. Alternativ: inject <code>IConfiguration</code> eller dedikeret service.</p>
 
 <section class="teori-quiz" data-quiz data-correct="0" data-ok="Korrekt — godt gået." data-bad="Ikke helt — læs sektionen og prøv igen.">
   <h3>Quiz 1</h3>
@@ -198,13 +206,13 @@ protected override async Task OnParametersSetAsync(CancellationToken ct)
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
-<script src="/teori/anim.js?v=20261015pro"></script>
-<script src="/teori/progress.js?v=20261015pro"></script>
+<script src="/teori/anim.js?v=20261015deep"></script>
+<script src="/teori/progress.js?v=20261015deep"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015pro"></script>
+<script src="/teori/highlight.js?v=20261015deep"></script>
 </body>
 </html>

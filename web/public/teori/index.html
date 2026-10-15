@@ -8,12 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015pro" />
-<link rel="stylesheet" href="/demo.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/widgets.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015pro" />
+<link rel="stylesheet" href="/styles.css?v=20261015deep" />
+<link rel="stylesheet" href="/demo.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015deep" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -78,16 +78,19 @@
 <p class="eyebrow">16476 · H1/H2</p>
 <h2>Clientsideprogrammering</h2>
 <p>HTML/CSS i Razor, EditForm, komponenter, HttpClient og sikker clientside — jQuery kun som historisk kontekst.</p>
+<p>Typisk rækkefølge i projekt: markup → forms → komponenter → HTTP mod Pokémon/LoL → XSS/tokens.</p>
 </article>
 <article class="teori-fag">
 <p class="eyebrow">16475 · H2/H3</p>
 <h2>GUI-programmering</h2>
 <p>SPA med Blazor: layout, routing, DI, livscyklus, async API-kald, auth og usability.</p>
+<p>Bygger ovenpå clientside-delen med hosting-valg, DI-lifetimes og Mercantec Auth + API-nøgler.</p>
 </article>
 </section>
 
 <section class="teori-path" aria-labelledby="path-title">
 <h2 id="path-title">Læringssti</h2>
+<p>13 lektioner er bevidst lineære — spring ikke HttpClient/DI over hvis I vil kalde OpgaverAPI robust. Hver side er opdateret med «hvornår/hvorfor»-afsnit under hovedsektionerne.</p>
 <ol class="teori-path-list">
 <li><a href="/teori/intro-hosting/"><div><strong>Intro og hosting</strong><span>Blazor vs andre SPA’er · Server / WASM / Hybrid · Client↔Server-lab.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
 <li><a href="/teori/projekt-opsaetning/"><div><strong>Projekt-opsætning</strong><span>Template · filtræ-lab · Program.cs · Docker.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
@@ -118,13 +121,13 @@
 
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn</a>. Eksempler: <a href="https://github.com/MAGS-Template/BlazorEksempler" rel="noreferrer">BlazorEksempler</a>.</p>
 </main>
-<script src="/teori/anim.js?v=20261015pro"></script>
-<script src="/teori/progress.js?v=20261015pro"></script>
+<script src="/teori/anim.js?v=20261015deep"></script>
+<script src="/teori/progress.js?v=20261015deep"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015pro"></script>
+<script src="/teori/highlight.js?v=20261015deep"></script>
 </body>
 </html>

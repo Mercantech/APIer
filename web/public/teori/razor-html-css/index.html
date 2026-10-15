@@ -8,12 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015pro" />
-<link rel="stylesheet" href="/demo.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/widgets.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015pro" />
+<link rel="stylesheet" href="/styles.css?v=20261015deep" />
+<link rel="stylesheet" href="/demo.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015deep" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -39,7 +39,9 @@
 <li>Forklare box model og bruge margin/padding bevidst.</li>
 <li>Anvende scoped CSS (<code>.razor.css</code>) uden at lække styles globalt.</li>
 <li>Bygge responsive layout med Bootstrap grid eller tilsvarende.</li>
-</ul><section class="teori-check">
+</ul>
+<p><strong>Hvornår investere i markup/CSS?</strong> Før I binder tung API-logik — læsbar struktur gør Master/Detail og fejl-states nemmere at style (loading, tom liste, 401-banner).</p>
+<section class="teori-check">
 <h2 id="tjek-dig-selv">Tjek dig selv før du går videre</h2>
 <ul><li>Du kan forklare forskellen på semantisk HTML og div-soup.</li><li>Du ved hvad scoped CSS (.razor.css) gør.</li><li>Du har besvaret mindst ét quiz-spørgsmål korrekt.</li></ul>
 </section>
@@ -71,6 +73,7 @@
     }
   &lt;/section&gt;
 &lt;/main&gt;</pre>
+<p>Brug <code>alt</code> på Pokémon-sprites med meningsfuld tekst — tom <code>alt=""</code> kun hvis billedet er rent dekoration.</p>
 
 <h2 id="box-model">Box model</h2>
 <p>Hvert element er en boks: <strong>content → padding → border → margin</strong>. <code>box-sizing: border-box</code> (Bootstrap default) gør bredde inkl. padding — nemmere grids.</p>
@@ -97,6 +100,7 @@
 <li>Undgå for dybe selectors — svære at overskrive med isolation</li>
 <li>Links: tydelig <code>:focus</code> for tastaturbrugere</li>
 </ul>
+<p><strong>Hvornår global vs scoped?</strong> Tema, fonts og Bootstrap-import i <code>wwwroot/app.css</code>. Kort-specifik layout (LoL rolle-badge) i <code>.razor.css</code> så det ikke påvirker hele appen.</p>
 
 <h2 id="css-isolation">CSS isolation</h2>
 <p>Filen <code>PokemonCard.razor.css</code> scopes styles til komponenten via attributter Blazor genererer:</p>
@@ -111,6 +115,7 @@
   margin: 0 0 0.5rem;
 }</pre>
 <p>Global CSS i <code>wwwroot/app.css</code> til tema, fonts og Bootstrap-import.</p>
+<div class="teori-callout teori-pitfall"><p><strong>Elev-fejl → symptom → fix:</strong> Deep selector i global CSS rammer MudBlazor-knapper — symptom: demo ser «forkert» ud. Fix: flyt til komponent-scoped fil eller brug BEM-lignende klasser.</p></div>
 
 <h2 id="bootstrap-grid">Bootstrap grid</h2>
 <pre class="teori-code">&lt;div class="container py-4"&gt;
@@ -129,6 +134,7 @@
   &lt;/div&gt;
 &lt;/div&gt;</pre>
 <p><code>col-12</code> = fuld bredde mobil; <code>col-md-6</code> = to kolonner tablet; <code>col-lg-4</code> = tre på desktop.</p>
+<p><strong>Hvornår grid frem for flex?</strong> Når I viser mange ens kort (Pokémon, LoL) i responsivt raster — <code>g-3</code> gap erstatter manuel margin mellem cards.</p>
 
 <pre class="teori-code">@page "/pokemon-kort"
 
@@ -191,13 +197,13 @@
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
-<script src="/teori/anim.js?v=20261015pro"></script>
-<script src="/teori/progress.js?v=20261015pro"></script>
+<script src="/teori/anim.js?v=20261015deep"></script>
+<script src="/teori/progress.js?v=20261015deep"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015pro"></script>
+<script src="/teori/highlight.js?v=20261015deep"></script>
 </body>
 </html>

@@ -8,12 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015pro" />
-<link rel="stylesheet" href="/demo.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/widgets.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015pro" />
+<link rel="stylesheet" href="/styles.css?v=20261015deep" />
+<link rel="stylesheet" href="/demo.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015deep" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -39,7 +39,9 @@
 <li>Vælge mellem <strong>Transient</strong>, <strong>Scoped</strong> og <strong>Singleton</strong> med begrundelse.</li>
 <li>Registrere <code>HttpClient</code> via <code>IHttpClientFactory</code> og typed clients mod OpgaverAPI.</li>
 <li>Strukturere services (interface + implementation) og undgå «service locator»-antipattern.</li>
-</ul><section class="teori-check">
+</ul>
+<p><strong>Hvornår bruger I DI?</strong> Når mere end én komponent kalder samme API, når I vil mock’e i test, eller når konfiguration (base URL, nøgle-kilde) skal samles ét sted — typisk første uge i et OpgaverAPI-projekt.</p>
+<section class="teori-check">
 <h2 id="tjek-dig-selv">Tjek dig selv før du går videre</h2>
 <ul><li>Du kan forklare Scoped vs Singleton med bruger-state-bug.</li><li>Du registrerer HttpClient via AddHttpClient — ikke new HttpClient().</li><li>Du har kørt DI-lab for alle tre lifetimes.</li></ul>
 </section>
@@ -69,6 +71,7 @@ var app = builder.Build();
 // … middleware, MapRazorComponents, Run</pre>
 
 <p><code>AddHttpClient&lt;TClient, TImplementation&gt;</code> kombinerer DI med en korrekt konfigureret <code>HttpClient</code> (handler-pool, DNS, timeouts). Det er Microsofts anbefalede vej — ikke <code>new HttpClient()</code> i hver komponent.</p>
+<p>Trin når I tilføjer et nyt API-modul (fx Rick and Morty): definer interface → implementation med HttpClient → <code>AddHttpClient&lt;…&gt;</code> → <code>@inject</code> i page. Composition root er altid Program.cs — ikke static helpers i Razor.</p>
 
 <h2 id="inject-i-komponenter">@inject i komponenter</h2>
 <pre class="teori-code">@page "/pokemon-di"
@@ -112,6 +115,8 @@ public sealed class PokemonService(HttpClient http) : IPokemonService
 }
 
 public record PokemonDto(string Name, int Id);</pre>
+<p><strong>Hvornår @inject HttpClient direkte?</strong> Kun i meget små øvelser. Så snart I har headers (X-Api-Key), fejlhåndtering eller flere endpoints: inject <code>IPokemonService</code> / <code>ILolService</code> i stedet.</p>
+<div class="teori-callout teori-pitfall"><p><strong>Elev-fejl → symptom → fix:</strong> <code>@inject HttpClient Http</code> i ti komponenter + manuel BaseAddress i hver — symptom: inkonsistent URL og svær test. Fix: typed client + én registrering.</p></div>
 
 <h2 id="lifetimes-hvornaar-hvad">Lifetimes — hvornår hvad?</h2>
 <div class="teori-table-wrap"><table class="teori-table">
@@ -136,6 +141,7 @@ public record PokemonDto(string Name, int Id);</pre>
 </section>
 
 <div class="teori-callout"><p><strong>Faldgrube:</strong> At registrere <code>DbContext</code> eller bruger-specifik state som <strong>Singleton</strong> deler data mellem alle brugere. At registrere <code>HttpClient</code> som Singleton uden factory kan give socket-udmattelse — brug <code>IHttpClientFactory</code>.</p></div>
+<p><strong>Hvornår Transient?</strong> Fx en stateless <code>PokemonNameFormatter</code> injiceret mange steder — billigt at oprette. <strong>Hvornår Scoped?</strong> Brugerens valgte region, indkøbskurv-lignende UI-state, eller cache der må leve i ét Blazor Server-circuit.</p>
 
 <h2 id="ihttpclientfactory-og-typed-client">IHttpClientFactory og typed client</h2>
 <p>Typed clients er klasser der tager <code>HttpClient</code> i konstruktoren og kapsler endpoints. Factory’en håndterer levetid af handlers.</p>
@@ -148,9 +154,21 @@ public record PokemonDto(string Name, int Id);</pre>
 // I LolService tilføjes X-Api-Key per kald fra IApiKeyStore — ikke hardcodet i git</pre>
 
 <p>Hvis I både har WASM og Server i samme solution, kan base URL komme fra <code>appsettings.json</code> + miljøvariabler i Docker — præcis som APIer-projektets compose-mønster.</p>
+<p><strong>Named clients</strong> når I har flere base URLs eller forskellige handlers — fx OpgaverAPI + jeres egen backend med Bearer:</p>
+<pre class="teori-code language-csharp">builder.Services.AddHttpClient("opgaver", c =&gt;
+    c.BaseAddress = new Uri(apiBase));
+
+builder.Services.AddHttpClient("own-api", c =&gt;
+{
+    c.BaseAddress = new Uri(builder.Configuration["OwnApi:BaseUrl"]!);
+}).AddHttpMessageHandler&lt;BearerTokenHandler&gt;();
+
+// I service: IHttpClientFactory factory.CreateClient("opgaver")</pre>
+<p><strong>ConfigurePrimaryHttpMessageHandler</strong> bruges sjældent i skoleprojekter (certifikater, proxy) — men factory-mønsteret er det samme: konfigurer i Program.cs, ikke i komponent.</p>
 
 <h2 id="interfaces-og-test">Interfaces og test</h2>
 <p>Med <code>IPokemonService</code> kan I i en unit test mocke API’et og teste komponentlogik uden netværk. Det er sværere hvis komponenten kalder <code>Http.GetFromJsonAsync</code> direkte overalt.</p>
+<p><strong>Hvornår interface?</strong> Når I forventer alternativ implementation (mock, offline demo) eller når censor skal kunne skifte datakilde uden at røre Razor. Små lektionsøvelser kan undvære interface — produktionsprojekter bør have det.</p>
 
 <section class="teori-quiz" data-quiz data-correct="1" data-ok="Præcis — IHttpClientFactory genbruger handlers og undgår socket-udmattelse." data-bad="HttpClient virker i @code — problemet er levetid og DNS, ikke syntaks.">
   <h3>Quiz 1</h3>
@@ -212,13 +230,13 @@ builder.Services.AddSingleton&lt;IPokemonTypeCache, PokemonTypeCache&gt;();</pre
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
-<script src="/teori/anim.js?v=20261015pro"></script>
-<script src="/teori/progress.js?v=20261015pro"></script>
+<script src="/teori/anim.js?v=20261015deep"></script>
+<script src="/teori/progress.js?v=20261015deep"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015pro"></script>
+<script src="/teori/highlight.js?v=20261015deep"></script>
 </body>
 </html>

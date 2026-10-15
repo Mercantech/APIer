@@ -8,12 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015pro" />
-<link rel="stylesheet" href="/demo.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/widgets.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015pro" />
+<link rel="stylesheet" href="/styles.css?v=20261015deep" />
+<link rel="stylesheet" href="/demo.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015deep" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -39,7 +39,9 @@
 <li>Sammenligne Blazor Server, WASM og Hybrid på load, sikkerhed og offline.</li>
 <li>Beskrive hvordan UI (uanset hosting) kalder REST API over HTTP.</li>
 <li>Vælge render mode/interactivity bevidst i undervisningsprojekter.</li>
-</ul><section class="teori-check">
+</ul>
+<p><strong>Hvornår vælge Blazor?</strong> Når I allerede arbejder i C#/.NET og vil dele logik med API-projekter — typisk GUI + OpgaverAPI i samme klasseforløb.</p>
+<section class="teori-check">
 <h2 id="tjek-dig-selv">Tjek dig selv før du går videre</h2>
 <ul><li>Du kan skelne UI-sync (SignalR) fra REST-kald til OpgaverAPI.</li><li>Du kan nævne én fordel og én ulempe ved Blazor Server.</li><li>Du har afspillet hosting-animationen (Server vs WASM).</li></ul>
 </section>
@@ -70,6 +72,7 @@
 </section>
 
 <div class="teori-callout"><p>I undervisningen bruger vi typisk <strong>Blazor Web App</strong> med interaktiv Server-render. WASM og Hybrid er vigtige at kende, så I kan vælge den rigtige model til eksamen og drift.</p></div>
+<p>Trin i Network når I debugger: identificér om GET til OpgaverAPI kommer fra <strong>browser</strong> (WASM) eller <strong>server</strong> (Blazor Server HttpClient) — initiator-kolonnen og timing adskiller dem.</p>
 
 <h2 id="tre-hosting-modeller">Tre hosting-modeller</h2>
 
@@ -111,6 +114,7 @@
 <pre class="teori-code">@rendermode InteractiveServer
 
 @* Eller i Program.cs: AddInteractiveServerRenderMode() *@</pre>
+<p><strong>Hvornår Interactive WASM per komponent?</strong> Når én tung widget skal køre client-side uden at flytte hele appen — sjældent i første projekt. Start med global Server; skift kun med begrundelse i dokumentation.</p>
 
 <h2 id="hurtig-sammenligning">Hurtig sammenligning</h2>
 <div class="teori-table-wrap"><table class="teori-table">
@@ -124,6 +128,7 @@
 
 <h2 id="relation-til-jquery-og-klassisk-web">Relation til jQuery og «klassisk» web</h2>
 <p>I jQuery manipulerede I DOM direkte og kaldte <code>$.ajax</code>. I Blazor beskriver I <em>hvordan UI skal se ud givet state</em>; frameworket diff’er DOM. AJAX erstattes af <code>HttpClient</code> + async metoder — bedre struktur til større apps som et Pokémon-dex projekt.</p>
+<p><strong>Hvornår jQuery stadig nævnes?</strong> Kun som kontrast — undervisningsmål er komponent + DI + typed HTTP, ikke <code>$('#list').html(...)</code>.</p>
 
 <div class="teori-callout"><p><strong>Faldgrube:</strong> At antage at «Blazor Server = ingen HTTP» — hver side der henter OpgaverAPI laver stadig HTTP fra server-processen. SignalR er kun UI-sync, ikke jeres REST-kald.</p></div>
 
@@ -170,13 +175,13 @@
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
-<script src="/teori/anim.js?v=20261015pro"></script>
-<script src="/teori/progress.js?v=20261015pro"></script>
+<script src="/teori/anim.js?v=20261015deep"></script>
+<script src="/teori/progress.js?v=20261015deep"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015pro"></script>
+<script src="/teori/highlight.js?v=20261015deep"></script>
 </body>
 </html>

@@ -8,12 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015pro" />
-<link rel="stylesheet" href="/demo.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/widgets.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015pro" />
+<link rel="stylesheet" href="/styles.css?v=20261015deep" />
+<link rel="stylesheet" href="/demo.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015deep" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -39,7 +39,9 @@
 <li>Validere med DataAnnotations og vise fejl med <code>ValidationMessage</code>.</li>
 <li>Skelne mellem model-klasse og <code>EditContext</code> til avanceret validering.</li>
 <li>Forhindre submit når data er ugyldige (min længde, required).</li>
-</ul><section class="teori-check">
+</ul>
+<p><strong>Hvornår EditForm?</strong> Når brugeren indsender data I vil validere før HTTP — søgning, opret favorit, indtast API-nøgle-label — så I undgår unødige 400/404 mod OpgaverAPI.</p>
+<section class="teori-check">
 <h2 id="tjek-dig-selv">Tjek dig selv før du går videre</h2>
 <ul><li>Du kan binde EditForm til en model med DataAnnotations.</li><li>Du ved hvornår ValidationMessage vises.</li><li>Du har testet form-lab med ugyldig input.</li></ul>
 </section>
@@ -106,12 +108,15 @@
   [Required, StringLength(64, MinimumLength = 8)]
   public string KeyLabel { get; set; } = "";
 }</pre>
+<p><strong>Hvornår hvilken annotation?</strong> <code>[Required]</code> på tom submit. <code>[MinLength]</code> på søgestrenge. <code>[Range]</code> på limit i pagineret Pokémon-hentning. Server-side validering på API erstatter ikke client UX — begge lag er ideelle.</p>
 
 <h2 id="validationmessage-vs-summary">ValidationMessage vs Summary</h2>
 <ul>
 <li><code>ValidationMessage For="..."</code> — felt-specifik fejl ved input</li>
 <li><code>ValidationSummary</code> — liste øverst i form</li>
 </ul>
+<p><strong>Hvornår ValidationMessage For=?</strong> Altid ved felt med brugerinput — <code>For="@(() =&gt; form.Query)"</code> binder fejl til netop det input. Summary alene skjuler hvilket felt der fejler i lange LoL-formularer.</p>
+<pre class="teori-code">&lt;ValidationMessage For="@(() =&gt; form.ChampionName)" class="text-danger" /&gt;</pre>
 
 <h2 id="editcontext-avanceret">EditContext (avanceret)</h2>
 <p>Når I skal validere på tværs af felter (fx «slutdato efter startdato»), opret I EditContext manuelt og lytter på <code>OnValidationRequested</code>.</p>
@@ -119,11 +124,18 @@
 &lt;EditForm EditContext="editContext" OnValidSubmit="Submit"&gt;
   ...
 &lt;/EditForm&gt;</pre>
+<p><strong>Hvornår manuel EditContext?</strong> Custom validators, «bekræft sletning» checkbox der påvirker hele form, eller dynamiske felter. Standard EditForm + Model dækker 80 % af skoleprojekter.</p>
 
 <div class="teori-callout"><p><strong>Faldgrube:</strong> At bruge plain <code>&lt;input&gt;</code> uden <code>InputText</code> / <code>@bind</code> korrekt — EditContext opdateres ikke, og validering kører på gammel state. Brug Blazor input-komponenter eller <code>@bind</code> med korrekt event.</p></div>
 
 <h2 id="model-vs-api-dto">Model vs API-DTO</h2>
 <p>Form-model behøver ikke matche JSON 1:1. Map i <code>OnValidSubmit</code> til det DTO I sender med POST — fx opret favorit-Pokémon med kun <code>name</code> og <code>id</code>.</p>
+<pre class="teori-code language-csharp">private async Task HandleValidSubmit()
+{
+    var dto = new CreateFavoriteDto(form.ChampionName.Trim(), form.Region);
+    await Lol.PostFavoriteAsync(dto); // API-DTO kan have andre navne end form-klassen
+}</pre>
+<div class="teori-callout teori-pitfall"><p><strong>Elev-fejl → symptom → fix:</strong> POST med form-klassen direkte — symptom: 400 Bad Request. Fix: separat API-DTO med JSON-kompatible navne.</p></div>
 
 <section class="teori-quiz" data-quiz data-correct="2" data-ok="Korrekt — godt gået." data-bad="Ikke helt — læs sektionen og prøv igen.">
   <h3>Quiz 1</h3>
@@ -167,13 +179,13 @@
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
-<script src="/teori/anim.js?v=20261015pro"></script>
-<script src="/teori/progress.js?v=20261015pro"></script>
+<script src="/teori/anim.js?v=20261015deep"></script>
+<script src="/teori/progress.js?v=20261015deep"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015pro"></script>
+<script src="/teori/highlight.js?v=20261015deep"></script>
 </body>
 </html>

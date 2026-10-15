@@ -8,12 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015pro" />
-<link rel="stylesheet" href="/demo.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/widgets.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015pro" />
+<link rel="stylesheet" href="/styles.css?v=20261015deep" />
+<link rel="stylesheet" href="/demo.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015deep" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -39,7 +39,9 @@
 <li>Bruge <code>NavLink</code> til aktiv markering i NavMenu.</li>
 <li>Læse query parameters (<code>?name=pikachu</code>) med <code>[SupplyParameterFromQuery]</code>.</li>
 <li>Forklare deep linking og fordele/ulemper ved SPA.</li>
-</ul><section class="teori-check">
+</ul>
+<p><strong>Hvornår bruger I routing?</strong> Så snart appen har mere end én «skærm» — Pokémon-liste, LoL, indstillinger, login — uden at brugeren skal gennemleve fuld page reload og tabe Blazor-circuit.</p>
+<section class="teori-check">
 <h2 id="tjek-dig-selv">Tjek dig selv før du går videre</h2>
 <ul><li>Du bruger NavLink med active styling.</li><li>Du forstår at routing ikke reloader hele siden.</li><li>Du har prøvet SPA-anim lab.</li></ul>
 </section>
@@ -83,6 +85,7 @@
   LoL
 &lt;/NavLink&gt;</pre>
 <p><code>Match="All"</code> (default) kræver præcis path; <code>Prefix</code> matcher understier.</p>
+<p><strong>Hvornår NavLink?</strong> Al intern navigation i MainLayout — demo-hub, teori, jeres egne @page-ruter. Eksterne links (Mercantec Auth, katalog på andet domæne) forbliver almindelige <code>&lt;a target="_blank"&gt;</code> med rel="noreferrer" hvor relevant.</p>
 
 <h2 id="query-parameters">Query parameters</h2>
 <pre class="teori-code">@page "/soeg"
@@ -100,6 +103,9 @@
   }
 }</pre>
 <p>URL <code>/soeg?name=charizard</code> kan bookmarkes og deles — god UX til API-søgning.</p>
+<p><strong>Hvornår query frem for route?</strong> Valgfri filtre (søgning, sortering, side) der ikke definerer «hvilken entitet» — fx <code>/pokemon?name=pika</code>. Obligatorisk id i path: <code>/pokemon/25</code> er tydeligere deep link end kun query.</p>
+<pre class="teori-code language-csharp">// Opdatér query uden fuld reload
+_nav.NavigateTo($"/soeg?name={Uri.EscapeDataString(filter)}");</pre>
 
 <h2 id="route-parameters">Route parameters</h2>
 <pre class="teori-code">@page "/pokemon/{id:int}"
@@ -109,9 +115,14 @@
 @code {
   [Parameter] public int Id { get; set; }
 }</pre>
+<p><strong>Hvornår route constraints?</strong> <code>{id:int}</code> afviser ikke-numeriske URLs tidligt — undgår unødige API-kald med <code>NaN</code>. LoL champion-id som string: <code>{slug}</code> uden int-constraint.</p>
 
 <h2 id="layouts">Layouts</h2>
 <p><code>MainLayout.razor</code> indeholder fælles chrome; sider sætter <code>@layout</code> eller arver default fra <code>Routes.razor</code>.</p>
+<p><strong>NotFound:</strong> I <code>Routes.razor</code> eller router-konfiguration — vis venlig 404-side når ingen @page matcher (fx bruger skriver <code>/pokmon</code>). Link tilbage til forsiden; log ikke staktrace i UI.</p>
+<pre class="teori-code">&lt;Router AppAssembly="typeof(Program).Assembly" NotFound="typeof(Pages.NotFound)"&gt;
+  ...
+&lt;/Router&gt;</pre>
 
 <div class="teori-callout"><p><strong>Faldgrube:</strong> At bruge plain <code>&lt;a href&gt;</code> uden Blazor router — fuld reload, tab af circuit state på Server. Brug <code>NavLink</code> eller <code>NavigationManager</code>.</p></div>
 
@@ -161,13 +172,13 @@
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
-<script src="/teori/anim.js?v=20261015pro"></script>
-<script src="/teori/progress.js?v=20261015pro"></script>
+<script src="/teori/anim.js?v=20261015deep"></script>
+<script src="/teori/progress.js?v=20261015deep"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015pro"></script>
+<script src="/teori/highlight.js?v=20261015deep"></script>
 </body>
 </html>

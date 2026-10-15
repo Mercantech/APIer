@@ -8,12 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015pro" />
-<link rel="stylesheet" href="/demo.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/widgets.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015pro" />
+<link rel="stylesheet" href="/styles.css?v=20261015deep" />
+<link rel="stylesheet" href="/demo.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015deep" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -39,7 +39,9 @@
 <li>Navigere i Components, wwwroot og Program.cs.</li>
 <li>Tilføje Docker support og forstå env-baseret konfiguration.</li>
 <li>Genkende typiske fejl ved første run (HTTPS, render mode, port).</li>
-</ul><section class="teori-check">
+</ul>
+<p><strong>Hvornår Docker tidligt?</strong> Før første deploy til Dokploy — så I opdager forkert port, manglende env og hardcoded localhost før censor-demo.</p>
+<section class="teori-check">
 <h2 id="tjek-dig-selv">Tjek dig selv før du går videre</h2>
 <ul><li>Du kan pege på Program.cs som composition root.</li><li>Du ved hvor @page-sider og MainLayout ligger.</li><li>Du har klikket i filtræ-lab og læst mindst tre filer.</li></ul>
 </section>
@@ -71,6 +73,7 @@
 </section>
 
 <figure class="teori-figure"><img src="/teori/assets/file-structure.png" alt="Blazor Web App filstruktur" loading="lazy" /><figcaption>Oversigt fra Visual Studio.</figcaption></figure>
+<p><strong>Hvornår ny fil?</strong> Ny @page → <code>Components/Pages</code>. Genbrugeligt kort → <code>Components/Shared</code>. HTTP mod OpgaverAPI → <code>Services/</code> + interface — ikke alt i Pages.</p>
 
 <h2 id="program-cs-forklaret">Program.cs forklaret</h2>
 <p>Program.cs er indgangen: DI-container, middleware pipeline, endpoint mapping.</p>
@@ -102,6 +105,7 @@ app.MapRazorComponents&lt;App&gt;()
 app.Run();</pre>
 
 <p><code>MapRazorComponents&lt;App&gt;</code> kobler routing til jeres komponenter. Antiforgery beskytter forms. Static assets serverer CSS fra wwwroot.</p>
+<p>Checkliste før første API-kald: <code>OpgaverApi:BaseUrl</code> i config → <code>AddHttpClient</code> → breakpoint i service → F5 → Network viser korrekt host.</p>
 
 <h2 id="appsettings-og-secrets">appsettings og secrets</h2>
 <pre class="teori-code language-json">{
@@ -110,6 +114,7 @@ app.Run();</pre>
   }
 }</pre>
 <p>API-nøgler og OAuth secrets hører <strong>ikke</strong> i appsettings der committes — brug user secrets lokalt og env vars i Docker/Dokploy.</p>
+<div class="teori-callout teori-pitfall"><p><strong>Elev-fejl → symptom → fix:</strong> Nøgle i <code>appsettings.json</code> committet — symptom: alle kan bruge elevens LoL-kvota. Fix: roter nøgle, flyt til sessionStorage + user secrets pattern.</p></div>
 
 <h2 id="docker">Docker</h2>
 <p>Højreklik projekt → Add → Docker Support. Dockerfile multi-stage build: restore, publish, runtime image. I Dokploy deployes typisk med <code>docker compose up -d --build</code> — samme mønster som APIer-repoet (web offentlig, api/db intern).</p>
@@ -122,6 +127,7 @@ app.Run();</pre>
 <li><strong>CORS</strong> — opstår når I kalder API fra forkert origin; Blazor Server kalder ofte server-side (mindre CORS), WASM kalder fra browser (CORS skal passe).</li>
 <li><strong>Hardcoded localhost API</strong> — virker ikke i container; brug config.</li>
 </ul>
+<p><strong>Hvornår user secrets?</strong> Lokal udvikling på Windows — <code>dotnet user-secrets set "OpgaverApi:DevKey" "..."</code>. Dokploy: samme nøgler som env på compose-service, aldrig i image layers.</p>
 
 <div class="teori-callout"><p><strong>Faldgrube:</strong> At lægge <code>Components/Pages</code> udenfor namespace eller uden <code>@page</code> — siden vises ikke i routing. Tjek Routes.razor og at filen ligger under scannet assembly.</p></div>
 
@@ -168,13 +174,13 @@ app.Run();</pre>
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
-<script src="/teori/anim.js?v=20261015pro"></script>
-<script src="/teori/progress.js?v=20261015pro"></script>
+<script src="/teori/anim.js?v=20261015deep"></script>
+<script src="/teori/progress.js?v=20261015deep"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015pro"></script>
+<script src="/teori/highlight.js?v=20261015deep"></script>
 </body>
 </html>

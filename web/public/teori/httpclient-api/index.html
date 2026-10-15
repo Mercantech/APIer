@@ -8,12 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015pro" />
-<link rel="stylesheet" href="/demo.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/widgets.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015pro" />
+<link rel="stylesheet" href="/styles.css?v=20261015deep" />
+<link rel="stylesheet" href="/demo.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015deep" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -39,9 +39,12 @@
 <li>Bruge <code>GetFromJsonAsync</code>, <code>PostAsJsonAsync</code> med DTO/records.</li>
 <li>Håndtere <code>HttpRequestException</code>, statuskoder og tomme svar.</li>
 <li>Registrere typed HttpClient i Program.cs (se DI-lektion).</li>
-</ul><section class="teori-check">
+</ul>
+<p><strong>Hvornår bruger I det?</strong> Når UI skal vise data uden for jeres egen database — Pokémon-lister, LoL-champions, Rick and Morty-episoder. HttpClient er broen mellem Blazor-state og OpgaverAPI; DI-lektionen viser hvor I registrerer klienten.</p>
+<section class="teori-check">
 <h2 id="tjek-dig-selv">Tjek dig selv før du går videre</h2>
 <ul><li>Du håndterer IsSuccessStatusCode og viser fejl i UI.</li><li>Du kan læse ProblemDetails/title fra API-svar.</li><li>Du har afspillet async-lab og HTTP-sim.</li></ul>
+<p>Typisk elev-fejl: alt virker lokalt, men i Dokploy får I 404 — symptom: tom liste, ingen fejltekst. Fix: tjek <code>BaseAddress</code> + relative path (én konvention for slash) og at nginx proxyer <code>/api</code> til rigtig backend.</p>
 </section>
 
 <p>CRUD over HTTP: <code>POST</code> create, <code>GET</code> read, <code>PUT/PATCH</code> update, <code>DELETE</code> delete. I Blazor er kaldene async — UI-tråden blokeres ikke mens I venter på Pokémon-JSON.</p>
@@ -128,16 +131,31 @@ if (!response.IsSuccessStatusCode)
     throw new InvalidOperationException($"{response.StatusCode}: {body}");
 }
 var champs = await response.Content.ReadFromJsonAsync&lt;ChampionDto[]&gt;();</pre>
+<p><strong>Hvornår bruger I explicit ReadFromJsonAsync?</strong> Når I skal læse body ved fejl (ProblemDetails), logge rå JSON i DevTools, eller håndtere 204 No Content uden exception. <code>GetFromJsonAsync</code> er kortere til «happy path» GET — men kaster ved 4xx/5xx.</p>
+<pre class="teori-code language-csharp">// OpgaverAPI returnerer camelCase — default JsonSerializer er case-insensitive
+public record PokeDto(int Id, string Name);
+
+// Hvis API skifter til snake_case, brug [JsonPropertyName] — ikke dynamic
+[JsonPropertyName("champion_id")]
+public string ChampionId { get; init; } = "";</pre>
+<div class="teori-callout teori-pitfall"><p><strong>Elev-fejl → symptom → fix:</strong> DTO har <code>Id</code>, JSON har <code>id</code> — alt er 0/null. Fix: tjek Network → Response; tilpas property-navne eller attributter; undgå at «gætte» med <code>JsonDocument</code> i produktion.</p></div>
 
 <h2 id="x-api-key-og-headers">X-Api-Key og headers</h2>
 <pre class="teori-code">using var request = new HttpRequestMessage(HttpMethod.Get, "/LeagueOfLegends/Champions");
 request.Headers.Add("X-Api-Key", apiKey);
 var response = await Http.SendAsync(request);</pre>
 <p>Bedre: encapsuler i <code>ILolService</code> så komponenter ikke kender header-detaljer.</p>
+<p><strong>Hvornår hvilken header?</strong> <code>X-Api-Key</code> til personlig OpgaverAPI-nøgle (LoL m.fl.). <code>Authorization: Bearer</code> når jeres egen backend eller Mercantec Auth JWT skal med. Pokémon-endpoints uden nøgle: ingen header — men stadig <code>Accept: application/json</code> via factory.</p>
+<ol>
+<li>Hent nøgle efter login på kataloget — gem i sessionStorage.</li>
+<li><code>ILolService</code> læser nøgle via <code>IApiKeyStore</code> og sætter header på hvert kald.</li>
+<li>Ved 401: vis «Log ind og opret nøgle» — ikke raw exception i UI.</li>
+</ol>
 
 <h2 id="typed-client">Typed client</h2>
 <pre class="teori-code language-csharp">builder.Services.AddHttpClient&lt;IPokemonApi, PokemonApi&gt;(c =&gt;
     c.BaseAddress = new Uri("https://api-opgaver.mercantec.tech"));</pre>
+<p><strong>Hvornår typed client frem for rå HttpClient i komponent?</strong> Så snart I har mere end ét endpoint (liste + detail + søgning). Pokémon-demo med kun GET kan starte med <code>@inject HttpClient</code>; LoL med nøgle og flere routes bør have <code>ILolService</code> registreret i Program.cs.</p>
 
 <div class="teori-callout"><p><strong>Faldgrube:</strong> At læse JSON ind i <code>dynamic</code> eller <code>JsonDocument</code> overalt — det skalerer dårligt. Definér DTO’er; fang mismatches tidligt med tests eller tydelige fejl i UI.</p></div>
 
@@ -182,6 +200,13 @@ var response = await Http.SendAsync(request);</pre>
     return (null, $"{(int)response.StatusCode}: {title}");
 }</pre>
 <p>I UI: vis <code>Error</code> i rød tekst og tilbyd «Prøv igen» — særligt ved timeout på skolens WiFi.</p>
+<div class="teori-table-wrap"><table class="teori-table">
+<tr><th>Status</th><th>Typisk på OpgaverAPI</th><th>Handling i UI</th></tr>
+<tr><td>401</td><td>Manglende/ugyldig X-Api-Key (LoL)</td><td>Link til katalog + nøgle; ikke retry i loop</td></tr>
+<tr><td>404</td><td>Forkert path eller id</td><td>«Ikke fundet» + tjek route/DTO</td></tr>
+<tr><td>503</td><td>Nedetid / gateway</td><td>Kort besked + retry-knap</td></tr>
+<tr><td>200 + tom body</td><td>Sjældent</td><td>Tom-state, ikke crash på deserialize</td></tr>
+</table></div>
 <div class="teori-callout teori-pitfall"><p><strong>Sådan fejler det i praksis:</strong> <code>GetFromJsonAsync</code> kaster ved 401 — uncaught exception i Blazor Server. Eller I viser hele JSON-body i <code>@error</code> inkl. HTML — farligt hvis API ændres. Parse ProblemDetails, vis kort dansk tekst.</p></div>
 <h2 id="timeout">Timeout og CancellationToken</h2>
 <pre class="teori-code language-csharp">builder.Services.AddHttpClient&lt;IPokemonService, PokemonService&gt;(c =&gt;
@@ -193,6 +218,15 @@ var response = await Http.SendAsync(request);</pre>
 // I komponent — send token videre fra livscyklus
 mons = await Api.GetPokemonAsync(cancellationToken);</pre>
 <p>Fang <code>TaskCanceledException</code> når brugeren navigerer væk eller netværket dør — skeln mellem timeout og bruger-cancel.</p>
+<pre class="teori-code language-csharp">catch (TaskCanceledException ex) when (!ct.IsCancellationRequested)
+{
+    error = "OpgaverAPI svarede ikke i tide — prøv igen.";
+}
+catch (OperationCanceledException)
+{
+    return; // bruger forlod siden — vis ikke fejl
+}</pre>
+<p><strong>Hvornår sende CancellationToken?</strong> Altid videre fra <code>OnParametersSetAsync</code> / <code>OnInitializedAsync</code> til service-metoder — især ved LoL-detail når brugeren klikker hurtigt gennem champion-listen.</p>
 <section class="teori-mission"><h2 id="mini-opgave">Mini-opgave</h2><p>GET <code>/go/pokemon?limit=5</code> med fejl-UI ved forkert path; vis status + title fra ProblemDetails.</p></section><section class="teori-quiz" data-quiz data-correct="1" data-ok="Vis title/status." data-bad="Spinner uden fejl er dårlig UX.">
   <h3>Quiz 3</h3>
   <p class="quiz-prompt">503 ProblemDetails — hvad vises?</p>
@@ -210,13 +244,13 @@ mons = await Api.GetPokemonAsync(cancellationToken);</pre>
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
-<script src="/teori/anim.js?v=20261015pro"></script>
-<script src="/teori/progress.js?v=20261015pro"></script>
+<script src="/teori/anim.js?v=20261015deep"></script>
+<script src="/teori/progress.js?v=20261015deep"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015pro"></script>
+<script src="/teori/highlight.js?v=20261015deep"></script>
 </body>
 </html>

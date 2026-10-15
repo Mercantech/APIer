@@ -8,12 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015pro" />
-<link rel="stylesheet" href="/demo.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/widgets.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015pro" />
+<link rel="stylesheet" href="/styles.css?v=20261015deep" />
+<link rel="stylesheet" href="/demo.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015deep" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -39,7 +39,9 @@
 <li>Vælge mellem CSS grid, Bootstrap og MudBlazor til layout.</li>
 <li>Forklare async I/O vs <code>Task.Run</code> / manuelle threads i UI.</li>
 <li>Genkende Wizard, Modal confirm og List+filter patterns.</li>
-</ul><section class="teori-check">
+</ul>
+<p><strong>Hvornår Master/Detail?</strong> Når brugeren sammenligner mange items (Pokémon, champions) og skal se detail uden ny route — eller kombiner med routing for bookmarkbart id.</p>
+<section class="teori-check">
 <h2 id="tjek-dig-selv">Tjek dig selv før du går videre</h2>
 <ul><li>Du kan beskrive Master/Detail med Pokémon eller LoL.</li><li>Du ved hvorfor async ikke blokerer UI-tråden på Server.</li><li>Du har gennemgået async-lab på siden.</li></ul>
 </section>
@@ -59,14 +61,21 @@
     }
   &lt;/div&gt;
 &lt;/div&gt;</pre>
+<ol>
+<li>Parent holder <code>selectedId</code> og loading-state.</li>
+<li>Detail child bruger <code>OnParametersSetAsync</code> + CancellationToken.</li>
+<li>Vis «Vælg et element» når <code>selectedId</code> er null — undgå tom højre kolonne uden forklaring.</li>
+</ol>
 
 <h2 id="list-filter">List + filter</h2>
 <p>Søgefelt + <code>@bind</code> på filterstreng; enten client-side LINQ på hentet liste eller debounced API-kald. LoL-champions med rolle-filter er klassisk eksamen-case.</p>
+<p><strong>Hvornår client vs server filter?</strong> Under ~200 items hentet én gang: LINQ i memory. Store datasæt eller server-side søgning: debounce + query mod OpgaverAPI.</p>
 
 <h2 id="mudblazor">MudBlazor</h2>
 <p>MudBlazor leverer <code>MudTable</code>, <code>MudDialog</code>, <code>MudTextField</code>, theming. Install NuGet, tilføj i Program.cs:</p>
 <pre class="teori-code language-csharp">builder.Services.AddMudServices();</pre>
 <p>Wrap layout med <code>MudThemeProvider</code>, <code>MudPopoverProvider</code>, <code>MudDialogProvider</code>. Godt når I vil matche moderne admin-UI uden at skrive al CSS selv — se <a href="https://mudblazor.com" rel="noreferrer">mudblazor.com</a>.</p>
+<p><strong>Hvornår MudBlazor frem for rå Bootstrap?</strong> Tabeller med sort/paginering, dialogs og snackbars — sparer tid i GUI-eksamen; lær stadig HTML/CSS-grundlag i razor-lektionen.</p>
 
 <h2 id="async-ikke-threads-i-ui">Async — ikke threads i UI</h2>
 <p>Web-UI venter på netværk. <code>await Http.GetFromJsonAsync</code> frigiver tråden så Server-circuit kan betjene andre events. <code>Task.Run</code> flytter CPU-arbejde til thread pool — sjældent brugt til API-kald; på WASM begrænset.</p>
@@ -90,6 +99,7 @@
 
 <h2 id="modal-confirm">Modal confirm</h2>
 <p>Slet favorit? MudDialog eller simpel conditional render + fokus-trap. Bekræft før DELETE mod API.</p>
+<p>Trin: bruger klikker Slet → modal → ved OK kald <code>await Api.DeleteAsync(id)</code> → ved success luk modal og opdater liste; ved fejl vis ProblemDetails-tekst i dialog.</p>
 
 <section class="teori-quiz" data-quiz data-correct="2" data-ok="Korrekt — godt gået." data-bad="Ikke helt — læs sektionen og prøv igen.">
   <h3>Quiz 1</h3>
@@ -134,13 +144,13 @@
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
-<script src="/teori/anim.js?v=20261015pro"></script>
-<script src="/teori/progress.js?v=20261015pro"></script>
+<script src="/teori/anim.js?v=20261015deep"></script>
+<script src="/teori/progress.js?v=20261015deep"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015pro"></script>
+<script src="/teori/highlight.js?v=20261015deep"></script>
 </body>
 </html>

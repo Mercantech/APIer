@@ -8,12 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015pro" />
-<link rel="stylesheet" href="/demo.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/widgets.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015pro" />
+<link rel="stylesheet" href="/styles.css?v=20261015deep" />
+<link rel="stylesheet" href="/demo.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015deep" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -39,7 +39,9 @@
 <li>Beskytte API-nøgler og Bearer tokens i SPA.</li>
 <li>Forstå CORS fra browserens perspektiv (WASM vs Server).</li>
 <li>Anvende WASM/hosting-tips til mindre payload og færre re-renders.</li>
-</ul><section class="teori-check">
+</ul>
+<p><strong>Hvornår tænke sikkerhed først?</strong> Når I viser bruger-/API-tekst, gemmer tokens eller nøgler i browseren, eller deployer WASM hvor alt kan downloades og inspiceres.</p>
+<section class="teori-check">
 <h2 id="tjek-dig-selv">Tjek dig selv før du går videre</h2>
 <ul><li>Du encoder brugerdata før visning (XSS-lab).</li><li>Du gemmer ikke secrets i git eller localStorage.</li><li>Du har besvaret quiz om CORS/tokens.</li></ul>
 </section>
@@ -65,6 +67,7 @@
 
 @* Farligt hvis userComment kommer fra bruger *@
 &lt;p&gt;@((MarkupString)userComment)&lt;/p&gt;</pre>
+<p><strong>Hvornår CSP (idé)?</strong> I produktion kan Content-Security-Policy begrænse inline script — relevant hvis I tilføjer tredjeparts widgets. I skoleprojekter: prioriter encode + ingen MarkupString på user input; CSP er et hosting/nginx-emne ved Dokploy.</p>
 
 <h2 id="tokens-og-api-noegler">Tokens og API-nøgler</h2>
 <ul>
@@ -73,11 +76,13 @@
 <li>Bearer tokens: kort levetid, sessionStorage, refresh med rotation.</li>
 <li>Alt i WASM kan inspiceres — skjul ikke «hemmeligheder» i klientkode.</li>
 </ul>
+<p>Trin ved nøgle-læk i git: roter nøgle på kataloget, fjern fra historie hvis nødvendigt, flyt til sessionStorage-flow, dokumentér i testplan at gammel nøgle giver 401.</p>
 
 <h2 id="cors">CORS</h2>
 <p>Browsere håndhæver CORS på cross-origin fetch. Blazor WASM kalder API fra browser → CORS skal tillade jeres origin. Blazor Server kalder ofte HttpClient fra server-processen → CORS gælder ikke samme vej, men browseren kalder stadig SignalR til jeres app-origin.</p>
 <pre class="teori-code language-csharp">// På API ( ikke i Blazor ) — eksempel princip
 // policy.WithOrigins("https://min-app.mercantec.tech").AllowAnyHeader();</pre>
+<p><strong>Hvornår proxy via egen api?</strong> Når I ikke kan ændre OpgaverAPI CORS, men skal kalde fra WASM på nyt domæne — browser → jeres backend → OpgaverAPI med server-side nøgle (pas på: nøgle må stadig ikke lække til klient).</p>
 
 <h2 id="performance">Performance</h2>
 <ul>
@@ -87,6 +92,11 @@
 <li>Paginér API (<code>?limit=</code>) — hent ikke 10.000 records til UI.</li>
 <li>Cache read-only data kort i scoped service med etag/expiration.</li>
 </ul>
+<p><strong>WASM trim:</strong> I <code>.csproj</code> kan <code>&lt;PublishTrimmed&gt;true&lt;/PublishTrimmed&gt;</code> (med forsigtighed — test grundigt) reducere download. Kombiner med Brotli på static host. Pokémon-liste med 500 items: brug <code>Virtualize</code> + <code>limit=</code> — ikke render 500 DOM-noder på mobil.</p>
+<pre class="teori-code language-xml">&lt;PropertyGroup&gt;
+  &lt;PublishTrimmed&gt;true&lt;/PublishTrimmed&gt;
+  &lt;InvariantGlobalization&gt;true&lt;/InvariantGlobalization&gt;
+&lt;/PropertyGroup&gt;</pre>
 
 <div class="teori-callout"><p><strong>Faldgrube:</strong> At gemme elev-API-nøgle i <code>appsettings.json</code> i Blazor WASM-projekt — filen downloades til klienten. Nøgler der kun må kende én bruger hører i sessionStorage efter login, eller proxyes via jeres backend.</p></div>
 
@@ -133,13 +143,13 @@
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
-<script src="/teori/anim.js?v=20261015pro"></script>
-<script src="/teori/progress.js?v=20261015pro"></script>
+<script src="/teori/anim.js?v=20261015deep"></script>
+<script src="/teori/progress.js?v=20261015deep"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015pro"></script>
+<script src="/teori/highlight.js?v=20261015deep"></script>
 </body>
 </html>

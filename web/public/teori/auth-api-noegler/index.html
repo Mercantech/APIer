@@ -8,12 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015pro" />
-<link rel="stylesheet" href="/demo.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/widgets.css?v=20261015pro" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015pro" />
+<link rel="stylesheet" href="/styles.css?v=20261015deep" />
+<link rel="stylesheet" href="/demo.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015deep" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015deep" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -40,7 +40,9 @@
 <li>Oprette og bruge <code>X-Api-Key</code> til beskyttede OpgaverAPI-routes (fx LoL).</li>
 <li>Vælge <strong>sessionStorage</strong> frem for localStorage til tokens i SPA.</li>
 <li>Forstå forskellen på «log ud af appen» vs global Auth-signout.</li>
-</ul><section class="teori-check">
+</ul>
+<p><strong>Hvornår bruger I hvad?</strong> Mercantec Auth når jeres app skal kende brugeren (sub, roller). <code>X-Api-Key</code> når OpgaverAPI skal kvota/kende eleven — uafhængigt af OAuth. Mange projekter bruger begge: login på katalog + nøgle til LoL.</p>
+<section class="teori-check">
 <h2 id="tjek-dig-selv">Tjek dig selv før du går videre</h2>
 <ul><li>Du kan liste PKCE-trin (verifier, challenge, state, token).</li><li>App-logout rydder kun lokale tokens — ikke global Auth-signout.</li><li>Du ved hvornår X-Api-Key vs Bearer bruges.</li></ul>
 </section>
@@ -60,6 +62,7 @@ http.DefaultRequestHeaders.Authorization =
     new AuthenticationHeaderValue("Bearer", accessToken);</pre>
 
 <div class="teori-callout"><p><strong>Faldgrube:</strong> Kald aldrig <code>https://auth.mercantec.tech/signout</code> fra jeres almindelige «Log ud»-knap — det logger brugeren ud af hele Auth-sessionen. App-logout = ryd tokens lokalt og gå til login-side.</p></div>
+<p><strong>Hvornår fuld page navigation til authorize?</strong> Altid ved login-start — browser skal vise Auth UI og sætte cookies korrekt. Fetch til <code>/oauth/authorize</code> fejler eller blokeres; PKCE + state kræver redirect tilbage til jeres <code>redirect_uri</code>.</p>
 
 <h2 id="x-api-key-mod-opgaverapi">X-Api-Key mod OpgaverAPI</h2>
 <p>Åbne endpoints (fx mange Pokémon-routes) kræver ikke nøgle. Beskyttede routes (fx League of Legends) returnerer <strong>401</strong> uden header. Opret nøgle i <a href="/">API-kataloget</a> når I er logget ind — gem den i sessionStorage, send som header:</p>
@@ -67,6 +70,11 @@ http.DefaultRequestHeaders.Authorization =
 var champs = await http.GetFromJsonAsync&lt;ChampionDto[]&gt;("/LeagueOfLegends/Champions");</pre>
 
 <p>Commit aldrig nøgler. Brug user secrets lokalt og env i Dokploy til server-delen hvis I proxy’er.</p>
+<ol>
+<li>Åbn kataloget — Mercantec Auth login hvis I ikke er inde.</li>
+<li>Opret nøgle — kopier én gang; gem i sessionStorage under jeres apps nøgle.</li>
+<li>Test med <a href="/demo/lol">LoL-demo</a> — Network skal vise <code>X-Api-Key</code> på request, ikke i query string.</li>
+</ol>
 
 <section class="teori-anim" data-http-sim aria-label="401 uden API-nøgle">
   <div class="teori-anim-head">
@@ -96,9 +104,25 @@ var champs = await http.GetFromJsonAsync&lt;ChampionDto[]&gt;("/LeagueOfLegends/
 </table></div>
 
 <p>PKCE <code>code_verifier</code> og <code>state</code> hører i sessionStorage indtil callback er valideret — derefter ryd midlertidige værdier.</p>
+<p><strong>Hvornår localStorage?</strong> Næsten aldrig til access/refresh tokens i Mercantec SPA-retningslinjer — længere eksponering ved XSS. Præferencer uden sikkerhed (tema, sidste søgning) kan overvejes, men ikke nøgler.</p>
 
 <h2 id="refresh-og-401">Refresh og 401</h2>
 <p>Wrapper om <code>HttpClient</code>: ved 401 forsøg ét token refresh, retry request — ellers redirect til login. Roterende refresh tokens: gem altid det nye svar fra token-endpoint.</p>
+<pre class="teori-code language-csharp">// Pseudokode — AuthHttpHandler
+protected override async Task&lt;HttpResponseMessage&gt; SendAsync(request, ct)
+{
+    var response = await base.SendAsync(request, ct);
+    if (response.StatusCode != HttpStatusCode.Unauthorized) return response;
+
+    var newTokens = await _auth.RefreshAsync(ct); // POST /oauth/token, grant_type=refresh_token
+    if (newTokens is null) { _nav.NavigateTo("/login"); return response; }
+
+    _session.SaveTokens(newTokens); // overskriv BÅDE access og refresh
+    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", newTokens.AccessToken);
+    return await base.SendAsync(request, ct); // ét retry — undgå uendelig loop
+}</pre>
+<p><strong>Token rotation:</strong> Hvis I gemmer gammel refresh efter refresh-svar, næste login fejler med «invalid_grant». OpgaverAPI 401 med gyldig Bearer betyder ofte udløbet token — skeln fra manglende X-Api-Key.</p>
+<div class="teori-callout teori-pitfall"><p><strong>Elev-fejl → symptom → fix:</strong> Refresh i loop ved hver GET — symptom: rate limit / logout. Fix: kun én retry; ved gentagen 401 → lokal logout.</p></div>
 
 <section class="teori-quiz" data-quiz data-correct="2" data-ok="Korrekt — godt gået." data-bad="Ikke helt — læs sektionen og prøv igen.">
   <h3>Quiz 1</h3>
@@ -139,9 +163,11 @@ var challenge = Pkce.S256(verifier);
 session.Set("pkce_verifier", verifier);
 session.Set("oauth_state", state);
 Nav.NavigateTo($"{auth}/oauth/authorize?client_id=...&amp;code_challenge={challenge}&amp;...", forceLoad: true);</pre>
+<p><strong>Hvornår PKCE igen?</strong> Ved hvert nyt login-forsøg — generér ny verifier/challenge/state; genbrug ikke gamle værdier fra en afbrudt session.</p>
 <h2 id="logout">Lokal logout vs global signout</h2>
 <p><strong>Lokal logout</strong> (standard «Log ud» i jeres app): ryd kun tokens og API-nøgle-hints i sessionStorage, nulstil in-memory auth-state, gå til <code>/login</code>. Brugeren forbliver logget ind i andre Mercantec-apps.</p>
 <p><strong>Global signout</strong> (<code>auth.mercantec.tech/signout</code>): kun når brugeren eksplicit vil ud af hele Auth-platformen — ikke jeres default-knap.</p>
+<p><strong>Hvornår lokal logout?</strong> Standard «Log ud» i navbar, før demo til censor, eller når eleven deler PC — ryd sessionStorage for tokens og api_key, så næste bruger ikke arver LoL-kvota.</p>
 <pre class="teori-code language-csharp">void LogoutLocal(IJSRuntime js, NavigationManager nav)
 {
     js.InvokeVoid("eval", @"
@@ -167,13 +193,13 @@ Nav.NavigateTo($"{auth}/oauth/authorize?client_id=...&amp;code_challenge={challe
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
-<script src="/teori/anim.js?v=20261015pro"></script>
-<script src="/teori/progress.js?v=20261015pro"></script>
+<script src="/teori/anim.js?v=20261015deep"></script>
+<script src="/teori/progress.js?v=20261015deep"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015pro"></script>
+<script src="/teori/highlight.js?v=20261015deep"></script>
 </body>
 </html>
