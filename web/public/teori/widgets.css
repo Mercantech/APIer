@@ -557,16 +557,9 @@
   font-weight: 600;
 }
 
-/* Pensum i fuld kolonnebredde — TOC hænger i venstre gutter uden for flow */
-.demo-shell:has(.teori-toc) {
-  max-width: 1100px;
-  overflow: visible;
-}
-
+/* Pensum urørt — TOC får egen shell-kolonne i gutteren */
 .teori-lesson {
   max-width: 880px;
-  position: relative;
-  overflow: visible;
 }
 
 .teori-lesson-main {
@@ -664,25 +657,37 @@
   font-weight: 600;
 }
 
-/* Bred skærm: TOC i venstre margin — pensum urørt */
-@media (min-width: 1240px) {
+/* Bred skærm: shell får TOC-kolonne til venstre — pensum i højre kolonne */
+@media (min-width: 1180px) {
+  .demo-shell:has(.teori-toc) {
+    max-width: 1280px;
+    display: grid;
+    grid-template-columns: 13.75rem minmax(0, 1fr);
+    column-gap: 1.5rem;
+    align-items: start;
+  }
+
+  .demo-shell:has(.teori-toc) > :not(.teori-toc) {
+    grid-column: 2;
+  }
+
   .teori-toc {
-    position: fixed;
-    top: 5.5rem;
-    left: max(0.6rem, calc(50vw - 440px - 15.25rem));
-    width: 13.5rem;
-    max-height: calc(100vh - 6.5rem);
+    grid-column: 1;
+    grid-row: 1 / -1;
+    position: sticky;
+    top: 1.25rem;
+    align-self: start;
+    width: auto;
+    max-height: calc(100vh - 2.5rem);
     overflow-y: auto;
     margin: 0;
   }
 }
 
-/* Mellem / smal: kompakt top-bar inde i lektionen (kun når gutter mangler) */
-@media (max-width: 1239px) {
+/* Smal: kompakt top-bar over pensum */
+@media (max-width: 1179px) {
   .teori-toc {
     position: relative;
-    top: auto;
-    left: auto;
     width: auto;
     max-height: none;
     flex-direction: row;
@@ -691,7 +696,7 @@
     overflow-x: auto;
     overflow-y: hidden;
     padding: 0.55rem 0.65rem;
-    margin: 0 0 0.35rem;
+    margin: 0 0 0.75rem;
     -webkit-overflow-scrolling: touch;
   }
 

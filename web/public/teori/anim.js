@@ -783,15 +783,13 @@
         while (main.firstChild) lesson.appendChild(main.firstChild);
         main.remove();
       }
-      const toc =
+      let toc =
         lesson.querySelector(":scope > .teori-toc") ||
-        (lesson.previousElementSibling?.classList?.contains("teori-toc")
-          ? lesson.previousElementSibling
-          : null);
+        shell?.querySelector(":scope > .teori-toc");
       if (!toc || !shell) return;
-      // TOC uden for article — fylder ikke i pensum-kolonnen
-      if (toc.parentElement === lesson) {
-        shell.insertBefore(toc, lesson);
+      // TOC som første child i shell → egen grid-kolonne, ikke inden i pensum
+      if (toc.parentElement !== shell || shell.firstElementChild !== toc) {
+        shell.insertBefore(toc, shell.firstElementChild);
       }
     });
   }
