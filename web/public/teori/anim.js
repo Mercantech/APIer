@@ -773,6 +773,55 @@
     sync();
   }
 
+  /* ——— Side TOC layout + scroll-spy ——— */
+  function ensureLessonSidebar() {
+    document.querySelectorAll(".teori-lesson").forEach((lesson) => {
+      const toc = lesson.querySelector(":scope > .teori-toc");
+      if (!toc || lesson.querySelector(":scope > .teori-lesson-main")) return;
+      const main = document.createElement("div");
+      main.className = "teori-lesson-main";
+      [...lesson.children].forEach((child) => {
+        if (child !== toc) main.appendChild(child);
+      });
+      lesson.appendChild(main);
+    });
+  }
+
+  function initTocSpy() {
+    ensureLessonSidebar();
+    const toc = document.querySelector(".teori-toc");
+    if (!toc) return;
+    const links = [...toc.querySelectorAll('a[href^="#"]')];
+    if (!links.length) return;
+
+    const sections = links
+      .map((a) => {
+        const id = decodeURIComponent(a.getAttribute("href").slice(1));
+        const el = document.getElementById(id);
+        return el ? { a, el } : null;
+      })
+      .filter(Boolean);
+
+    function setActive(active) {
+      links.forEach((a) => a.classList.toggle("is-active", a === active));
+    }
+
+    const obs = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (!visible.length) return;
+        const hit = sections.find((s) => s.el === visible[0].target);
+        if (hit) setActive(hit.a);
+      },
+      { rootMargin: "-15% 0px -65% 0px", threshold: [0, 0.2, 0.6] }
+    );
+
+    sections.forEach(({ el }) => obs.observe(el));
+    if (sections[0]) setActive(sections[0].a);
+  }
+
   /* ——— Reveal / flip facts ——— */
   function initReveal(root) {
     root.querySelectorAll("[data-reveal]").forEach((btn) => {
@@ -884,6 +933,7 @@
     document.querySelectorAll("[data-query-lab]").forEach(initQueryLab);
     document.querySelectorAll("[data-reveal-lab]").forEach(initReveal);
     document.querySelectorAll("[data-scope-battle]").forEach(initScopeBattle);
+    initTocSpy();
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
