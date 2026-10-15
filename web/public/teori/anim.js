@@ -776,14 +776,23 @@
   /* ——— Side TOC layout + scroll-spy ——— */
   function ensureLessonSidebar() {
     document.querySelectorAll(".teori-lesson").forEach((lesson) => {
-      const toc = lesson.querySelector(":scope > .teori-toc");
-      if (!toc || lesson.querySelector(":scope > .teori-lesson-main")) return;
-      const main = document.createElement("div");
-      main.className = "teori-lesson-main";
-      [...lesson.children].forEach((child) => {
-        if (child !== toc) main.appendChild(child);
-      });
-      lesson.appendChild(main);
+      const shell = lesson.closest(".demo-shell");
+      // unwrap ældre to-kolonne-wrap
+      const main = lesson.querySelector(":scope > .teori-lesson-main");
+      if (main) {
+        while (main.firstChild) lesson.appendChild(main.firstChild);
+        main.remove();
+      }
+      const toc =
+        lesson.querySelector(":scope > .teori-toc") ||
+        (lesson.previousElementSibling?.classList?.contains("teori-toc")
+          ? lesson.previousElementSibling
+          : null);
+      if (!toc || !shell) return;
+      // TOC uden for article — fylder ikke i pensum-kolonnen
+      if (toc.parentElement === lesson) {
+        shell.insertBefore(toc, lesson);
+      }
     });
   }
 

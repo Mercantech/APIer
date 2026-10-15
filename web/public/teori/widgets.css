@@ -557,27 +557,22 @@
   font-weight: 600;
 }
 
+/* Pensum i fuld kolonnebredde — TOC hænger i venstre gutter uden for flow */
 .demo-shell:has(.teori-toc) {
-  max-width: 1180px;
+  max-width: 1100px;
+  overflow: visible;
 }
 
 .teori-lesson {
-  max-width: 1080px;
-  grid-template-columns: minmax(11.5rem, 15rem) minmax(0, 1fr);
-  column-gap: 1.75rem;
-  /* stretch så sticky TOC får fuld rækkehøjde = indholdskolonnen */
+  max-width: 880px;
+  position: relative;
+  overflow: visible;
 }
 
 .teori-lesson-main {
-  grid-column: 2;
   display: grid;
   gap: 1.35rem;
   min-width: 0;
-}
-
-/* Før wrap (JS) — hold indhold i højre kolonne */
-.teori-lesson > :not(.teori-toc):not(.teori-lesson-main) {
-  grid-column: 2;
 }
 
 .teori-check {
@@ -619,19 +614,11 @@
 }
 
 .teori-toc {
-  grid-column: 1;
-  grid-row: 1;
-  position: sticky;
-  top: 1rem;
-  z-index: 2;
-  align-self: start;
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
-  margin: 0;
+  z-index: 3;
   padding: 0.85rem 0.7rem;
-  max-height: calc(100vh - 2rem);
-  overflow-y: auto;
   border-radius: 14px;
   border: 1px solid var(--line);
   background: rgba(7, 16, 24, 0.94);
@@ -677,20 +664,26 @@
   font-weight: 600;
 }
 
-@media (max-width: 900px) {
-  .teori-lesson {
-    grid-template-columns: 1fr;
-  }
-
-  .teori-lesson-main,
-  .teori-lesson > :not(.teori-toc):not(.teori-lesson-main) {
-    grid-column: 1;
-  }
-
+/* Bred skærm: TOC i venstre margin — pensum urørt */
+@media (min-width: 1240px) {
   .teori-toc {
-    grid-column: 1;
+    position: fixed;
+    top: 5.5rem;
+    left: max(0.6rem, calc(50vw - 440px - 15.25rem));
+    width: 13.5rem;
+    max-height: calc(100vh - 6.5rem);
+    overflow-y: auto;
+    margin: 0;
+  }
+}
+
+/* Mellem / smal: kompakt top-bar inde i lektionen (kun når gutter mangler) */
+@media (max-width: 1239px) {
+  .teori-toc {
     position: relative;
-    top: 0;
+    top: auto;
+    left: auto;
+    width: auto;
     max-height: none;
     flex-direction: row;
     flex-wrap: nowrap;

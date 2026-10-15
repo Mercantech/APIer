@@ -96,7 +96,7 @@
 .teori-lesson {
   display: grid;
   gap: 1.35rem;
-  max-width: 1080px;
+  max-width: 880px;
 }
 
 .teori-lesson h2 {
