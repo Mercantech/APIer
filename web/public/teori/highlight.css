@@ -1,0 +1,106 @@
+/* Blazor / Razor syntax highlight (Prism tokens) */
+
+.teori-code {
+  position: relative;
+}
+
+.teori-code code {
+  display: block;
+  font: inherit;
+  color: inherit;
+  background: none;
+  padding: 0;
+  white-space: inherit;
+  overflow: visible;
+}
+
+.teori-code .token.comment,
+.teori-code .token.prolog,
+.teori-code .token.doctype,
+.teori-code .token.cdata,
+.teori-code .token.razor-comment {
+  color: #7d8b74;
+  font-style: italic;
+}
+
+.teori-code .token.punctuation {
+  color: #8ba3b8;
+}
+
+.teori-code .token.namespace {
+  opacity: 0.85;
+}
+
+.teori-code .token.property,
+.teori-code .token.tag,
+.teori-code .token.boolean,
+.teori-code .token.number,
+.teori-code .token.constant,
+.teori-code .token.symbol,
+.teori-code .token.deleted,
+.teori-code .token.unit {
+  color: #f0a06a;
+}
+
+.teori-code .token.selector,
+.teori-code .token.attr-name,
+.teori-code .token.string,
+.teori-code .token.char,
+.teori-code .token.builtin,
+.teori-code .token.inserted,
+.teori-code .token.attr-value {
+  color: #9fd68a;
+}
+
+.teori-code .token.operator,
+.teori-code .token.entity,
+.teori-code .token.url,
+.teori-code .language-css .token.string,
+.teori-code .style .token.string {
+  color: #c5d4e0;
+}
+
+.teori-code .token.atrule,
+.teori-code .token.keyword,
+.teori-code .token.directive,
+.teori-code .token.directive-name,
+.teori-code .token.tag .token.tag,
+.teori-code .token.tag .token.punctuation {
+  color: #6cbcf0;
+}
+
+.teori-code .token.function,
+.teori-code .token.class-name {
+  color: #3dd6c6;
+}
+
+.teori-code .token.regex,
+.teori-code .token.important,
+.teori-code .token.variable {
+  color: #e8c27a;
+}
+
+.teori-code .token.important,
+.teori-code .token.bold {
+  font-weight: 600;
+}
+
+.teori-code .token.italic {
+  font-style: italic;
+}
+
+.teori-code .token.entity {
+  cursor: help;
+}
+
+/* Razor / Blazor specifics */
+.teori-code .token.razor,
+.teori-code .token.csharp,
+.teori-code .language-csharp {
+  color: #d7e6f5;
+}
+
+.teori-code .token.directive-name {
+  color: #c792ea;
+  font-weight: 500;
+}

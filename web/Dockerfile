@@ -1,6 +1,6 @@
 FROM nginx:1.27-alpine
 # CACHEBUST — skift værdi for at undgå stale layers i Dokploy-build
-ARG CACHEBUST=20261015anim
+ARG CACHEBUST=20261015hl
 RUN echo "cachebust=$CACHEBUST"
 COPY public/ /usr/share/nginx/html/
 COPY nginx.conf /etc/nginx/conf.d/default.conf
