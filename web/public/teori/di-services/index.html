@@ -8,12 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015deep" />
-<link rel="stylesheet" href="/demo.css?v=20261015deep" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015deep" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015deep" />
-<link rel="stylesheet" href="/teori/widgets.css?v=20261015deep" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015deep" />
+<link rel="stylesheet" href="/styles.css?v=20261015ix" />
+<link rel="stylesheet" href="/demo.css?v=20261015ix" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015ix" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015ix" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015ix" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015ix" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -119,6 +119,28 @@ public record PokemonDto(string Name, int Id);</pre>
 <div class="teori-callout teori-pitfall"><p><strong>Elev-fejl → symptom → fix:</strong> <code>@inject HttpClient Http</code> i ti komponenter + manuel BaseAddress i hver — symptom: inkonsistent URL og svær test. Fix: typed client + én registrering.</p></div>
 
 <h2 id="lifetimes-hvornaar-hvad">Lifetimes — hvornår hvad?</h2>
+
+<section class="teori-anim" data-reveal-lab aria-label="Lifetimeetimes flip">
+  <div class="teori-anim-head">
+    <h3>Vend kortene</h3>
+    <p>Klik for at afsløre — typiske censor-spørgsmål om DI-lifetimes.</p>
+  </div>
+  <div class="reveal-grid">
+    <button type="button" data-reveal aria-expanded="false">
+      <span class="reveal-q">Hvornår Transient?</span>
+      <span class="reveal-a">Let, stateless hjælper — ny instans hver inject. God til små utilities. Undgå hvis den holder HttpClient uden factory.</span>
+    </button>
+    <button type="button" data-reveal aria-expanded="false">
+      <span class="reveal-q">Hvornår Scoped?</span>
+      <span class="reveal-a">Én instans pr. cirkel/request (i WASM: pr. cirkel). Perfekt til «bruger-session»-state i Blazor Server; i WASM ofte «pr. navigation-cirkel».</span>
+    </button>
+    <button type="button" data-reveal aria-expanded="false">
+      <span class="reveal-q">Hvornår Singleton?</span>
+      <span class="reveal-a">Delt cache/config for hele appen. Må ikke holde bruger-specifik state — ellers lækker data mellem brugere (Server) eller mellem faner (forvirring).</span>
+    </button>
+  </div>
+</section>
+
 <div class="teori-table-wrap"><table class="teori-table">
 <tr><th>Lifetime</th><th>Betyder</th><th>Typisk brug i Blazor</th></tr>
 <tr><td>Transient</td><td>Ny instans hver gang den anmodes</td><td>Lette, stateless helpers (formatters, validators uden state)</td></tr>
@@ -230,13 +252,13 @@ builder.Services.AddSingleton&lt;IPokemonTypeCache, PokemonTypeCache&gt;();</pre
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
-<script src="/teori/anim.js?v=20261015deep"></script>
-<script src="/teori/progress.js?v=20261015deep"></script>
+<script src="/teori/anim.js?v=20261015ix"></script>
+<script src="/teori/progress.js?v=20261015ix"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015deep"></script>
+<script src="/teori/highlight.js?v=20261015ix"></script>
 </body>
 </html>

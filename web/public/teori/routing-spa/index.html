@@ -8,12 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015deep" />
-<link rel="stylesheet" href="/demo.css?v=20261015deep" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015deep" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015deep" />
-<link rel="stylesheet" href="/teori/widgets.css?v=20261015deep" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015deep" />
+<link rel="stylesheet" href="/styles.css?v=20261015ix" />
+<link rel="stylesheet" href="/demo.css?v=20261015ix" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015ix" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015ix" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015ix" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015ix" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -88,6 +88,17 @@
 <p><strong>Hvornår NavLink?</strong> Al intern navigation i MainLayout — demo-hub, teori, jeres egne @page-ruter. Eksterne links (Mercantec Auth, katalog på andet domæne) forbliver almindelige <code>&lt;a target="_blank"&gt;</code> med rel="noreferrer" hvor relevant.</p>
 
 <h2 id="query-parameters">Query parameters</h2>
+
+<section class="teori-anim" data-query-lab aria-label="Query string-lab">
+  <div class="teori-anim-head">
+    <h3>Skriv et søgenavn</h3>
+    <p>Se URL og Razor-kode opdatere live — samme mønster som <code>/pokemon?name=</code>.</p>
+  </div>
+  <label>name <input type="text" data-query-input placeholder="pikachu" autocomplete="off" /></label>
+  <p class="query-url" data-query-out></p>
+  <pre class="query-code" data-query-code></pre>
+</section>
+
 <pre class="teori-code">@page "/soeg"
 
 &lt;p&gt;Søger efter: @name&lt;/p&gt;
@@ -172,13 +183,13 @@ _nav.NavigateTo($"/soeg?name={Uri.EscapeDataString(filter)}");</pre>
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
-<script src="/teori/anim.js?v=20261015deep"></script>
-<script src="/teori/progress.js?v=20261015deep"></script>
+<script src="/teori/anim.js?v=20261015ix"></script>
+<script src="/teori/progress.js?v=20261015ix"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015deep"></script>
+<script src="/teori/highlight.js?v=20261015ix"></script>
 </body>
 </html>

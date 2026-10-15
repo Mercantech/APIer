@@ -8,12 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015deep" />
-<link rel="stylesheet" href="/demo.css?v=20261015deep" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015deep" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015deep" />
-<link rel="stylesheet" href="/teori/widgets.css?v=20261015deep" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015deep" />
+<link rel="stylesheet" href="/styles.css?v=20261015ix" />
+<link rel="stylesheet" href="/demo.css?v=20261015ix" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015ix" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015ix" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015ix" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015ix" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -186,6 +186,23 @@ var response = await Http.SendAsync(request);</pre>
 
 <h2 id="problemdetails">ProblemDetails og statuskoder</h2>
 <p class="teori-why"><strong>Hvorfor det betyder noget:</strong> OpgaverAPI svarer med meningsfulde statuskoder — 401 (manglende nøgle), 404 (forkert route), 503 (nedetid). Brugeren og censor skal se en handlingsbar besked, ikke en hvid skærm.</p>
+
+<section class="teori-anim" data-status-lab aria-label="HTTP status-lab">
+  <div class="teori-anim-head">
+    <h3>Klik en statuskode</h3>
+    <p>Se hvad I bør gøre i Blazor-UI — samme koder I møder i Network-fanen.</p>
+  </div>
+  <div class="status-grid">
+    <button type="button" data-status="200">200</button>
+    <button type="button" data-status="201">201</button>
+    <button type="button" data-status="204">204</button>
+    <button type="button" data-status="401">401</button>
+    <button type="button" data-status="404">404</button>
+    <button type="button" data-status="503">503</button>
+  </div>
+  <div class="status-detail" aria-live="polite"></div>
+</section>
+
 <pre class="teori-code language-csharp">public async Task&lt;(List&lt;Mon&gt;? Data, string? Error)&gt; GetPokemonAsync(CancellationToken ct)
 {
     using var response = await _http.GetAsync("/go/pokemon?limit=20", ct);
@@ -244,13 +261,13 @@ catch (OperationCanceledException)
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
-<script src="/teori/anim.js?v=20261015deep"></script>
-<script src="/teori/progress.js?v=20261015deep"></script>
+<script src="/teori/anim.js?v=20261015ix"></script>
+<script src="/teori/progress.js?v=20261015ix"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015deep"></script>
+<script src="/teori/highlight.js?v=20261015ix"></script>
 </body>
 </html>

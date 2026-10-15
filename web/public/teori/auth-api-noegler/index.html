@@ -8,12 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015deep" />
-<link rel="stylesheet" href="/demo.css?v=20261015deep" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015deep" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015deep" />
-<link rel="stylesheet" href="/teori/widgets.css?v=20261015deep" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015deep" />
+<link rel="stylesheet" href="/styles.css?v=20261015ix" />
+<link rel="stylesheet" href="/demo.css?v=20261015ix" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015ix" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015ix" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015ix" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015ix" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -148,6 +148,22 @@ protected override async Task&lt;HttpResponseMessage&gt; SendAsync(request, ct)
 
 
 <h2 id="pkce">PKCE trin for trin</h2>
+
+<section class="teori-anim" data-pkce-lab aria-label="PKCE flow-lab">
+  <div class="teori-anim-head">
+    <h3>Gå PKCE igennem</h3>
+    <p>Tryk Afspil — eller hop mellem trin. Det er det flow I skal kunne tegne til censor.</p>
+  </div>
+  <p class="pkce-step-label"></p>
+  <div class="pkce-dots" aria-label="PKCE-trin"></div>
+  <div class="teori-anim-controls">
+    <button type="button" class="btn ghost sm" data-action="pkce-prev">Forrige</button>
+    <button type="button" class="btn ghost sm" data-action="pkce-next">Næste</button>
+    <button type="button" class="btn primary sm" data-action="pkce-play">Afspil</button>
+  </div>
+  <pre class="pkce-log" aria-live="polite"></pre>
+</section>
+
 <p class="teori-why"><strong>Hvorfor det betyder noget:</strong> Jeres Blazor-app er en public OAuth-klient uden hemmelighed i browseren. PKCE binder authorization code til den session der startede login — så en aflyttet code ikke kan byttes uden <code>code_verifier</code>.</p>
 <ol>
 <li><strong>Generér</strong> <code>code_verifier</code> (43–128 tegn) og <code>code_challenge = BASE64URL(SHA256(verifier))</code>.</li>
@@ -193,13 +209,13 @@ Nav.NavigateTo($"{auth}/oauth/authorize?client_id=...&amp;code_challenge={challe
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
-<script src="/teori/anim.js?v=20261015deep"></script>
-<script src="/teori/progress.js?v=20261015deep"></script>
+<script src="/teori/anim.js?v=20261015ix"></script>
+<script src="/teori/progress.js?v=20261015ix"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015deep"></script>
+<script src="/teori/highlight.js?v=20261015ix"></script>
 </body>
 </html>

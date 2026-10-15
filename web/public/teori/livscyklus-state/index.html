@@ -8,12 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015deep" />
-<link rel="stylesheet" href="/demo.css?v=20261015deep" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015deep" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015deep" />
-<link rel="stylesheet" href="/teori/widgets.css?v=20261015deep" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015deep" />
+<link rel="stylesheet" href="/styles.css?v=20261015ix" />
+<link rel="stylesheet" href="/demo.css?v=20261015ix" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015ix" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015ix" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015ix" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015ix" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -116,6 +116,28 @@
 <p><strong>Hvornår OnParametersSet frem for kun Init?</strong> Master/Detail-Pokémon: parent sætter <code>PokemonId</code> ved klik — samme detail-komponent, nyt id. Router med <code>@page "/pokemon/{id:int}"</code> opfører sig tilsvarende.</p>
 
 <h2 id="statehaschanged-og-rendering">StateHasChanged og rendering</h2>
+
+<section class="teori-anim" data-reveal-lab aria-label="Livscyklus flip">
+  <div class="teori-anim-head">
+    <h3>Vend kortene</h3>
+    <p>Klik for at afsløre — hvornår hvilken livscyklus-hook?</p>
+  </div>
+  <div class="reveal-grid">
+    <button type="button" data-reveal aria-expanded="false">
+      <span class="reveal-q">Første API-hent?</span>
+      <span class="reveal-a">OnInitializedAsync — kører én gang ved oprettelse. Perfekt til initial load.</span>
+    </button>
+    <button type="button" data-reveal aria-expanded="false">
+      <span class="reveal-q">Route-id ændres?</span>
+      <span class="reveal-a">OnParametersSetAsync — samme komponent-instans, nye parametre. Guard så I ikke dobbelt-fetcher.</span>
+    </button>
+    <button type="button" data-reveal aria-expanded="false">
+      <span class="reveal-q">Bruger navigerer væk midt i fetch?</span>
+      <span class="reveal-a">CancellationToken / dispose — undgå StateHasChanged på disposed komponent og spildt netværk.</span>
+    </button>
+  </div>
+</section>
+
 <p>Efter I opdaterer felter uden for en normal event (fx callback fra timer eller JS interop), kan UI mangle opdatering indtil <code>StateHasChanged()</code> kaldes. I de fleste <code>@onclick</code> / <code>@bind</code>-flows sker det automatisk.</p>
 <pre class="teori-code language-csharp">protected override bool ShouldRender()
 {
@@ -206,13 +228,13 @@ protected override async Task OnParametersSetAsync(CancellationToken ct)
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
-<script src="/teori/anim.js?v=20261015deep"></script>
-<script src="/teori/progress.js?v=20261015deep"></script>
+<script src="/teori/anim.js?v=20261015ix"></script>
+<script src="/teori/progress.js?v=20261015ix"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015deep"></script>
+<script src="/teori/highlight.js?v=20261015ix"></script>
 </body>
 </html>

@@ -600,6 +600,189 @@
     );
   }
 
+  /* ——— HTTP status explorer ——— */
+  function initStatusLab(root) {
+    const detail = root.querySelector(".status-detail");
+    const map = {
+      "200": {
+        title: "200 OK",
+        body: "Succes. Deserialisér JSON til DTO — fx List&lt;PokeDto&gt;. Vis listen i UI.",
+      },
+      "201": {
+        title: "201 Created",
+        body: "Ressource oprettet (fx API-nøgle). Læs Location/body; gem tip ét sted — ikke i git.",
+      },
+      "204": {
+        title: "204 No Content",
+        body: "OK uden body. Brug SendAsync — GetFromJsonAsync fejler på tom body.",
+      },
+      "401": {
+        title: "401 Unauthorized",
+        body: "Mangler X-Api-Key eller Bearer. Vis «log ind / opret nøgle» — ikke blind retry.",
+      },
+      "404": {
+        title: "404 Not Found",
+        body: "Forkert path eller id. Tjek BaseAddress + relative URL i Network-fanen.",
+      },
+      "503": {
+        title: "503 Service Unavailable",
+        body: "Nedetid/gateway. Kort besked + manuel retry. Parse ProblemDetails.title hvis muligt.",
+      },
+    };
+
+    root.querySelectorAll("[data-status]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        root.querySelectorAll("[data-status]").forEach((b) => b.classList.toggle("active", b === btn));
+        const d = map[btn.dataset.status];
+        if (detail && d) {
+          detail.innerHTML = `<strong>${d.title}</strong><p>${d.body}</p>`;
+        }
+      });
+    });
+    root.querySelector('[data-status="200"]')?.click();
+  }
+
+  /* ——— PKCE step lab ——— */
+  function initPkceLab(root) {
+    const steps = [
+      {
+        t: "1 · PKCE challenge",
+        l: "# Generér code_verifier (random)\n# code_challenge = BASE64URL(SHA256(verifier))\n# Gem verifier + state i sessionStorage",
+      },
+      {
+        t: "2 · Authorize",
+        l: "# Fuld browser-navigation til\n# auth.mercantec.tech/oauth/authorize\n# ?client_id=…&code_challenge=…&state=…\n# (ikke fetch — redirect)",
+      },
+      {
+        t: "3 · Callback",
+        l: "# App modtager ?code=&state=\n# Validér state == sessionStorage\n# Ellers: stop (CSRF)",
+      },
+      {
+        t: "4 · Token",
+        l: "# POST /oauth/token\n# code + code_verifier\n# Gem access (+ refresh) i sessionStorage\n# Ryd midlertidig PKCE-state",
+      },
+      {
+        t: "5 · API-kald",
+        l: "# Authorization: Bearer <access>\n# Ved 401: ét refresh-forsøg, gem nyt token\n# Logout = ryd lokalt — ikke /signout",
+      },
+    ];
+    const log = root.querySelector(".pkce-log");
+    const label = root.querySelector(".pkce-step-label");
+    const dots = root.querySelector(".pkce-dots");
+    let i = 0;
+
+    function paint() {
+      const s = steps[i];
+      if (label) label.textContent = s.t;
+      if (log) log.textContent = s.l;
+      if (dots) {
+        dots.querySelectorAll("button").forEach((b, j) => {
+          b.classList.toggle("active", j === i);
+          b.classList.toggle("done", j < i);
+        });
+      }
+    }
+
+    if (dots && !dots.children.length) {
+      steps.forEach((_, j) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.setAttribute("aria-label", `Trin ${j + 1}`);
+        b.addEventListener("click", () => {
+          i = j;
+          paint();
+        });
+        dots.appendChild(b);
+      });
+    }
+
+    root.querySelector('[data-action="pkce-next"]')?.addEventListener("click", () => {
+      i = Math.min(i + 1, steps.length - 1);
+      paint();
+    });
+    root.querySelector('[data-action="pkce-prev"]')?.addEventListener("click", () => {
+      i = Math.max(i - 1, 0);
+      paint();
+    });
+    root.querySelector('[data-action="pkce-play"]')?.addEventListener("click", async () => {
+      for (let j = 0; j < steps.length; j++) {
+        i = j;
+        paint();
+        await sleep(850);
+      }
+    });
+    paint();
+  }
+
+  /* ——— EventCallback flow ——— */
+  function initEventFlow(root) {
+    const log = root.querySelector(".event-flow-log");
+    const parent = root.querySelector("[data-flow='parent']");
+    const child = root.querySelector("[data-flow='child']");
+    const arrow = root.querySelector(".event-flow-arrow");
+
+    async function run() {
+      parent?.classList.remove("flash");
+      child?.classList.remove("flash");
+      if (log) log.textContent = "# Bruger klikker PokemonCard…";
+      child?.classList.add("flash");
+      await sleep(500);
+      if (log) log.textContent = "# child: await Selected.InvokeAsync(Id)";
+      if (arrow) {
+        arrow.classList.add("pulse");
+        arrow.textContent = "EventCallback ↑";
+      }
+      await sleep(700);
+      child?.classList.remove("flash");
+      parent?.classList.add("flash");
+      if (log) log.textContent = "# parent OnPick(id) → selectedId = id → render detail";
+      await sleep(900);
+      parent?.classList.remove("flash");
+      if (arrow) {
+        arrow.classList.remove("pulse");
+        arrow.textContent = "parametre ↓";
+      }
+      if (log) log.textContent = "# Klar — parent ejer state, child er dum UI.";
+    }
+
+    root.querySelector('[data-action="flow-play"]')?.addEventListener("click", run);
+    child?.addEventListener("click", run);
+  }
+
+  /* ——— Query string lab ——— */
+  function initQueryLab(root) {
+    const input = root.querySelector("[data-query-input]");
+    const out = root.querySelector("[data-query-out]");
+    const code = root.querySelector("[data-query-code]");
+
+    function sync() {
+      const q = (input?.value || "").trim() || "pikachu";
+      const url = `/pokemon?name=${encodeURIComponent(q)}`;
+      if (out) out.textContent = url;
+      if (code) {
+        code.textContent =
+          `@page "/pokemon"\n` +
+          `@inject NavigationManager Nav\n\n` +
+          `// Nav.Uri → …${url}\n` +
+          `// QueryHelpers.ParseQuery(uri.Query)["name"] → "${q}"\n` +
+          `// OnParametersSetAsync: hent /go/pokemon?name=${q}`;
+      }
+    }
+
+    input?.addEventListener("input", sync);
+    sync();
+  }
+
+  /* ——— Reveal / flip facts ——— */
+  function initReveal(root) {
+    root.querySelectorAll("[data-reveal]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const open = btn.classList.toggle("is-open");
+        btn.setAttribute("aria-expanded", open ? "true" : "false");
+      });
+    });
+  }
+
   function boot() {
     document.querySelectorAll("[data-http-sim]").forEach(initHttpSim);
     document.querySelectorAll("[data-hosting-anim]").forEach(initHosting);
@@ -612,6 +795,11 @@
     document.querySelectorAll("[data-async-lab]").forEach(initAsyncLab);
     document.querySelectorAll("[data-xss-lab]").forEach(initXssLab);
     document.querySelectorAll("[data-file-tree]").forEach(initFileTree);
+    document.querySelectorAll("[data-status-lab]").forEach(initStatusLab);
+    document.querySelectorAll("[data-pkce-lab]").forEach(initPkceLab);
+    document.querySelectorAll("[data-event-flow]").forEach(initEventFlow);
+    document.querySelectorAll("[data-query-lab]").forEach(initQueryLab);
+    document.querySelectorAll("[data-reveal-lab]").forEach(initReveal);
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
