@@ -8,12 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015mega2" />
-<link rel="stylesheet" href="/demo.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/widgets.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015mega2" />
+<link rel="stylesheet" href="/styles.css?v=20261015pro" />
+<link rel="stylesheet" href="/demo.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015pro" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -30,15 +30,19 @@
 <div class="teori-brand-row"><img src="/teori/assets/blazor-icon.svg" alt="" width="36" height="36" /><h1 class="brand">Routing og SPA</h1></div>
 <p class="lede">Flere «sider» i én Blazor-app med routing, deep links, query strings og NavLink — SPA uden fuld page reload.</p>
 </header>
+<div class="teori-lesson-progress" data-lesson-progress aria-hidden="true"><div class="teori-progress-fill" data-progress-bar></div></div>
 <article class="teori-lesson">
-
-<h2>Læringsmål</h2>
+<nav class="teori-toc" aria-label="Indhold på siden"><a href="#laeringsmaal">Læringsmål</a><a href="#tjek-dig-selv">Tjek dig selv før du går videre</a><a href="#navlink">NavLink</a><a href="#query-parameters">Query parameters</a><a href="#route-parameters">Route parameters</a><a href="#layouts">Layouts</a><a href="#mini-opgave">Mini-opgave</a><a href="#laes-hos-microsoft">Læs hos Microsoft</a><a href="#proev-med-api">Prøv med API</a></nav>
+<h2 id="laeringsmaal">Læringsmål</h2>
 <ul>
 <li>Definere routes med <code>@page</code> og flere stier per komponent.</li>
 <li>Bruge <code>NavLink</code> til aktiv markering i NavMenu.</li>
 <li>Læse query parameters (<code>?name=pikachu</code>) med <code>[SupplyParameterFromQuery]</code>.</li>
 <li>Forklare deep linking og fordele/ulemper ved SPA.</li>
-</ul>
+</ul><section class="teori-check">
+<h2 id="tjek-dig-selv">Tjek dig selv før du går videre</h2>
+<ul><li>Du bruger NavLink med active styling.</li><li>Du forstår at routing ikke reloader hele siden.</li><li>Du har prøvet SPA-anim lab.</li></ul>
+</section>
 
 <p>En SPA loader shell én gang. Blazor router matcher URL til komponent, skifter indhold i <code>@Body</code>, bevarer layout og DI-scope (afhængigt af hosting).</p>
 
@@ -71,7 +75,7 @@
 &lt;PageTitle&gt;Pokédex&lt;/PageTitle&gt;
 &lt;h1&gt;Pokémon&lt;/h1&gt;</pre>
 
-<h2>NavLink</h2>
+<h2 id="navlink">NavLink</h2>
 <pre class="teori-code">&lt;NavLink class="nav-link" href="pokemon" Match="NavLinkMatch.Prefix"&gt;
   Pokémon
 &lt;/NavLink&gt;
@@ -80,7 +84,7 @@
 &lt;/NavLink&gt;</pre>
 <p><code>Match="All"</code> (default) kræver præcis path; <code>Prefix</code> matcher understier.</p>
 
-<h2>Query parameters</h2>
+<h2 id="query-parameters">Query parameters</h2>
 <pre class="teori-code">@page "/soeg"
 
 &lt;p&gt;Søger efter: @name&lt;/p&gt;
@@ -97,7 +101,7 @@
 }</pre>
 <p>URL <code>/soeg?name=charizard</code> kan bookmarkes og deles — god UX til API-søgning.</p>
 
-<h2>Route parameters</h2>
+<h2 id="route-parameters">Route parameters</h2>
 <pre class="teori-code">@page "/pokemon/{id:int}"
 
 &lt;h1&gt;Detail #@Id&lt;/h1&gt;
@@ -106,7 +110,7 @@
   [Parameter] public int Id { get; set; }
 }</pre>
 
-<h2>Layouts</h2>
+<h2 id="layouts">Layouts</h2>
 <p><code>MainLayout.razor</code> indeholder fælles chrome; sider sætter <code>@layout</code> eller arver default fra <code>Routes.razor</code>.</p>
 
 <div class="teori-callout"><p><strong>Faldgrube:</strong> At bruge plain <code>&lt;a href&gt;</code> uden Blazor router — fuld reload, tab af circuit state på Server. Brug <code>NavLink</code> eller <code>NavigationManager</code>.</p></div>
@@ -114,7 +118,7 @@
 <p><strong>Fordele SPA:</strong> hurtig navigation, genbrug af services/state, én codebase.<br />
 <strong>Ulemper:</strong> større initial load (især WASM), SEO kræver plan, auth tokens håndteres i klient.</p>
 
-<section class="teori-quiz" data-quiz data-correct="1">
+<section class="teori-quiz" data-quiz data-correct="1" data-ok="Korrekt — godt gået." data-bad="Ikke helt — læs sektionen og prøv igen.">
   <h3>Quiz 1</h3>
   <p class="quiz-prompt">Hvad gør NavLink frem for et almindeligt anchor-tag i Blazor?</p>
   <div class="quiz-options">
@@ -125,7 +129,7 @@
   <p class="quiz-feedback" aria-live="polite"></p>
 </section>
 
-<section class="teori-quiz" data-quiz data-correct="0">
+<section class="teori-quiz" data-quiz data-correct="0" data-ok="Korrekt — godt gået." data-bad="Ikke helt — læs sektionen og prøv igen.">
   <h3>Quiz 2</h3>
   <p class="quiz-prompt">Hvordan binder I <code>?name=</code> til en property (.NET 8+)?</p>
   <div class="quiz-options">
@@ -136,12 +140,19 @@
   <p class="quiz-feedback" aria-live="polite"></p>
 </section>
 
-<section class="teori-ms"><h2>Læs hos Microsoft</h2><ul>
+
+<p class="teori-why"><strong>Hvorfor det betyder noget:</strong> SPA-routing holder Mercantec Auth state og HttpClient alive — fuld page reload mister session.</p>
+<div class="teori-callout teori-pitfall"><p><strong>Sådan fejler det i praksis:</strong> Almindelige &lt;a href&gt; uden NavLink — hel side reload, langsomt, taber Blazor state.</p></div>
+<section class="teori-mission"><h2 id="mini-opgave">Mini-opgave</h2><p>Routes <code>/pokemon</code> og <code>/lol</code> med NavLink; bekræft kun @Body skifter.</p></section><section class="teori-quiz" data-quiz data-correct="1" data-ok="NavLink markerer aktiv route." data-bad="Plain anchor reloader SPA.">
+  <h3>Quiz 3</h3>
+  <p class="quiz-prompt">Intern navigation i Blazor SPA?</p>
+  <div class="quiz-options"><button type="button" class="btn ghost sm" data-q="0">&lt;a href full reload&gt;</button><button type="button" class="btn ghost sm" data-q="1">NavLink</button><button type="button" class="btn ghost sm" data-q="2">window.location always</button></div>
+  <p class="quiz-feedback" aria-live="polite"></p></section><section class="teori-ms"><h2 id="laes-hos-microsoft">Læs hos Microsoft</h2><ul>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/fundamentals/routing" rel="noreferrer">Routing</a></li>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/components/layouts" rel="noreferrer">Layouts</a></li>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/fundamentals/navigation" rel="noreferrer">Navigation</a></li>
 </ul></section>
-<section class="teori-try"><h2>Prøv med API</h2><ul>
+<section class="teori-try"><h2 id="proev-med-api">Prøv med API</h2><ul>
 <li>Lav sider <code>/pokemon</code>, <code>/minecraft</code>, <code>/starwars</code> — samme mønster som <a href="/demo">demo-hubben</a>.</li>
 <li>Tilføj query-søgning <code>/pokemon?name=</code> der kalder OpgaverAPI.</li>
 </ul></section>
@@ -150,12 +161,13 @@
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
-<script src="/teori/anim.js?v=20261015mega2"></script>
+<script src="/teori/anim.js?v=20261015pro"></script>
+<script src="/teori/progress.js?v=20261015pro"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015mega2"></script>
+<script src="/teori/highlight.js?v=20261015pro"></script>
 </body>
 </html>

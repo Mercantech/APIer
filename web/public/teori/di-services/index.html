@@ -8,12 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015mega2" />
-<link rel="stylesheet" href="/demo.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/widgets.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015mega2" />
+<link rel="stylesheet" href="/styles.css?v=20261015pro" />
+<link rel="stylesheet" href="/demo.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015pro" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -30,19 +30,23 @@
 <div class="teori-brand-row"><img src="/teori/assets/blazor-icon.svg" alt="" width="36" height="36" /><h1 class="brand">Dependency Injection og services</h1></div>
 <p class="lede">ASP.NET Core leverer et indbygget DI-container. I registrerer abstraktioner i <code>Program.cs</code> og får dem ind i komponenter via <code>@inject</code> — så Pokémon-lister, LoL-champions og auth håndteres i testbare services.</p>
 </header>
+<div class="teori-lesson-progress" data-lesson-progress aria-hidden="true"><div class="teori-progress-fill" data-progress-bar></div></div>
 <article class="teori-lesson">
-
-<h2>Læringsmål</h2>
+<nav class="teori-toc" aria-label="Indhold på siden"><a href="#laeringsmaal">Læringsmål</a><a href="#tjek-dig-selv">Tjek dig selv før du går videre</a><a href="#program-cs-registrering">Program.cs — registrering</a><a href="#inject-i-komponenter">@inject i komponenter</a><a href="#lifetimes-hvornaar-hvad">Lifetimes — hvornår hvad?</a><a href="#ihttpclientfactory-og-typed-client">IHttpClientFactory og typed client</a><a href="#interfaces-og-test">Interfaces og test</a><a href="#scoped-singleton-bug">Scoped vs Singleton — konkret bug</a><a href="#mini-opgave">Mini-opgave</a><a href="#laes-hos-microsoft">Læs hos Microsoft</a><a href="#proev-med-api">Prøv med API</a></nav>
+<h2 id="laeringsmaal">Læringsmål</h2>
 <ul>
 <li>Fortælle hvad DI løser (løs kobling, testbarhed, central konfiguration).</li>
 <li>Vælge mellem <strong>Transient</strong>, <strong>Scoped</strong> og <strong>Singleton</strong> med begrundelse.</li>
 <li>Registrere <code>HttpClient</code> via <code>IHttpClientFactory</code> og typed clients mod OpgaverAPI.</li>
 <li>Strukturere services (interface + implementation) og undgå «service locator»-antipattern.</li>
-</ul>
+</ul><section class="teori-check">
+<h2 id="tjek-dig-selv">Tjek dig selv før du går videre</h2>
+<ul><li>Du kan forklare Scoped vs Singleton med bruger-state-bug.</li><li>Du registrerer HttpClient via AddHttpClient — ikke new HttpClient().</li><li>Du har kørt DI-lab for alle tre lifetimes.</li></ul>
+</section>
 
 <p>Når en Blazor-side skal hente Pokémon fra <code>/go/pokemon</code> og champions fra LoL med <code>X-Api-Key</code>, hører HTTP-logikken ikke hjemme direkte i markup. I opretter fx <code>IPokemonService</code> og <code>ILolService</code>, registrerer dem én gang, og injicerer dem i komponenter — samme idé som i et ASP.NET Web API-projekt.</p>
 
-<h2>Program.cs — registrering</h2>
+<h2 id="program-cs-registrering">Program.cs — registrering</h2>
 <p>I en Blazor Web App er <code>Program.cs</code> composition root: her tilføjer I render modes, Razor Components, og alle services.</p>
 <pre class="teori-code language-csharp">var builder = WebApplication.CreateBuilder(args);
 
@@ -66,7 +70,7 @@ var app = builder.Build();
 
 <p><code>AddHttpClient&lt;TClient, TImplementation&gt;</code> kombinerer DI med en korrekt konfigureret <code>HttpClient</code> (handler-pool, DNS, timeouts). Det er Microsofts anbefalede vej — ikke <code>new HttpClient()</code> i hver komponent.</p>
 
-<h2>@inject i komponenter</h2>
+<h2 id="inject-i-komponenter">@inject i komponenter</h2>
 <pre class="teori-code">@page "/pokemon-di"
 @inject IPokemonService Pokemon
 
@@ -109,7 +113,7 @@ public sealed class PokemonService(HttpClient http) : IPokemonService
 
 public record PokemonDto(string Name, int Id);</pre>
 
-<h2>Lifetimes — hvornår hvad?</h2>
+<h2 id="lifetimes-hvornaar-hvad">Lifetimes — hvornår hvad?</h2>
 <div class="teori-table-wrap"><table class="teori-table">
 <tr><th>Lifetime</th><th>Betyder</th><th>Typisk brug i Blazor</th></tr>
 <tr><td>Transient</td><td>Ny instans hver gang den anmodes</td><td>Lette, stateless helpers (formatters, validators uden state)</td></tr>
@@ -133,7 +137,7 @@ public record PokemonDto(string Name, int Id);</pre>
 
 <div class="teori-callout"><p><strong>Faldgrube:</strong> At registrere <code>DbContext</code> eller bruger-specifik state som <strong>Singleton</strong> deler data mellem alle brugere. At registrere <code>HttpClient</code> som Singleton uden factory kan give socket-udmattelse — brug <code>IHttpClientFactory</code>.</p></div>
 
-<h2>IHttpClientFactory og typed client</h2>
+<h2 id="ihttpclientfactory-og-typed-client">IHttpClientFactory og typed client</h2>
 <p>Typed clients er klasser der tager <code>HttpClient</code> i konstruktoren og kapsler endpoints. Factory’en håndterer levetid af handlers.</p>
 <pre class="teori-code language-csharp">builder.Services.AddHttpClient&lt;ILolService, LolService&gt;(client =&gt;
 {
@@ -145,10 +149,10 @@ public record PokemonDto(string Name, int Id);</pre>
 
 <p>Hvis I både har WASM og Server i samme solution, kan base URL komme fra <code>appsettings.json</code> + miljøvariabler i Docker — præcis som APIer-projektets compose-mønster.</p>
 
-<h2>Interfaces og test</h2>
+<h2 id="interfaces-og-test">Interfaces og test</h2>
 <p>Med <code>IPokemonService</code> kan I i en unit test mocke API’et og teste komponentlogik uden netværk. Det er sværere hvis komponenten kalder <code>Http.GetFromJsonAsync</code> direkte overalt.</p>
 
-<section class="teori-quiz" data-quiz data-correct="1">
+<section class="teori-quiz" data-quiz data-correct="1" data-ok="Præcis — IHttpClientFactory genbruger handlers og undgår socket-udmattelse." data-bad="HttpClient virker i @code — problemet er levetid og DNS, ikke syntaks.">
   <h3>Quiz 1</h3>
   <p class="quiz-prompt">Hvorfor bør I undgå <code>new HttpClient()</code> i hver Blazor-komponent?</p>
   <div class="quiz-options">
@@ -159,7 +163,7 @@ public record PokemonDto(string Name, int Id);</pre>
   <p class="quiz-feedback" aria-live="polite"></p>
 </section>
 
-<section class="teori-quiz" data-quiz data-correct="2">
+<section class="teori-quiz" data-quiz data-correct="2" data-ok="Scoped matcher bruger/circuit — region hører ikke i Singleton." data-bad="Singleton deler region mellem alle; Transient giver nyt tomt objekt ved hvert inject.">
   <h3>Quiz 2</h3>
   <p class="quiz-prompt">En service der gemmer den aktuelle brugers valgte LoL-region i memory — bedste default-lifetime på Blazor Server?</p>
   <div class="quiz-options">
@@ -170,12 +174,36 @@ public record PokemonDto(string Name, int Id);</pre>
   <p class="quiz-feedback" aria-live="polite"></p>
 </section>
 
-<section class="teori-ms"><h2>Læs hos Microsoft</h2><ul>
+
+<h2 id="scoped-singleton-bug">Scoped vs Singleton — konkret bug</h2>
+<p class="teori-why"><strong>Hvorfor det betyder noget:</strong> Lifetime bestemmer om state følger <em>én bruger</em> eller <em>hele app-poolen</em>. I et Pokémon-/LoL-projekt er det forskellen på «min favorit» og «klassens favorit».</p>
+<p>Typisk fejl: <code>IFavoriteChampionStore</code> registreres som <strong>Singleton</strong>, fordi «vi vil kun have én instans». Implementeringen gemmer <code>CurrentChampionId</code> og <code>LastRegion</code> i felter. Elev A vælger Ahri i EUW — Elev B åbner samme side og ser Ahri uden at have klikket.</p>
+<pre class="teori-code language-csharp">// BUG: alle Blazor Server circuits deler samme store
+builder.Services.AddSingleton&lt;IFavoriteChampionStore, FavoriteChampionStore&gt;();
+
+// FIX: scoped til circuit / request — isoleret per bruger-session
+builder.Services.AddScoped&lt;IFavoriteChampionStore, FavoriteChampionStore&gt;();</pre>
+<p>Sammenligning i klasseværelset: åbn samme app i to browsere (to brugere). Med Singleton ændrer A’s valg B’s UI; med Scoped gør det ikke.</p>
+<pre class="teori-code language-csharp">public sealed class FavoriteChampionStore : IFavoriteChampionStore
+{
+    public string? CurrentChampionId { get; private set; }
+
+    public void Select(string id) =&gt; CurrentChampionId = id;
+}
+
+// Singleton er stadig rigtigt til read-only, thread-safe cache:
+builder.Services.AddSingleton&lt;IPokemonTypeCache, PokemonTypeCache&gt;();</pre>
+<div class="teori-callout teori-pitfall"><p><strong>Sådan fejler det i praksis:</strong> Med én developer-tab ser Singleton «effektivt» ud. Fejlen opdages først ved sideløbende test, demo for censor, eller når underviser og elev deler samme Dokploy-miljø. Symptom: «ghost clicks» — valg skifter uden input.</p></div>
+<section class="teori-mission"><h2 id="mini-opgave">Mini-opgave</h2><p>Test <code>ICounterService</code> som Scoped vs Singleton: to komponenter viser delt count kun ved Singleton — dokumentér med screenshot.</p></section><section class="teori-quiz" data-quiz data-correct="0" data-ok="Scoped per bruger." data-bad="Singleton deler mellem brugere.">
+  <h3>Quiz 3</h3>
+  <p class="quiz-prompt">Hvem ejer valgt Pokémon-id for to samtidige brugere?</p>
+  <div class="quiz-options"><button type="button" class="btn ghost sm" data-q="0">Scoped service</button><button type="button" class="btn ghost sm" data-q="1">Singleton</button><button type="button" class="btn ghost sm" data-q="2">Static i Razor</button></div>
+  <p class="quiz-feedback" aria-live="polite"></p></section><section class="teori-ms"><h2 id="laes-hos-microsoft">Læs hos Microsoft</h2><ul>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/fundamentals/dependency-injection" rel="noreferrer">Dependency injection in Blazor</a></li>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-requests" rel="noreferrer">Make HTTP requests with IHttpClientFactory</a></li>
 <li><a href="https://learn.microsoft.com/en-us/dotnet/core/extensions/dependency-injection" rel="noreferrer">Dependency injection in .NET</a></li>
 </ul></section>
-<section class="teori-try"><h2>Prøv med API</h2><ul>
+<section class="teori-try"><h2 id="proev-med-api">Prøv med API</h2><ul>
 <li>Udskil et <code>PokemonService</code> i jeres projekt og kald <a href="/demo/pokemon">Pokémon-demo</a>’s endpoints — sammenlign med rå <code>HttpClient</code> i Network-fanen.</li>
 <li>Tilføj LoL med nøgle fra <a href="/">kataloget</a> via en <code>ILolService</code> der læser nøglen fra sessionStorage-wrapper.</li>
 </ul></section>
@@ -184,12 +212,13 @@ public record PokemonDto(string Name, int Id);</pre>
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
-<script src="/teori/anim.js?v=20261015mega2"></script>
+<script src="/teori/anim.js?v=20261015pro"></script>
+<script src="/teori/progress.js?v=20261015pro"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015mega2"></script>
+<script src="/teori/highlight.js?v=20261015pro"></script>
 </body>
 </html>

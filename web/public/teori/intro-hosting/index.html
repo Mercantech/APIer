@@ -8,12 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015mega2" />
-<link rel="stylesheet" href="/demo.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/widgets.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015mega2" />
+<link rel="stylesheet" href="/styles.css?v=20261015pro" />
+<link rel="stylesheet" href="/demo.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015pro" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -30,20 +30,24 @@
 <div class="teori-brand-row"><img src="/teori/assets/blazor-icon.svg" alt="" width="36" height="36" /><h1 class="brand">Intro og hosting</h1></div>
 <p class="lede">Hvad Blazor er, hvordan det minder om andre SPA-frameworks, og forskellen på Server, WebAssembly og Hybrid — plus hvordan jeres UI alligevel taler HTTP med OpgaverAPI.</p>
 </header>
+<div class="teori-lesson-progress" data-lesson-progress aria-hidden="true"><div class="teori-progress-fill" data-progress-bar></div></div>
 <article class="teori-lesson">
-
-<h2>Læringsmål</h2>
+<nav class="teori-toc" aria-label="Indhold på siden"><a href="#laeringsmaal">Læringsmål</a><a href="#tjek-dig-selv">Tjek dig selv før du går videre</a><a href="#spa-og-api-to-lag">SPA og API — to lag</a><a href="#tre-hosting-modeller">Tre hosting-modeller</a><a href="#render-modes-net-8">Render modes (.NET 8+)</a><a href="#hurtig-sammenligning">Hurtig sammenligning</a><a href="#relation-til-jquery-og-klassisk-web">Relation til jQuery og «klassisk» web</a><a href="#mini-opgave">Mini-opgave</a><a href="#laes-hos-microsoft">Læs hos Microsoft</a><a href="#proev-med-api">Prøv med API</a></nav>
+<h2 id="laeringsmaal">Læringsmål</h2>
 <ul>
 <li>Definere Blazor som komponentbaseret UI med C# og forklare SPA-idéen.</li>
 <li>Sammenligne Blazor Server, WASM og Hybrid på load, sikkerhed og offline.</li>
 <li>Beskrive hvordan UI (uanset hosting) kalder REST API over HTTP.</li>
 <li>Vælge render mode/interactivity bevidst i undervisningsprojekter.</li>
-</ul>
+</ul><section class="teori-check">
+<h2 id="tjek-dig-selv">Tjek dig selv før du går videre</h2>
+<ul><li>Du kan skelne UI-sync (SignalR) fra REST-kald til OpgaverAPI.</li><li>Du kan nævne én fordel og én ulempe ved Blazor Server.</li><li>Du har afspillet hosting-animationen (Server vs WASM).</li></ul>
+</section>
 
 <p>Blazor er Microsofts moderne web-UI-stack: du bygger genbrugelige <strong>Razor-komponenter</strong> med <strong>C#</strong>, HTML og CSS. Udvikleroplevelsen minder om React, Svelte og Vue — komponent-tænkning, state, routing — men runtime-sproget er .NET i stedet for JavaScript.</p>
 <p>Et Razor-komponent blander markup og C# i samme fil (<code>.razor</code>). Det gør det nemt at opdele UI i små dele: et Pokémon-kort, en LoL-champion-række, en søgebar — og lade dem dele services der kalder OpgaverAPI.</p>
 
-<h2>SPA og API — to lag</h2>
+<h2 id="spa-og-api-to-lag">SPA og API — to lag</h2>
 <p>Selv om Blazor «føles» som én app, er data næsten altid <strong>HTTP JSON</strong> mod et backend API. Browseren (eller server-circuit) kører UI; <code>HttpClient</code> henter Pokémon-listen — samme model som katalogets demos.</p>
 
 <section class="teori-anim" data-http-sim aria-label="Client-server HTTP-animation">
@@ -67,7 +71,7 @@
 
 <div class="teori-callout"><p>I undervisningen bruger vi typisk <strong>Blazor Web App</strong> med interaktiv Server-render. WASM og Hybrid er vigtige at kende, så I kan vælge den rigtige model til eksamen og drift.</p></div>
 
-<h2>Tre hosting-modeller</h2>
+<h2 id="tre-hosting-modeller">Tre hosting-modeller</h2>
 
 <section class="teori-anim" data-hosting-anim aria-label="Blazor hosting-animation">
   <div class="teori-anim-head">
@@ -102,13 +106,13 @@
 <p>Razor i native shell (MAUI, WPF med WebView). Relevant hvis I senere laver mobil/desktop — samme komponent-syntaks, anden distribution.</p>
 <figure class="teori-figure"><img src="/teori/assets/hosting-hybrid.png" alt="Diagram af Blazor Hybrid" loading="lazy" /><figcaption>Blazor Hybrid — native + web-UI.</figcaption></figure>
 
-<h2>Render modes (.NET 8+)</h2>
+<h2 id="render-modes-net-8">Render modes (.NET 8+)</h2>
 <p>Blazor Web App kan mixe static server render og interaktiv Server/WASM per komponent eller globalt. Undervisningsprojekter: vælg <strong>Interactive Server</strong> globalt indtil I har grund til WASM.</p>
 <pre class="teori-code">@rendermode InteractiveServer
 
 @* Eller i Program.cs: AddInteractiveServerRenderMode() *@</pre>
 
-<h2>Hurtig sammenligning</h2>
+<h2 id="hurtig-sammenligning">Hurtig sammenligning</h2>
 <div class="teori-table-wrap"><table class="teori-table">
 <tr><th>Feature</th><th>Server</th><th>WASM</th><th>Hybrid</th></tr>
 <tr><td>Lille første load</td><td>Ja</td><td>Nej</td><td>Nej</td></tr>
@@ -118,12 +122,12 @@
 <tr><td>Typisk hosting</td><td>ASP.NET + Docker</td><td>Static files / CDN</td><td>App store</td></tr>
 </table></div>
 
-<h2>Relation til jQuery og «klassisk» web</h2>
+<h2 id="relation-til-jquery-og-klassisk-web">Relation til jQuery og «klassisk» web</h2>
 <p>I jQuery manipulerede I DOM direkte og kaldte <code>$.ajax</code>. I Blazor beskriver I <em>hvordan UI skal se ud givet state</em>; frameworket diff’er DOM. AJAX erstattes af <code>HttpClient</code> + async metoder — bedre struktur til større apps som et Pokémon-dex projekt.</p>
 
 <div class="teori-callout"><p><strong>Faldgrube:</strong> At antage at «Blazor Server = ingen HTTP» — hver side der henter OpgaverAPI laver stadig HTTP fra server-processen. SignalR er kun UI-sync, ikke jeres REST-kald.</p></div>
 
-<section class="teori-quiz" data-quiz data-correct="1">
+<section class="teori-quiz" data-quiz data-correct="1" data-ok="Korrekt — godt gået." data-bad="Ikke helt — læs sektionen og prøv igen.">
   <h3>Quiz 1</h3>
   <p class="quiz-prompt">Hvor kører Razor-komponentens C#-kode i Blazor Server?</p>
   <div class="quiz-options">
@@ -134,7 +138,7 @@
   <p class="quiz-feedback" aria-live="polite"></p>
 </section>
 
-<section class="teori-quiz" data-quiz data-correct="0">
+<section class="teori-quiz" data-quiz data-correct="0" data-ok="Korrekt — godt gået." data-bad="Ikke helt — læs sektionen og prøv igen.">
   <h3>Quiz 2</h3>
   <p class="quiz-prompt">Hvilken hosting giver typisk mindst JavaScript/.NET-download ved første besøg?</p>
   <div class="quiz-options">
@@ -145,12 +149,19 @@
   <p class="quiz-feedback" aria-live="polite"></p>
 </section>
 
-<section class="teori-ms"><h2>Læs hos Microsoft</h2><ul>
+
+<p class="teori-why"><strong>Hvorfor det betyder noget:</strong> Valg af hosting påvirker latency når eleven klikker Pokémon — og hvor I debugger HttpClient.</p>
+<div class="teori-callout teori-pitfall"><p><strong>Sådan fejler det i praksis:</strong> Tror SignalR erstatter HTTP til OpgaverAPI — Network viser stadig REST fra server eller browser.</p></div>
+<section class="teori-mission"><h2 id="mini-opgave">Mini-opgave</h2><p>Åbn <a href="/demo/pokemon">Pokémon-demo</a> og DevTools → Network. Identificér ét GET-kald til OpgaverAPI og notér URL, statuskode, og om kaldet stammer fra browser eller server-process (Blazor Server).</p></section><section class="teori-quiz" data-quiz data-correct="2" data-ok="Korrekt — REST er uafhængig af hosting." data-bad="SignalR er til UI, ikke JSON API.">
+  <h3>Quiz 3</h3>
+  <p class="quiz-prompt">Hentes Pokémon-JSON over SignalR i Blazor Server?</p>
+  <div class="quiz-options"><button type="button" class="btn ghost sm" data-q="0">Ja, alt</button><button type="button" class="btn ghost sm" data-q="1">Kun POST</button><button type="button" class="btn ghost sm" data-q="2">Nej — HttpClient bruger HTTP</button></div>
+  <p class="quiz-feedback" aria-live="polite"></p></section><section class="teori-ms"><h2 id="laes-hos-microsoft">Læs hos Microsoft</h2><ul>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">ASP.NET Core Blazor</a></li>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/hosting-models" rel="noreferrer">Hosting models</a></li>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/components/render-modes" rel="noreferrer">Render modes</a></li>
 </ul></section>
-<section class="teori-try"><h2>Prøv med API</h2><ul>
+<section class="teori-try"><h2 id="proev-med-api">Prøv med API</h2><ul>
 <li>Åbn <a href="/">endpoint-kataloget</a> og se HTTP til flere backends — samme model jeres Blazor-app bruger via <code>HttpClient</code>.</li>
 <li>Sammenlign load-tid på <a href="/demo">demo-hub</a> (statisk/Vite) med jeres egen Blazor-app — diskuter WASM vs Server.</li>
 </ul></section>
@@ -159,12 +170,13 @@
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
-<script src="/teori/anim.js?v=20261015mega2"></script>
+<script src="/teori/anim.js?v=20261015pro"></script>
+<script src="/teori/progress.js?v=20261015pro"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015mega2"></script>
+<script src="/teori/highlight.js?v=20261015pro"></script>
 </body>
 </html>

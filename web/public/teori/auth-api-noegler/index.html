@@ -8,12 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015mega2" />
-<link rel="stylesheet" href="/demo.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/widgets.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015mega2" />
+<link rel="stylesheet" href="/styles.css?v=20261015pro" />
+<link rel="stylesheet" href="/demo.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015pro" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -30,18 +30,22 @@
 <div class="teori-brand-row"><img src="/teori/assets/blazor-icon.svg" alt="" width="36" height="36" /><h1 class="brand">Auth og API-nøgler</h1></div>
 <p class="lede">To lag: log ind via Mercantec Auth (OAuth2 + PKCE) til jeres app, og kald OpgaverAPI med personlig <code>X-Api-Key</code> eller Bearer — uden at lække secrets i git.</p>
 </header>
+<div class="teori-lesson-progress" data-lesson-progress aria-hidden="true"><div class="teori-progress-fill" data-progress-bar></div></div>
 <article class="teori-lesson">
-
-<h2>Læringsmål</h2>
+<nav class="teori-toc" aria-label="Indhold på siden"><a href="#laeringsmaal">Læringsmål</a><a href="#tjek-dig-selv">Tjek dig selv før du går videre</a><a href="#mercantec-auth-overblik">Mercantec Auth — overblik</a><a href="#x-api-key-mod-opgaverapi">X-Api-Key mod OpgaverAPI</a><a href="#sessionstorage-vs-localstorage">sessionStorage vs localStorage</a><a href="#refresh-og-401">Refresh og 401</a><a href="#pkce">PKCE trin for trin</a><a href="#logout">Lokal logout vs global signout</a><a href="#mini-opgave">Mini-opgave</a><a href="#laes-hos-microsoft">Læs hos Microsoft</a><a href="#proev-med-api">Prøv med API</a></nav>
+<h2 id="laeringsmaal">Læringsmål</h2>
 <ul>
 <li>Skitsere authorization code + PKCE flow mod <code>auth.mercantec.tech</code>.</li>
 <li>Sætte <code>Authorization: Bearer</code> på API-kald når backend kræver JWT.</li>
 <li>Oprette og bruge <code>X-Api-Key</code> til beskyttede OpgaverAPI-routes (fx LoL).</li>
 <li>Vælge <strong>sessionStorage</strong> frem for localStorage til tokens i SPA.</li>
 <li>Forstå forskellen på «log ud af appen» vs global Auth-signout.</li>
-</ul>
+</ul><section class="teori-check">
+<h2 id="tjek-dig-selv">Tjek dig selv før du går videre</h2>
+<ul><li>Du kan liste PKCE-trin (verifier, challenge, state, token).</li><li>App-logout rydder kun lokale tokens — ikke global Auth-signout.</li><li>Du ved hvornår X-Api-Key vs Bearer bruges.</li></ul>
+</section>
 
-<h2>Mercantec Auth — overblik</h2>
+<h2 id="mercantec-auth-overblik">Mercantec Auth — overblik</h2>
 <p>Mercantec Auth er den centrale identitetsplatform. Jeres Blazor SPA er en public client: ingen client secret i browseren. Flow:</p>
 <ol>
 <li>Generér <code>code_verifier</code> + <code>code_challenge</code> (S256) og <code>state</code>.</li>
@@ -57,7 +61,7 @@ http.DefaultRequestHeaders.Authorization =
 
 <div class="teori-callout"><p><strong>Faldgrube:</strong> Kald aldrig <code>https://auth.mercantec.tech/signout</code> fra jeres almindelige «Log ud»-knap — det logger brugeren ud af hele Auth-sessionen. App-logout = ryd tokens lokalt og gå til login-side.</p></div>
 
-<h2>X-Api-Key mod OpgaverAPI</h2>
+<h2 id="x-api-key-mod-opgaverapi">X-Api-Key mod OpgaverAPI</h2>
 <p>Åbne endpoints (fx mange Pokémon-routes) kræver ikke nøgle. Beskyttede routes (fx League of Legends) returnerer <strong>401</strong> uden header. Opret nøgle i <a href="/">API-kataloget</a> når I er logget ind — gem den i sessionStorage, send som header:</p>
 <pre class="teori-code language-csharp">request.Headers.Add("X-Api-Key", apiKey);
 var champs = await http.GetFromJsonAsync&lt;ChampionDto[]&gt;("/LeagueOfLegends/Champions");</pre>
@@ -83,7 +87,7 @@ var champs = await http.GetFromJsonAsync&lt;ChampionDto[]&gt;("/LeagueOfLegends/
   <pre class="cs-log" aria-live="polite"><span class="tok-dim"># Vælg GET 401 og Afspil</span></pre>
 </section>
 
-<h2>sessionStorage vs localStorage</h2>
+<h2 id="sessionstorage-vs-localstorage">sessionStorage vs localStorage</h2>
 <div class="teori-table-wrap"><table class="teori-table">
 <tr><th>Storage</th><th>Levetid</th><th>Typisk brug</th></tr>
 <tr><td>sessionStorage</td><td>Tab/session</td><td>Access token, API-nøgle hint, PKCE state midlertidigt</td></tr>
@@ -93,10 +97,10 @@ var champs = await http.GetFromJsonAsync&lt;ChampionDto[]&gt;("/LeagueOfLegends/
 
 <p>PKCE <code>code_verifier</code> og <code>state</code> hører i sessionStorage indtil callback er valideret — derefter ryd midlertidige værdier.</p>
 
-<h2>Refresh og 401</h2>
+<h2 id="refresh-og-401">Refresh og 401</h2>
 <p>Wrapper om <code>HttpClient</code>: ved 401 forsøg ét token refresh, retry request — ellers redirect til login. Roterende refresh tokens: gem altid det nye svar fra token-endpoint.</p>
 
-<section class="teori-quiz" data-quiz data-correct="2">
+<section class="teori-quiz" data-quiz data-correct="2" data-ok="Korrekt — godt gået." data-bad="Ikke helt — læs sektionen og prøv igen.">
   <h3>Quiz 1</h3>
   <p class="quiz-prompt">Hvilken header bruger I til personlig OpgaverAPI-nøgle mod LoL?</p>
   <div class="quiz-options">
@@ -107,7 +111,7 @@ var champs = await http.GetFromJsonAsync&lt;ChampionDto[]&gt;("/LeagueOfLegends/
   <p class="quiz-feedback" aria-live="polite"></p>
 </section>
 
-<section class="teori-quiz" data-quiz data-correct="1">
+<section class="teori-quiz" data-quiz data-correct="1" data-ok="Korrekt — godt gået." data-bad="Ikke helt — læs sektionen og prøv igen.">
   <h3>Quiz 2</h3>
   <p class="quiz-prompt">Hvorfor foretrækkes sessionStorage til SPA-tokens i Mercantec-retningslinjer?</p>
   <div class="quiz-options">
@@ -118,11 +122,43 @@ var champs = await http.GetFromJsonAsync&lt;ChampionDto[]&gt;("/LeagueOfLegends/
   <p class="quiz-feedback" aria-live="polite"></p>
 </section>
 
-<section class="teori-ms"><h2>Læs hos Microsoft</h2><ul>
+
+<h2 id="pkce">PKCE trin for trin</h2>
+<p class="teori-why"><strong>Hvorfor det betyder noget:</strong> Jeres Blazor-app er en public OAuth-klient uden hemmelighed i browseren. PKCE binder authorization code til den session der startede login — så en aflyttet code ikke kan byttes uden <code>code_verifier</code>.</p>
+<ol>
+<li><strong>Generér</strong> <code>code_verifier</code> (43–128 tegn) og <code>code_challenge = BASE64URL(SHA256(verifier))</code>.</li>
+<li><strong>Gem</strong> <code>code_verifier</code> og <code>state</code> i sessionStorage; send challenge + <code>code_challenge_method=S256</code> i authorize URL.</li>
+<li><strong>Navigér</strong> hele vinduet til <code>https://auth.mercantec.tech/oauth/authorize</code> — aldrig fetch/XHR til login.</li>
+<li><strong>Callback</strong> med <code>?code=...&amp;state=...</code> — sammenlign <code>state</code> med gemt værdi; afvis ved mismatch (CSRF).</li>
+<li><strong>POST</strong> <code>/oauth/token</code> med <code>grant_type=authorization_code</code>, <code>code</code>, <code>code_verifier</code>, <code>client_id</code>, <code>redirect_uri</code>.</li>
+<li><strong>Gem</strong> access/refresh token i sessionStorage; slet PKCE-midlertidige nøgler.</li>
+</ol>
+<pre class="teori-code language-csharp">// Pseudokode — Login.razor / AuthService
+var verifier = Pkce.GenerateVerifier();
+var challenge = Pkce.S256(verifier);
+session.Set("pkce_verifier", verifier);
+session.Set("oauth_state", state);
+Nav.NavigateTo($"{auth}/oauth/authorize?client_id=...&amp;code_challenge={challenge}&amp;...", forceLoad: true);</pre>
+<h2 id="logout">Lokal logout vs global signout</h2>
+<p><strong>Lokal logout</strong> (standard «Log ud» i jeres app): ryd kun tokens og API-nøgle-hints i sessionStorage, nulstil in-memory auth-state, gå til <code>/login</code>. Brugeren forbliver logget ind i andre Mercantec-apps.</p>
+<p><strong>Global signout</strong> (<code>auth.mercantec.tech/signout</code>): kun når brugeren eksplicit vil ud af hele Auth-platformen — ikke jeres default-knap.</p>
+<pre class="teori-code language-csharp">void LogoutLocal(IJSRuntime js, NavigationManager nav)
+{
+    js.InvokeVoid("eval", @"
+      ['access_token','refresh_token','pkce_verifier','oauth_state','api_key']
+        .forEach(k =&gt; sessionStorage.removeItem(k));");
+    nav.NavigateTo("/login", forceLoad: true);
+}</pre>
+<div class="teori-callout teori-pitfall"><p><strong>Sådan fejler det i praksis:</strong> «Log ud» kalder global signout — eleven undrer sig over at Mercantec Mail også er logget ud. Eller: tokens i localStorage overlever ugevis og stjæles ved XSS.</p></div>
+<section class="teori-mission"><h2 id="mini-opgave">Mini-opgave</h2><p>Skriv PKCE-pseudokode: verifier, S256 challenge, state i sessionStorage, fuld navigation authorize, validate state, token POST.</p></section><section class="teori-quiz" data-quiz data-correct="0" data-ok="Lokal logout." data-bad="Global signout kun bevidst.">
+  <h3>Quiz 3</h3>
+  <p class="quiz-prompt">Log ud i jeres app?</p>
+  <div class="quiz-options"><button type="button" class="btn ghost sm" data-q="0">Ryd sessionStorage + /login</button><button type="button" class="btn ghost sm" data-q="1">auth signout altid</button><button type="button" class="btn ghost sm" data-q="2">localStorage gem</button></div>
+  <p class="quiz-feedback" aria-live="polite"></p></section><section class="teori-ms"><h2 id="laes-hos-microsoft">Læs hos Microsoft</h2><ul>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/security/webassembly/additional-scenarios" rel="noreferrer">Blazor WebAssembly auth scenarios</a></li>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/security/authentication/" rel="noreferrer">ASP.NET Core authentication</a></li>
 </ul></section>
-<section class="teori-try"><h2>Prøv med API</h2><ul>
+<section class="teori-try"><h2 id="proev-med-api">Prøv med API</h2><ul>
 <li>Log ind på <a href="/">kataloget</a>, opret nøgle, kør <a href="/demo/lol">LoL-demo</a> — sammenlign med 401 i animationen ovenfor.</li>
 <li>Læs <a href="https://auth-spa.mercantec.tech/ai-prompt.html" rel="noreferrer">AI-prompt for Auth-integration</a> før I implementerer PKCE i eget projekt.</li>
 </ul></section>
@@ -131,12 +167,13 @@ var champs = await http.GetFromJsonAsync&lt;ChampionDto[]&gt;("/LeagueOfLegends/
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
-<script src="/teori/anim.js?v=20261015mega2"></script>
+<script src="/teori/anim.js?v=20261015pro"></script>
+<script src="/teori/progress.js?v=20261015pro"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015mega2"></script>
+<script src="/teori/highlight.js?v=20261015pro"></script>
 </body>
 </html>

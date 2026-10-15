@@ -8,12 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015mega2" />
-<link rel="stylesheet" href="/demo.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/widgets.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015mega2" />
+<link rel="stylesheet" href="/styles.css?v=20261015pro" />
+<link rel="stylesheet" href="/demo.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015pro" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -30,15 +30,19 @@
 <div class="teori-brand-row"><img src="/teori/assets/blazor-icon.svg" alt="" width="36" height="36" /><h1 class="brand">Forms med EditForm</h1></div>
 <p class="lede">Indsaml brugerinput med EditForm, InputText, DataAnnotations og ValidationMessage — struktureret OOP før I poster søgninger mod OpgaverAPI.</p>
 </header>
+<div class="teori-lesson-progress" data-lesson-progress aria-hidden="true"><div class="teori-progress-fill" data-progress-bar></div></div>
 <article class="teori-lesson">
-
-<h2>Læringsmål</h2>
+<nav class="teori-toc" aria-label="Indhold på siden"><a href="#laeringsmaal">Læringsmål</a><a href="#tjek-dig-selv">Tjek dig selv før du går videre</a><a href="#dataannotations">DataAnnotations</a><a href="#validationmessage-vs-summary">ValidationMessage vs Summary</a><a href="#editcontext-avanceret">EditContext (avanceret)</a><a href="#model-vs-api-dto">Model vs API-DTO</a><a href="#mini-opgave">Mini-opgave</a><a href="#laes-hos-microsoft">Læs hos Microsoft</a><a href="#proev-med-api">Prøv med API</a></nav>
+<h2 id="laeringsmaal">Læringsmål</h2>
 <ul>
 <li>Opbygge forms med <code>EditForm</code>, <code>OnValidSubmit</code> og input-komponenter.</li>
 <li>Validere med DataAnnotations og vise fejl med <code>ValidationMessage</code>.</li>
 <li>Skelne mellem model-klasse og <code>EditContext</code> til avanceret validering.</li>
 <li>Forhindre submit når data er ugyldige (min længde, required).</li>
-</ul>
+</ul><section class="teori-check">
+<h2 id="tjek-dig-selv">Tjek dig selv før du går videre</h2>
+<ul><li>Du kan binde EditForm til en model med DataAnnotations.</li><li>Du ved hvornår ValidationMessage vises.</li><li>Du har testet form-lab med ugyldig input.</li></ul>
+</section>
 
 <p>I Blazor samler I formularer med <code>&lt;EditForm&gt;</code>. Den kræver en <strong>model</strong> og callbacks som <code>OnValidSubmit</code> / <code>OnInvalidSubmit</code>. Det tvinger jer til tydelige typer — godt når I senere mapper til API-DTO’er.</p>
 
@@ -95,7 +99,7 @@
   }
 }</pre>
 
-<h2>DataAnnotations</h2>
+<h2 id="dataannotations">DataAnnotations</h2>
 <p>Attributter på properties: <code>[Required]</code>, <code>[MinLength]</code>, <code>[Range]</code>, <code>[EmailAddress]</code>, <code>[RegularExpression]</code>. <code>DataAnnotationsValidator</code> kobler dem til EditContext.</p>
 <pre class="teori-code language-csharp">public class ApiKeyForm
 {
@@ -103,13 +107,13 @@
   public string KeyLabel { get; set; } = "";
 }</pre>
 
-<h2>ValidationMessage vs Summary</h2>
+<h2 id="validationmessage-vs-summary">ValidationMessage vs Summary</h2>
 <ul>
 <li><code>ValidationMessage For="..."</code> — felt-specifik fejl ved input</li>
 <li><code>ValidationSummary</code> — liste øverst i form</li>
 </ul>
 
-<h2>EditContext (avanceret)</h2>
+<h2 id="editcontext-avanceret">EditContext (avanceret)</h2>
 <p>Når I skal validere på tværs af felter (fx «slutdato efter startdato»), opret I EditContext manuelt og lytter på <code>OnValidationRequested</code>.</p>
 <pre class="teori-code">var editContext = new EditContext(model);
 &lt;EditForm EditContext="editContext" OnValidSubmit="Submit"&gt;
@@ -118,10 +122,10 @@
 
 <div class="teori-callout"><p><strong>Faldgrube:</strong> At bruge plain <code>&lt;input&gt;</code> uden <code>InputText</code> / <code>@bind</code> korrekt — EditContext opdateres ikke, og validering kører på gammel state. Brug Blazor input-komponenter eller <code>@bind</code> med korrekt event.</p></div>
 
-<h2>Model vs API-DTO</h2>
+<h2 id="model-vs-api-dto">Model vs API-DTO</h2>
 <p>Form-model behøver ikke matche JSON 1:1. Map i <code>OnValidSubmit</code> til det DTO I sender med POST — fx opret favorit-Pokémon med kun <code>name</code> og <code>id</code>.</p>
 
-<section class="teori-quiz" data-quiz data-correct="2">
+<section class="teori-quiz" data-quiz data-correct="2" data-ok="Korrekt — godt gået." data-bad="Ikke helt — læs sektionen og prøv igen.">
   <h3>Quiz 1</h3>
   <p class="quiz-prompt">Hvornår kører <code>OnValidSubmit</code>?</p>
   <div class="quiz-options">
@@ -132,7 +136,7 @@
   <p class="quiz-feedback" aria-live="polite"></p>
 </section>
 
-<section class="teori-quiz" data-quiz data-correct="1">
+<section class="teori-quiz" data-quiz data-correct="1" data-ok="Korrekt — godt gået." data-bad="Ikke helt — læs sektionen og prøv igen.">
   <h3>Quiz 2</h3>
   <p class="quiz-prompt">Hvilken komponent viser fejl for ét felt?</p>
   <div class="quiz-options">
@@ -143,11 +147,18 @@
   <p class="quiz-feedback" aria-live="polite"></p>
 </section>
 
-<section class="teori-ms"><h2>Læs hos Microsoft</h2><ul>
+
+<p class="teori-why"><strong>Hvorfor det betyder noget:</strong> EditForm + annotations giver samme validering i UI og API — vigtigt ved POST til OpgaverAPI.</p>
+<div class="teori-callout teori-pitfall"><p><strong>Sådan fejler det i praksis:</strong> Submit uden EditContext — knappen sender ugyldig LoL-data; brugeren ser ingen fejl.</p></div>
+<section class="teori-mission"><h2 id="mini-opgave">Mini-opgave</h2><p>EditForm «ny LoL-favorit»: Required champion-navn, MaxLength 40. Valid submit logger model — samme mønster som form-lab.</p></section><section class="teori-quiz" data-quiz data-correct="2" data-ok="EditForm + annotations." data-bad="Plain form uden EditContext validerer ikke.">
+  <h3>Quiz 3</h3>
+  <p class="quiz-prompt">Client-side validering af Required på champion-navn?</p>
+  <div class="quiz-options"><button type="button" class="btn ghost sm" data-q="0">onclick alert</button><button type="button" class="btn ghost sm" data-q="1">CSS :invalid only</button><button type="button" class="btn ghost sm" data-q="2">EditForm + ValidationMessage</button></div>
+  <p class="quiz-feedback" aria-live="polite"></p></section><section class="teori-ms"><h2 id="laes-hos-microsoft">Læs hos Microsoft</h2><ul>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/forms-and-input-components" rel="noreferrer">Forms and input components</a></li>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/forms/validation" rel="noreferrer">Form validation</a></li>
 </ul></section>
-<section class="teori-try"><h2>Prøv med API</h2><ul>
+<section class="teori-try"><h2 id="proev-med-api">Prøv med API</h2><ul>
 <li>Søgeformular mod <code>/go/pokemon?name=...</code> eller <a href="/demo/countries">Countries</a>.</li>
 <li>Tilføj validering så tom streng ikke sender unødigt HTTP-kald.</li>
 </ul></section>
@@ -156,12 +167,13 @@
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
-<script src="/teori/anim.js?v=20261015mega2"></script>
+<script src="/teori/anim.js?v=20261015pro"></script>
+<script src="/teori/progress.js?v=20261015pro"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015mega2"></script>
+<script src="/teori/highlight.js?v=20261015pro"></script>
 </body>
 </html>

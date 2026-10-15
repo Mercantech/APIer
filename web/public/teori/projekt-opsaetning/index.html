@@ -8,12 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015mega2" />
-<link rel="stylesheet" href="/demo.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/widgets.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015mega2" />
+<link rel="stylesheet" href="/styles.css?v=20261015pro" />
+<link rel="stylesheet" href="/demo.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015pro" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -30,15 +30,19 @@
 <div class="teori-brand-row"><img src="/teori/assets/blazor-icon.svg" alt="" width="36" height="36" /><h1 class="brand">Projekt-opsætning</h1></div>
 <p class="lede">Opret en Blazor Web App, forstå filstrukturen, konfigurer Program.cs til OpgaverAPI, og gør projektet Docker-klar til Dokploy.</p>
 </header>
+<div class="teori-lesson-progress" data-lesson-progress aria-hidden="true"><div class="teori-progress-fill" data-progress-bar></div></div>
 <article class="teori-lesson">
-
-<h2>Læringsmål</h2>
+<nav class="teori-toc" aria-label="Indhold på siden"><a href="#laeringsmaal">Læringsmål</a><a href="#tjek-dig-selv">Tjek dig selv før du går videre</a><a href="#filstruktur-interaktivt-trae">Filstruktur — interaktivt træ</a><a href="#program-cs-forklaret">Program.cs forklaret</a><a href="#appsettings-og-secrets">appsettings og secrets</a><a href="#docker">Docker</a><a href="#typiske-fejl-ved-foerste-run">Typiske fejl ved første run</a><a href="#mini-opgave">Mini-opgave</a><a href="#laes-hos-microsoft">Læs hos Microsoft</a><a href="#proev-med-api">Prøv med API</a></nav>
+<h2 id="laeringsmaal">Læringsmål</h2>
 <ul>
 <li>Oprette Blazor Web App med korrekt workload og .NET-version.</li>
 <li>Navigere i Components, wwwroot og Program.cs.</li>
 <li>Tilføje Docker support og forstå env-baseret konfiguration.</li>
 <li>Genkende typiske fejl ved første run (HTTPS, render mode, port).</li>
-</ul>
+</ul><section class="teori-check">
+<h2 id="tjek-dig-selv">Tjek dig selv før du går videre</h2>
+<ul><li>Du kan pege på Program.cs som composition root.</li><li>Du ved hvor @page-sider og MainLayout ligger.</li><li>Du har klikket i filtræ-lab og læst mindst tre filer.</li></ul>
+</section>
 
 <p>Sørg for at Visual Studio har workloaden <strong>ASP.NET and web development</strong> (inkl. Docker-support). Brug <strong>.NET 8</strong> eller <strong>.NET 10</strong> — undervisningsmaterialet følger Blazor Web App-skabelonen, ikke legacy Blazor Server-only templates.</p>
 <figure class="teori-figure"><img src="/teori/assets/vs-workload.png" alt="Visual Studio workload ASP.NET" loading="lazy" /><figcaption>Installer ASP.NET-workloaden.</figcaption></figure>
@@ -47,7 +51,7 @@
 <figure class="teori-figure"><img src="/teori/assets/project-name.png" alt="Navngiv projektet" loading="lazy" /><figcaption>Giv projektet et klart navn (fx PokemonDex).</figcaption></figure>
 <figure class="teori-figure"><img src="/teori/assets/project-options.png" alt="Framework og interactivity-indstillinger" loading="lazy" /><figcaption>Framework, HTTPS, interactivity.</figcaption></figure>
 
-<h2>Filstruktur — interaktivt træ</h2>
+<h2 id="filstruktur-interaktivt-trae">Filstruktur — interaktivt træ</h2>
 <section class="teori-anim" data-file-tree aria-label="Projektfiler">
   <div class="teori-anim-head">
     <h3>Klik en fil</h3>
@@ -68,7 +72,7 @@
 
 <figure class="teori-figure"><img src="/teori/assets/file-structure.png" alt="Blazor Web App filstruktur" loading="lazy" /><figcaption>Oversigt fra Visual Studio.</figcaption></figure>
 
-<h2>Program.cs forklaret</h2>
+<h2 id="program-cs-forklaret">Program.cs forklaret</h2>
 <p>Program.cs er indgangen: DI-container, middleware pipeline, endpoint mapping.</p>
 <pre class="teori-code language-csharp">var builder = WebApplication.CreateBuilder(args);
 
@@ -99,7 +103,7 @@ app.Run();</pre>
 
 <p><code>MapRazorComponents&lt;App&gt;</code> kobler routing til jeres komponenter. Antiforgery beskytter forms. Static assets serverer CSS fra wwwroot.</p>
 
-<h2>appsettings og secrets</h2>
+<h2 id="appsettings-og-secrets">appsettings og secrets</h2>
 <pre class="teori-code language-json">{
   "OpgaverApi": {
     "BaseUrl": "https://api-opgaver.mercantec.tech"
@@ -107,11 +111,11 @@ app.Run();</pre>
 }</pre>
 <p>API-nøgler og OAuth secrets hører <strong>ikke</strong> i appsettings der committes — brug user secrets lokalt og env vars i Docker/Dokploy.</p>
 
-<h2>Docker</h2>
+<h2 id="docker">Docker</h2>
 <p>Højreklik projekt → Add → Docker Support. Dockerfile multi-stage build: restore, publish, runtime image. I Dokploy deployes typisk med <code>docker compose up -d --build</code> — samme mønster som APIer-repoet (web offentlig, api/db intern).</p>
 <div class="teori-callout"><p>Enable Docker tidligt. Det tvinger jer til at tænke porte, miljøvariabler og at appen ikke afhænger af «kun min maskine».</p></div>
 
-<h2>Typiske fejl ved første run</h2>
+<h2 id="typiske-fejl-ved-foerste-run">Typiske fejl ved første run</h2>
 <ul>
 <li><strong>HTTPS certificate</strong> — trust dev cert (<code>dotnet dev-certs https --trust</code>).</li>
 <li><strong>Tom interaktiv side</strong> — mangler render mode eller <code>AddInteractiveServerRenderMode</code>.</li>
@@ -121,7 +125,7 @@ app.Run();</pre>
 
 <div class="teori-callout"><p><strong>Faldgrube:</strong> At lægge <code>Components/Pages</code> udenfor namespace eller uden <code>@page</code> — siden vises ikke i routing. Tjek Routes.razor og at filen ligger under scannet assembly.</p></div>
 
-<section class="teori-quiz" data-quiz data-correct="2">
+<section class="teori-quiz" data-quiz data-correct="2" data-ok="Korrekt — godt gået." data-bad="Ikke helt — læs sektionen og prøv igen.">
   <h3>Quiz 1</h3>
   <p class="quiz-prompt">Hvor registrerer I HttpClient og render modes?</p>
   <div class="quiz-options">
@@ -132,7 +136,7 @@ app.Run();</pre>
   <p class="quiz-feedback" aria-live="polite"></p>
 </section>
 
-<section class="teori-quiz" data-quiz data-correct="1">
+<section class="teori-quiz" data-quiz data-correct="1" data-ok="Korrekt — godt gået." data-bad="Ikke helt — læs sektionen og prøv igen.">
   <h3>Quiz 2</h3>
   <p class="quiz-prompt">Hvor ligger statiske CSS-filer og favicon?</p>
   <div class="quiz-options">
@@ -143,12 +147,19 @@ app.Run();</pre>
   <p class="quiz-feedback" aria-live="polite"></p>
 </section>
 
-<section class="teori-ms"><h2>Læs hos Microsoft</h2><ul>
+
+<p class="teori-why"><strong>Hvorfor det betyder noget:</strong> Uden styr på Program.cs og env ender Pokémon-base URL som localhost i Docker på Dokploy.</p>
+<div class="teori-callout teori-pitfall"><p><strong>Sådan fejler det i praksis:</strong> Hardcodet API-URL i komponent — virker lokalt, 404 i prod. Én config-kilde i Program.cs.</p></div>
+<section class="teori-mission"><h2 id="mini-opgave">Mini-opgave</h2><p>Tilføj <code>OpgaverApi:BaseUrl</code> i <code>appsettings.Development.json</code> og læs værdien i Program.cs. Breakpoint i build — bekræft korrekt base URL.</p></section><section class="teori-quiz" data-quiz data-correct="1" data-ok="Program.cs er composition root." data-bad="Pages er ikke stedet for AddHttpClient.">
+  <h3>Quiz 3</h3>
+  <p class="quiz-prompt">Hvor registrerer I HttpClient til OpgaverAPI?</p>
+  <div class="quiz-options"><button type="button" class="btn ghost sm" data-q="0">MainLayout.razor</button><button type="button" class="btn ghost sm" data-q="1">Program.cs</button><button type="button" class="btn ghost sm" data-q="2">wwwroot/index.html</button></div>
+  <p class="quiz-feedback" aria-live="polite"></p></section><section class="teori-ms"><h2 id="laes-hos-microsoft">Læs hos Microsoft</h2><ul>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/tutorials/build-a-blazor-app" rel="noreferrer">Build a Blazor app</a></li>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/tooling" rel="noreferrer">Blazor tooling</a></li>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/docker" rel="noreferrer">Docker and ASP.NET Core</a></li>
 </ul></section>
-<section class="teori-try"><h2>Prøv med API</h2><ul>
+<section class="teori-try"><h2 id="proev-med-api">Prøv med API</h2><ul>
 <li><a href="https://github.com/MAGS-Template/BlazorEksempler" rel="noreferrer">MAGS BlazorEksempler</a> · <a href="https://github.com/MAGS-Template/H1-Eksempler" rel="noreferrer">H1-Eksempler</a></li>
 <li>Opret en tom side <code>/pokemon</code> og planlæg HttpClient-registrering i Program.cs.</li>
 </ul></section>
@@ -157,12 +168,13 @@ app.Run();</pre>
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
-<script src="/teori/anim.js?v=20261015mega2"></script>
+<script src="/teori/anim.js?v=20261015pro"></script>
+<script src="/teori/progress.js?v=20261015pro"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015mega2"></script>
+<script src="/teori/highlight.js?v=20261015pro"></script>
 </body>
 </html>

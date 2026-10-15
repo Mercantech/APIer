@@ -8,12 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015mega2" />
-<link rel="stylesheet" href="/demo.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/widgets.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015mega2" />
+<link rel="stylesheet" href="/styles.css?v=20261015pro" />
+<link rel="stylesheet" href="/demo.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015pro" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -30,15 +30,19 @@
 <div class="teori-brand-row"><img src="/teori/assets/blazor-icon.svg" alt="" width="36" height="36" /><h1 class="brand">Komponenter og events</h1></div>
 <p class="lede">Byg UI af genbrugelige komponenter med parametre, two-way binding og EventCallback — parent/child-flow som Pokémon-liste der vælger detail.</p>
 </header>
+<div class="teori-lesson-progress" data-lesson-progress aria-hidden="true"><div class="teori-progress-fill" data-progress-bar></div></div>
 <article class="teori-lesson">
-
-<h2>Læringsmål</h2>
+<nav class="teori-toc" aria-label="Indhold på siden"><a href="#laeringsmaal">Læringsmål</a><a href="#tjek-dig-selv">Tjek dig selv før du går videre</a><a href="#parametre-og-eventcallback">Parametre og EventCallback</a><a href="#bind-dybere">@bind dybere</a><a href="#c-vs-javascript">C# vs JavaScript</a><a href="#genbrug-i-stoerre-ui">Genbrug i større UI</a><a href="#eventcallback">EventCallback vs Action</a><a href="#mini-opgave">Mini-opgave</a><a href="#laes-hos-microsoft">Læs hos Microsoft</a><a href="#proev-med-api">Prøv med API</a></nav>
+<h2 id="laeringsmaal">Læringsmål</h2>
 <ul>
 <li>Definere <code>[Parameter]</code> og forældre/child-kommunikation.</li>
 <li>Bruge <code>@bind</code> og <code>@bind-Value:after</code> til two-way data.</li>
 <li>Implementere <code>EventCallback</code> til events opad (valgt champion).</li>
 <li>Sammenligne Blazor-events med jQuery/DOM-manipulation.</li>
-</ul>
+</ul><section class="teori-check">
+<h2 id="tjek-dig-selv">Tjek dig selv før du går videre</h2>
+<ul><li>Du kan forklare EventCallback vs Action med parent/child-eksempel.</li><li>Du ved hvorfor child ikke må mutere [Parameter] direkte.</li><li>Du har brugt bind-lab og forstår two-way flow.</li></ul>
+</section>
 
 <p>Komponenter er Blazors byggeklodser. En fil = én komponent (typisk). Parent sender data ned; child notifier op via callbacks.</p>
 
@@ -51,7 +55,7 @@
   <p>Valgt træner: <strong class="bind-preview">—</strong></p>
 </section>
 
-<h2>Parametre og EventCallback</h2>
+<h2 id="parametre-og-eventcallback">Parametre og EventCallback</h2>
 <pre class="teori-code">@* PokemonCard.razor *@
 &lt;div class="card" @onclick="OnSelect"&gt;
   &lt;h3&gt;@Name&lt;/h3&gt;
@@ -86,12 +90,12 @@
   record Mon(string Name, int Id);
 }</pre>
 
-<h2>@bind dybere</h2>
+<h2 id="bind-dybere">@bind dybere</h2>
 <p><code>@bind-Value="text"</code> er syntaks-sukker for value + <code>ValueChanged</code> + <code>ValueExpression</code>. Til delayed API-søgning kan I bruge <code>@bind-Value:after="Search"</code> (.NET 8+) så søgning kører efter opdatering.</p>
 <pre class="teori-code">&lt;input @bind="filter" @bind:event="oninput" /&gt;</pre>
 <p><code>@bind:event="oninput"</code> opdaterer ved hvert tastetryk (default er often onchange ved blur).</p>
 
-<h2>C# vs JavaScript</h2>
+<h2 id="c-vs-javascript">C# vs JavaScript</h2>
 <ul>
 <li><strong>Objekter &amp; klasser</strong> — stærke typer på parametre</li>
 <li><strong>Events</strong> — <code>@onclick</code>, <code>@onchange</code>; stop propagation med <code>@onclick:stopPropagation</code></li>
@@ -101,10 +105,10 @@
 
 <div class="teori-callout"><p><strong>Faldgrube:</strong> At mutere child’s <code>[Parameter]</code> direkte i child — one-way flow ned, events op. Parent ejer sandheden om <code>selectedId</code>.</p></div>
 
-<h2>Genbrug i større UI</h2>
+<h2 id="genbrug-i-stoerre-ui">Genbrug i større UI</h2>
 <p>Samme <code>ChampionRow</code> i LoL-liste og i «favoritter»-sidebar — kun parametre og callbacks skifter.</p>
 
-<section class="teori-quiz" data-quiz data-correct="1">
+<section class="teori-quiz" data-quiz data-correct="1" data-ok="Korrekt — godt gået." data-bad="Ikke helt — læs sektionen og prøv igen.">
   <h3>Quiz 1</h3>
   <p class="quiz-prompt">Hvordan sender child «jeg blev valgt» til parent?</p>
   <div class="quiz-options">
@@ -115,7 +119,7 @@
   <p class="quiz-feedback" aria-live="polite"></p>
 </section>
 
-<section class="teori-quiz" data-quiz data-correct="0">
+<section class="teori-quiz" data-quiz data-correct="0" data-ok="Korrekt — godt gået." data-bad="Ikke helt — læs sektionen og prøv igen.">
   <h3>Quiz 2</h3>
   <p class="quiz-prompt">Hvad gør <code>@bind-Value</code> i praksis?</p>
   <div class="quiz-options">
@@ -126,12 +130,37 @@
   <p class="quiz-feedback" aria-live="polite"></p>
 </section>
 
-<section class="teori-ms"><h2>Læs hos Microsoft</h2><ul>
+
+<h2 id="eventcallback">EventCallback vs Action</h2>
+<p class="teori-why"><strong>Hvorfor det betyder noget:</strong> Når <code>ChampionRow</code> melder valg opad, skal parent opdatere <code>selectedId</code> og måske hente detail fra OpgaverAPI. <code>EventCallback</code> sørger for korrekt re-render og kan await’es; <code>Action</code> gør ikke.</p>
+<pre class="teori-code language-csharp">// Svagt i Blazor-komponenter
+[Parameter] public Action&lt;int&gt; OnPick { get; set; } = _ =&gt; { };
+
+// Korrekt — async-friendly og render-aware
+[Parameter] public EventCallback&lt;int&gt; OnPick { get; set; }
+private Task PickAsync() =&gt; OnPick.InvokeAsync(ChampionId);</pre>
+<p>Parent kan await’e og hente LoL-detail før UI vises:</p>
+<pre class="teori-code language-csharp">private async Task OnChampionPicked(int id)
+{
+    selectedId = id;
+    detail = await Lol.GetChampionAsync(id);
+}</pre>
+<div class="teori-callout teori-pitfall"><p><strong>Sådan fejler det i praksis (@bind):</strong> Parent binder <code>@bind-SelectedId</code> på child, men child sætter også <code>SelectedId = id</code> i onclick — state kæmper, UI «hopper tilbage». Parent ejer bound property; child bruger EventCallback eller lader @bind håndtere Changed-kanalen alene.</p></div>
+<pre class="teori-code">@* Anti-pattern: child skriver til parent's parameter *@
+@code {
+  [Parameter] public int SelectedId { get; set; }
+  void BadClick(int id) =&gt; SelectedId = id; // undgå — brug EventCallback eller @bind-SelectedId
+}</pre>
+<section class="teori-mission"><h2 id="mini-opgave">Mini-opgave</h2><p><code>ChampionRow</code> med <code>EventCallback&lt;string&gt;</code>; parent holder <code>selectedId</code> og henter detail fra OpgaverAPI ved valg.</p></section><section class="teori-quiz" data-quiz data-correct="1" data-ok="EventCallback." data-bad="Action er upålidelig i Blazor.">
+  <h3>Quiz 3</h3>
+  <p class="quiz-prompt">Notify parent om valg?</p>
+  <div class="quiz-options"><button type="button" class="btn ghost sm" data-q="0">Action</button><button type="button" class="btn ghost sm" data-q="1">EventCallback</button><button type="button" class="btn ghost sm" data-q="2">static field</button></div>
+  <p class="quiz-feedback" aria-live="polite"></p></section><section class="teori-ms"><h2 id="laes-hos-microsoft">Læs hos Microsoft</h2><ul>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/components/" rel="noreferrer">Components</a></li>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/components/event-handling" rel="noreferrer">Event handling</a></li>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/components/data-binding" rel="noreferrer">Data binding</a></li>
 </ul></section>
-<section class="teori-try"><h2>Prøv med API</h2><ul>
+<section class="teori-try"><h2 id="proev-med-api">Prøv med API</h2><ul>
 <li>Byg <code>PokemonCard</code> og genbrug på liste fra <a href="/demo/pokemon">Pokémon-demo</a>.</li>
 <li>Parent viser detail-panel når <code>EventCallback</code> fyrer.</li>
 </ul></section>
@@ -140,12 +169,13 @@
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
-<script src="/teori/anim.js?v=20261015mega2"></script>
+<script src="/teori/anim.js?v=20261015pro"></script>
+<script src="/teori/progress.js?v=20261015pro"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015mega2"></script>
+<script src="/teori/highlight.js?v=20261015pro"></script>
 </body>
 </html>

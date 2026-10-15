@@ -8,12 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015mega2" />
-<link rel="stylesheet" href="/demo.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/widgets.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015mega2" />
+<link rel="stylesheet" href="/styles.css?v=20261015pro" />
+<link rel="stylesheet" href="/demo.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015pro" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -30,20 +30,24 @@
 <div class="teori-brand-row"><img src="/teori/assets/blazor-icon.svg" alt="" width="36" height="36" /><h1 class="brand">Livscyklus og state</h1></div>
 <p class="lede">Forstå hvornår Blazor kalder livscyklus-metoder, hvordan parametre opdateres, og hvornår UI re-renderes — afgørende når I loader Pokémon async eller skifter filter på en LoL-liste.</p>
 </header>
+<div class="teori-lesson-progress" data-lesson-progress aria-hidden="true"><div class="teori-progress-fill" data-progress-bar></div></div>
 <article class="teori-lesson">
-
-<h2>Læringsmål</h2>
+<nav class="teori-toc" aria-label="Indhold på siden"><a href="#laeringsmaal">Læringsmål</a><a href="#tjek-dig-selv">Tjek dig selv før du går videre</a><a href="#typisk-raekkefoelge">Typisk rækkefølge</a><a href="#oninitializedasync-foerste-load">OnInitializedAsync — første load</a><a href="#onparametersset-route-query-aendres">OnParametersSet — route/query ændres</a><a href="#statehaschanged-og-rendering">StateHasChanged og rendering</a><a href="#cascading-values">Cascading values</a><a href="#cancellation">CancellationToken ved navigation</a><a href="#mini-opgave">Mini-opgave</a><a href="#laes-hos-microsoft">Læs hos Microsoft</a><a href="#proev-med-api">Prøv med API</a></nav>
+<h2 id="laeringsmaal">Læringsmål</h2>
 <ul>
 <li>Placere datahentning i <code>OnInitializedAsync</code> vs <code>OnParametersSetAsync</code>.</li>
 <li>Forklare forskellen på first render, parameter change og event-driven opdateringer.</li>
 <li>Bruge <code>StateHasChanged</code> bevidst (og undgå unødige kald).</li>
 <li>Kende cascading parameters til tema/API-base der deles i layout.</li>
 <li>Overblik over <code>ShouldRender</code> som performance-værktøj.</li>
-</ul>
+</ul><section class="teori-check">
+<h2 id="tjek-dig-selv">Tjek dig selv før du går videre</h2>
+<ul><li>Du kan undgå dobbelt-fetch ved første load.</li><li>Du ved hvornår OnParametersSetAsync kører igen.</li><li>Du kan nævne hvorfor CancellationToken bruges ved navigation.</li></ul>
+</section>
 
 <p>En komponent er ikke «bare HTML» — den har en livscyklus fra første render til destruction. Når parent sender nye parametre (fx valgt champion-id), skal child enten reagere i <code>OnParametersSet</code> eller via bound properties.</p>
 
-<h2>Typisk rækkefølge</h2>
+<h2 id="typisk-raekkefoelge">Typisk rækkefølge</h2>
 <ol>
 <li><strong>SetParametersAsync</strong> — parent sender parametre.</li>
 <li><strong>OnInitialized / OnInitializedAsync</strong> — én gang ved oprettelse (god til første API-kald).</li>
@@ -73,7 +77,7 @@
   <pre class="life-log" aria-live="polite"><span class="tok-dim"># Vælg et trin</span></pre>
 </section>
 
-<h2>OnInitializedAsync — første load</h2>
+<h2 id="oninitializedasync-foerste-load">OnInitializedAsync — første load</h2>
 <pre class="teori-code">@page "/pokemon-lifecycle"
 @inject IPokemonService Api
 
@@ -93,7 +97,7 @@
 
 <p>Brug <code>async</code> livscyklus-metoder til I/O. Vis loading-state hvis kaldet tager tid — ellers ser brugeren en tom liste.</p>
 
-<h2>OnParametersSet — route/query ændres</h2>
+<h2 id="onparametersset-route-query-aendres">OnParametersSet — route/query ændres</h2>
 <pre class="teori-code">@* ChampionDetail.razor — [Parameter] public string Id *@
 @code {
   Champion? champ;
@@ -106,7 +110,7 @@
 
 <p>Når parent eller router sender nyt <code>Id</code>, kører <code>OnParametersSetAsync</code> igen — uden at komponenten nødvendigvis destrueres.</p>
 
-<h2>StateHasChanged og rendering</h2>
+<h2 id="statehaschanged-og-rendering">StateHasChanged og rendering</h2>
 <p>Efter I opdaterer felter uden for en normal event (fx callback fra timer eller JS interop), kan UI mangle opdatering indtil <code>StateHasChanged()</code> kaldes. I de fleste <code>@onclick</code> / <code>@bind</code>-flows sker det automatisk.</p>
 <pre class="teori-code language-csharp">protected override bool ShouldRender()
 {
@@ -116,7 +120,7 @@
 
 <div class="teori-callout"><p><strong>Faldgrube:</strong> At hente tung data i <code>OnParametersSet</code> <em>og</em> <code>OnInitialized</code> uden guard giver dobbelt API-kald ved første load. Tjek om parametre allerede er sat, eller brug kun <code>OnParametersSetAsync</code> med «first render»-flag.</p></div>
 
-<h2>Cascading values</h2>
+<h2 id="cascading-values">Cascading values</h2>
 <p>Layout kan levere fælles værdier (tema, API-base, bruger-context) uden at prop-drille gennem hver komponent:</p>
 <pre class="teori-code">@* App.razor / Layout *@
 &lt;CascadingValue Value="apiBase" Name="ApiBase"&gt;
@@ -129,7 +133,7 @@
   public string ApiBase { get; set; } = "";
 }</pre>
 
-<section class="teori-quiz" data-quiz data-correct="0">
+<section class="teori-quiz" data-quiz data-correct="0" data-ok="Korrekt — godt gået." data-bad="Ikke helt — læs sektionen og prøv igen.">
   <h3>Quiz 1</h3>
   <p class="quiz-prompt">Hvor loader I typisk første gang data til en sidekomponent med @page?</p>
   <div class="quiz-options">
@@ -140,7 +144,7 @@
   <p class="quiz-feedback" aria-live="polite"></p>
 </section>
 
-<section class="teori-quiz" data-quiz data-correct="1">
+<section class="teori-quiz" data-quiz data-correct="1" data-ok="Korrekt — godt gået." data-bad="Ikke helt — læs sektionen og prøv igen.">
   <h3>Quiz 2</h3>
   <p class="quiz-prompt">Parent ændrer <code>[Parameter] public int PokemonId</code> — hvilken metode skal re-loade detail?</p>
   <div class="quiz-options">
@@ -151,12 +155,41 @@
   <p class="quiz-feedback" aria-live="polite"></p>
 </section>
 
-<section class="teori-ms"><h2>Læs hos Microsoft</h2><ul>
+
+<h2 id="cancellation">CancellationToken ved navigation</h2>
+<p class="teori-why"><strong>Hvorfor det betyder noget:</strong> Eleven klikker Pikachu, skifter hurtigt til LoL-ruten — langsomt Pokémon-detail returnerer stadig og overskriver ny side. CancellationToken stopper unødigt arbejde og race conditions.</p>
+<pre class="teori-code language-csharp">protected override async Task OnParametersSetAsync(CancellationToken cancellationToken)
+{
+    loading = true;
+    try
+    {
+        detail = await Lol.GetChampionAsync(Id, cancellationToken);
+    }
+    catch (OperationCanceledException)
+    {
+        return; // bruger navigerede væk — ikke opdater state
+    }
+    finally { loading = false; }
+}</pre>
+<div class="teori-callout teori-pitfall"><p><strong>Sådan fejler det i praksis:</strong> <code>OnInitializedAsync</code> og <code>OnParametersSetAsync</code> kalder begge API ved første load — Network viser to identiske GET. Fix: kun ParametersSet med guard, eller skip fetch i Init hvis Id allerede er sat.</p></div>
+<pre class="teori-code language-csharp">private int _loadedId = -1;
+
+protected override async Task OnParametersSetAsync(CancellationToken ct)
+{
+    if (Id == _loadedId) return;
+    _loadedId = Id;
+    detail = await Lol.GetChampionAsync(Id, ct);
+}</pre>
+<section class="teori-mission"><h2 id="mini-opgave">Mini-opgave</h2><p>Detail med <code>[Parameter] int Id</code>; log Init vs ParametersSet; eliminer dobbelt-fetch med guard.</p></section><section class="teori-quiz" data-quiz data-correct="2" data-ok="Cancellation stopper wasted work." data-bad="Token skal sendes med await.">
+  <h3>Quiz 3</h3>
+  <p class="quiz-prompt">Navigation væk under API-kald — bedste praksis?</p>
+  <div class="quiz-options"><button type="button" class="btn ghost sm" data-q="0">Thread.Sleep</button><button type="button" class="btn ghost sm" data-q="1">Ignorer</button><button type="button" class="btn ghost sm" data-q="2">CancellationToken</button></div>
+  <p class="quiz-feedback" aria-live="polite"></p></section><section class="teori-ms"><h2 id="laes-hos-microsoft">Læs hos Microsoft</h2><ul>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/components/lifecycle" rel="noreferrer">Component lifecycle</a></li>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/components/cascading-values-and-parameters" rel="noreferrer">Cascading values</a></li>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/components/rendering" rel="noreferrer">Control rendering</a></li>
 </ul></section>
-<section class="teori-try"><h2>Prøv med API</h2><ul>
+<section class="teori-try"><h2 id="proev-med-api">Prøv med API</h2><ul>
 <li>Lav Master/Detail: liste fra <code>/go/pokemon</code>, detail når <code>PokemonId</code> parameter skifter — observer Network for dobbelt-kald.</li>
 <li>Sammenlign med <a href="/demo/lol">LoL-demo</a>: hvornår hentes data ift. navigation?</li>
 </ul></section>
@@ -165,12 +198,13 @@
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
-<script src="/teori/anim.js?v=20261015mega2"></script>
+<script src="/teori/anim.js?v=20261015pro"></script>
+<script src="/teori/progress.js?v=20261015pro"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015mega2"></script>
+<script src="/teori/highlight.js?v=20261015pro"></script>
 </body>
 </html>

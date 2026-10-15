@@ -242,8 +242,15 @@
     const feedback = root.querySelector(".quiz-feedback");
     const buttons = [...root.querySelectorAll(".quiz-options button")];
     let locked = false;
+    const letters = ["A", "B", "C", "D"];
 
     buttons.forEach((btn, i) => {
+      if (!btn.querySelector(".quiz-letter")) {
+        const letter = document.createElement("span");
+        letter.className = "quiz-letter";
+        letter.textContent = letters[i] || String(i + 1);
+        btn.prepend(letter);
+      }
       btn.addEventListener("click", () => {
         if (locked) return;
         locked = true;
@@ -253,11 +260,12 @@
           b.classList.toggle("is-wrong", j === i && !ok);
           b.disabled = true;
         });
+        root.classList.add(ok ? "quiz-passed" : "quiz-failed");
         if (feedback) {
           feedback.className = `quiz-feedback ${ok ? "ok" : "bad"}`;
           feedback.textContent = ok
-            ? root.dataset.ok || "Korrekt."
-            : root.dataset.bad || "Ikke helt — se den grønne mulighed.";
+            ? root.dataset.ok || "Korrekt — godt set."
+            : root.dataset.bad || "Ikke helt — den grønne mulighed er den rigtige. Læs forklaringen i lektionen igen.";
         }
       });
     });
@@ -266,10 +274,30 @@
   /* ——— @bind lab ——— */
   function initBindLab(root) {
     const input = root.querySelector("[data-bind-input]");
-    const out = root.querySelector(".bind-preview") || root.querySelector("[data-bind-out]");
-    if (!input || !out) return;
+    let out = root.querySelector(".bind-preview") || root.querySelector("[data-bind-out]");
+    if (!input) return;
+
+    if (!out) {
+      out = document.createElement("strong");
+      out.className = "bind-preview";
+      root.appendChild(out);
+    }
+
+    let code = root.querySelector("[data-bind-code]");
+    if (!code) {
+      code = document.createElement("pre");
+      code.className = "bind-code";
+      code.setAttribute("data-bind-code", "");
+      root.appendChild(code);
+    }
+
     const sync = () => {
-      out.textContent = input.value.trim() || "—";
+      const v = input.value.trim() || "Ash";
+      out.textContent = v;
+      code.textContent =
+        `<input @bind=\"Name\" @bind:event=\"oninput\" />\n` +
+        `<p>Hej, <strong>@Name</strong> — klar til Pokémon-søgning?</p>\n\n` +
+        `// Name = \"${v.replaceAll('"', '\\"')}\"  ← opdateres ved hvert tastetryk`;
     };
     input.addEventListener("input", sync);
     sync();
@@ -277,40 +305,74 @@
 
   /* ——— Lifecycle stepper ——— */
   function initLifecycle(root) {
+    const order = ["init", "params", "render", "event", "dispose"];
     const logs = {
       init: "# OnInitializedAsync()\n# Første load — hent starters via HttpClient.\nmons = await Api.GetStarterAsync();",
       params:
         "# OnParametersSetAsync()\n# Parent/route skiftede Id.\nchamp = await Lol.GetChampionAsync(Id);",
       event:
         "# @onclick handler\npage++;\nawait LoadPage();\n# StateHasChanged kører automatisk efter event.",
-      reset: "# Log nulstillet — prøv et trin igen.",
+      reset: "# Log nulstillet — prøv Afspil livscyklus.",
       render: "# Render\n# BuildRenderTree → DOM opdateres ud fra state.",
       dispose: "# Dispose / IAsyncDisposable\n# Stop timers, unsubscribe events.",
     };
     const log = root.querySelector(".life-log");
     const steps = [...root.querySelectorAll(".life-steps [data-step], .life-steps li")];
+    let busy = false;
 
     function highlight(key) {
+      const keyIdx = order.indexOf(key);
       steps.forEach((li) => {
         const id = li.dataset.step || "";
-        li.classList.toggle("active", id === key || (key === "event" && id === "event"));
-        if (key === "init" && id === "init") li.classList.add("done");
-        if (key === "params" && (id === "init" || id === "params")) li.classList.add("done");
+        const idx = order.indexOf(id);
+        li.classList.toggle("active", id === key);
+        li.classList.toggle("done", idx >= 0 && keyIdx >= 0 && idx < keyIdx);
       });
+    }
+
+    function show(key) {
+      root.querySelectorAll("[data-life-step]").forEach((b) =>
+        b.classList.toggle("active", b.dataset.lifeStep === key)
+      );
+      highlight(key);
+      if (log) log.textContent = logs[key] || `# ${key}`;
     }
 
     root.querySelectorAll("[data-life-step]").forEach((btn) => {
       btn.addEventListener("click", () => {
+        if (busy) return;
         const key = btn.dataset.lifeStep;
-        root.querySelectorAll("[data-life-step]").forEach((b) => b.classList.toggle("active", b === btn));
         if (key === "reset") {
           if (log) log.innerHTML = `<span class="tok-dim">${escapeHtml(logs.reset)}</span>`;
           steps.forEach((li) => li.classList.remove("active", "done"));
           return;
         }
-        highlight(key);
-        if (log) log.textContent = logs[key] || `# ${key}`;
+        show(key);
       });
+    });
+
+    // Autoplay control (inject if missing)
+    let play = root.querySelector('[data-action="life-play"]');
+    if (!play) {
+      play = document.createElement("button");
+      play.type = "button";
+      play.className = "btn primary sm";
+      play.dataset.action = "life-play";
+      play.textContent = "Afspil livscyklus";
+      root.querySelector(".teori-anim-controls")?.appendChild(play);
+    }
+
+    play?.addEventListener("click", async () => {
+      if (busy) return;
+      busy = true;
+      play.disabled = true;
+      steps.forEach((li) => li.classList.remove("active", "done"));
+      for (const key of order) {
+        show(key);
+        await sleep(900);
+      }
+      busy = false;
+      play.disabled = false;
     });
   }
 
@@ -321,6 +383,32 @@
     const singletonId = Math.floor(Math.random() * 900) + 100;
     const log = root.querySelector(".di-log");
 
+    let slots = root.querySelector(".di-slots");
+    if (!slots) {
+      slots = document.createElement("div");
+      slots.className = "di-slots";
+      slots.innerHTML = [1, 2, 3]
+        .map(
+          (n) =>
+            `<div class="di-slot" data-slot="${n}"><span class="di-slot-label">Resolve ${n}</span><span class="di-slot-id">—</span></div>`
+        )
+        .join("");
+      log?.before(slots);
+    }
+
+    const tip = root.querySelector(".di-tip") || (() => {
+      const el = document.createElement("p");
+      el.className = "di-tip";
+      log?.after(el);
+      return el;
+    })();
+
+    const tips = {
+      transient: "Transient: tre forskellige id’er — ny instans hver resolve. Godt til stateless helpers.",
+      scoped: "Scoped: samme id inden for circuit/request. Pas på: del ikke brugerdata som Singleton.",
+      singleton: "Singleton: samme id for hele app-livet. Kun til thread-safe, delt read-only state.",
+    };
+
     root.querySelectorAll("[data-di]").forEach((btn) => {
       btn.addEventListener("click", () => {
         mode = btn.dataset.di;
@@ -328,11 +416,16 @@
         if (log) {
           log.innerHTML = `<span class="tok-dim"># Mode: ${escapeHtml(mode)} — tryk Anmod ×3</span>`;
         }
+        slots.querySelectorAll(".di-slot-id").forEach((el) => {
+          el.textContent = "—";
+          el.classList.remove("same", "diff");
+        });
+        if (tip) tip.textContent = tips[mode] || "";
       });
     });
 
-    root.querySelector('[data-action="resolve"]')?.addEventListener("click", () => {
-      const lines = [];
+    root.querySelector('[data-action="resolve"]')?.addEventListener("click", async () => {
+      const ids = [];
       for (let i = 1; i <= 3; i++) {
         let id;
         if (mode === "transient") id = Math.floor(Math.random() * 900) + 100;
@@ -341,18 +434,28 @@
           if (scopedId == null) scopedId = Math.floor(Math.random() * 900) + 100;
           id = scopedId;
         }
-        lines.push(`Anmod ${i}: ${mode} → instance #${id}`);
+        ids.push(id);
+        const slot = slots.querySelector(`[data-slot="${i}"] .di-slot-id`);
+        if (slot) {
+          slot.textContent = `#${id}`;
+          slot.classList.add("pop");
+          await sleep(220);
+          slot.classList.remove("pop");
+        }
       }
-      if (mode === "scoped") {
-        lines.push("# Samme scoped-id inden for circuit/request. Ny scope = nyt id.");
-        scopedId = null;
-      } else if (mode === "singleton") {
-        lines.push("# Samme id for hele app-livet.");
-      } else {
-        lines.push("# Ny instans hver gang (transient).");
+      const allSame = ids.every((x) => x === ids[0]);
+      slots.querySelectorAll(".di-slot-id").forEach((el) => {
+        el.classList.toggle("same", allSame);
+        el.classList.toggle("diff", !allSame);
+      });
+      if (mode === "scoped") scopedId = null;
+      if (log) {
+        log.textContent = ids.map((id, i) => `Anmod ${i + 1}: ${mode} → instance #${id}`).join("\n");
       }
-      if (log) log.textContent = lines.join("\n");
+      if (tip) tip.textContent = tips[mode] || "";
     });
+
+    if (tip) tip.textContent = tips.transient;
   }
 
   /* ——— EditForm lab ——— */

@@ -8,12 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015mega2" />
-<link rel="stylesheet" href="/demo.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/widgets.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015mega2" />
+<link rel="stylesheet" href="/styles.css?v=20261015pro" />
+<link rel="stylesheet" href="/demo.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015pro" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -30,15 +30,19 @@
 <div class="teori-brand-row"><img src="/teori/assets/blazor-icon.svg" alt="" width="36" height="36" /><h1 class="brand">HttpClient og API-kald</h1></div>
 <p class="lede">Kald OpgaverAPI asynkront med HttpClient — CRUD over HTTP, DTO’er, typed clients og robust fejlhåndtering.</p>
 </header>
+<div class="teori-lesson-progress" data-lesson-progress aria-hidden="true"><div class="teori-progress-fill" data-progress-bar></div></div>
 <article class="teori-lesson">
-
-<h2>Læringsmål</h2>
+<nav class="teori-toc" aria-label="Indhold på siden"><a href="#laeringsmaal">Læringsmål</a><a href="#tjek-dig-selv">Tjek dig selv før du går videre</a><a href="#dto-og-json-shape">DTO og JSON-shape</a><a href="#x-api-key-og-headers">X-Api-Key og headers</a><a href="#typed-client">Typed client</a><a href="#problemdetails">ProblemDetails og statuskoder</a><a href="#timeout">Timeout og CancellationToken</a><a href="#mini-opgave">Mini-opgave</a><a href="#laes-hos-microsoft">Læs hos Microsoft</a><a href="#proev-med-api">Prøv med API</a></nav>
+<h2 id="laeringsmaal">Læringsmål</h2>
 <ul>
 <li>Mappe CRUD til HTTP-metoder mod REST API.</li>
 <li>Bruge <code>GetFromJsonAsync</code>, <code>PostAsJsonAsync</code> med DTO/records.</li>
 <li>Håndtere <code>HttpRequestException</code>, statuskoder og tomme svar.</li>
 <li>Registrere typed HttpClient i Program.cs (se DI-lektion).</li>
-</ul>
+</ul><section class="teori-check">
+<h2 id="tjek-dig-selv">Tjek dig selv før du går videre</h2>
+<ul><li>Du håndterer IsSuccessStatusCode og viser fejl i UI.</li><li>Du kan læse ProblemDetails/title fra API-svar.</li><li>Du har afspillet async-lab og HTTP-sim.</li></ul>
+</section>
 
 <p>CRUD over HTTP: <code>POST</code> create, <code>GET</code> read, <code>PUT/PATCH</code> update, <code>DELETE</code> delete. I Blazor er kaldene async — UI-tråden blokeres ikke mens I venter på Pokémon-JSON.</p>
 
@@ -112,7 +116,7 @@
   public record PokeDto(string Name, int Id);
 }</pre>
 
-<h2>DTO og JSON-shape</h2>
+<h2 id="dto-og-json-shape">DTO og JSON-shape</h2>
 <p>Property-navne skal matche JSON (case-insensitive default). Brug <code>[JsonPropertyName("id")]</code> ved behov. Records er gode til read-only API-data.</p>
 <pre class="teori-code language-csharp">public record ChampionDto(string Id, string Name);
 
@@ -125,13 +129,13 @@ if (!response.IsSuccessStatusCode)
 }
 var champs = await response.Content.ReadFromJsonAsync&lt;ChampionDto[]&gt;();</pre>
 
-<h2>X-Api-Key og headers</h2>
+<h2 id="x-api-key-og-headers">X-Api-Key og headers</h2>
 <pre class="teori-code">using var request = new HttpRequestMessage(HttpMethod.Get, "/LeagueOfLegends/Champions");
 request.Headers.Add("X-Api-Key", apiKey);
 var response = await Http.SendAsync(request);</pre>
 <p>Bedre: encapsuler i <code>ILolService</code> så komponenter ikke kender header-detaljer.</p>
 
-<h2>Typed client</h2>
+<h2 id="typed-client">Typed client</h2>
 <pre class="teori-code language-csharp">builder.Services.AddHttpClient&lt;IPokemonApi, PokemonApi&gt;(c =&gt;
     c.BaseAddress = new Uri("https://api-opgaver.mercantec.tech"));</pre>
 
@@ -139,7 +143,7 @@ var response = await Http.SendAsync(request);</pre>
 
 <div class="teori-callout"><p><strong>Faldgrube:</strong> Glemt trailing slash i BaseAddress + absolute path — dobbelte eller manglende slashes giver 404. Følg én konvention (base med slash, relative paths uden leading slash).</p></div>
 
-<section class="teori-quiz" data-quiz data-correct="0">
+<section class="teori-quiz" data-quiz data-correct="0" data-ok="Korrekt — godt gået." data-bad="Ikke helt — læs sektionen og prøv igen.">
   <h3>Quiz 1</h3>
   <p class="quiz-prompt">Hvilken HTTP-metode svarer typisk til «read/list» i REST?</p>
   <div class="quiz-options">
@@ -150,7 +154,7 @@ var response = await Http.SendAsync(request);</pre>
   <p class="quiz-feedback" aria-live="polite"></p>
 </section>
 
-<section class="teori-quiz" data-quiz data-correct="2">
+<section class="teori-quiz" data-quiz data-correct="2" data-ok="Korrekt — godt gået." data-bad="Ikke helt — læs sektionen og prøv igen.">
   <h3>Quiz 2</h3>
   <p class="quiz-prompt">LoL-endpoint returnerer 401 — mest sandsynlige årsag?</p>
   <div class="quiz-options">
@@ -161,11 +165,43 @@ var response = await Http.SendAsync(request);</pre>
   <p class="quiz-feedback" aria-live="polite"></p>
 </section>
 
-<section class="teori-ms"><h2>Læs hos Microsoft</h2><ul>
+
+<h2 id="problemdetails">ProblemDetails og statuskoder</h2>
+<p class="teori-why"><strong>Hvorfor det betyder noget:</strong> OpgaverAPI svarer med meningsfulde statuskoder — 401 (manglende nøgle), 404 (forkert route), 503 (nedetid). Brugeren og censor skal se en handlingsbar besked, ikke en hvid skærm.</p>
+<pre class="teori-code language-csharp">public async Task&lt;(List&lt;Mon&gt;? Data, string? Error)&gt; GetPokemonAsync(CancellationToken ct)
+{
+    using var response = await _http.GetAsync("/go/pokemon?limit=20", ct);
+    if (response.IsSuccessStatusCode)
+        return (await response.Content.ReadFromJsonAsync&lt;List&lt;Mon&gt;&gt;(ct), null);
+
+    ProblemDetails? problem = null;
+    try { problem = await response.Content.ReadFromJsonAsync&lt;ProblemDetails&gt;(ct); }
+    catch { /* body var ikke JSON */ }
+
+    var title = problem?.Title ?? response.ReasonPhrase ?? "Ukendt fejl";
+    return (null, $"{(int)response.StatusCode}: {title}");
+}</pre>
+<p>I UI: vis <code>Error</code> i rød tekst og tilbyd «Prøv igen» — særligt ved timeout på skolens WiFi.</p>
+<div class="teori-callout teori-pitfall"><p><strong>Sådan fejler det i praksis:</strong> <code>GetFromJsonAsync</code> kaster ved 401 — uncaught exception i Blazor Server. Eller I viser hele JSON-body i <code>@error</code> inkl. HTML — farligt hvis API ændres. Parse ProblemDetails, vis kort dansk tekst.</p></div>
+<h2 id="timeout">Timeout og CancellationToken</h2>
+<pre class="teori-code language-csharp">builder.Services.AddHttpClient&lt;IPokemonService, PokemonService&gt;(c =&gt;
+{
+    c.BaseAddress = new Uri(apiBase);
+    c.Timeout = TimeSpan.FromSeconds(15);
+});
+
+// I komponent — send token videre fra livscyklus
+mons = await Api.GetPokemonAsync(cancellationToken);</pre>
+<p>Fang <code>TaskCanceledException</code> når brugeren navigerer væk eller netværket dør — skeln mellem timeout og bruger-cancel.</p>
+<section class="teori-mission"><h2 id="mini-opgave">Mini-opgave</h2><p>GET <code>/go/pokemon?limit=5</code> med fejl-UI ved forkert path; vis status + title fra ProblemDetails.</p></section><section class="teori-quiz" data-quiz data-correct="1" data-ok="Vis title/status." data-bad="Spinner uden fejl er dårlig UX.">
+  <h3>Quiz 3</h3>
+  <p class="quiz-prompt">503 ProblemDetails — hvad vises?</p>
+  <div class="quiz-options"><button type="button" class="btn ghost sm" data-q="0">Evig spinner</button><button type="button" class="btn ghost sm" data-q="1">Kort fejl fra status+title</button><button type="button" class="btn ghost sm" data-q="2">Raw JSON alert</button></div>
+  <p class="quiz-feedback" aria-live="polite"></p></section><section class="teori-ms"><h2 id="laes-hos-microsoft">Læs hos Microsoft</h2><ul>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/call-web-api" rel="noreferrer">Call a web API from Blazor</a></li>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-requests" rel="noreferrer">IHttpClientFactory</a></li>
 </ul></section>
-<section class="teori-try"><h2>Prøv med API</h2><ul>
+<section class="teori-try"><h2 id="proev-med-api">Prøv med API</h2><ul>
 <li><a href="/">Katalog</a> · <a href="/demo/rickandmorty">Rick and Morty</a> · <a href="/demo/lol">LoL (API-nøgle)</a></li>
 <li>Implementér loading + fejltekst på alle API-sider — ingen «stille» fejl.</li>
 </ul></section>
@@ -174,12 +210,13 @@ var response = await Http.SendAsync(request);</pre>
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
 </article>
 </main>
-<script src="/teori/anim.js?v=20261015mega2"></script>
+<script src="/teori/anim.js?v=20261015pro"></script>
+<script src="/teori/progress.js?v=20261015pro"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015mega2"></script>
+<script src="/teori/highlight.js?v=20261015pro"></script>
 </body>
 </html>

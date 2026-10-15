@@ -4,16 +4,16 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Teori — Blazor · Clientside &amp; GUI</title>
-<meta name="description" content="Udvidet Blazor-pensum for Clientsideprogrammering (16476) og GUI-programmering (16475) — teori, quizzes og interaktive labs." />
+<meta name="description" content="Fuldt Blazor-pensum med labs, quizzes og progression — Clientside (16476) og GUI (16475) via OpgaverAPI." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles.css?v=20261015mega2" />
-<link rel="stylesheet" href="/demo.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/teori.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/anim.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/widgets.css?v=20261015mega2" />
-<link rel="stylesheet" href="/teori/highlight.css?v=20261015mega2" />
+<link rel="stylesheet" href="/styles.css?v=20261015pro" />
+<link rel="stylesheet" href="/demo.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/anim.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/widgets.css?v=20261015pro" />
+<link rel="stylesheet" href="/teori/highlight.css?v=20261015pro" />
 </head>
 <body>
 <div class="atmosphere" aria-hidden="true"></div>
@@ -28,13 +28,36 @@
 <header class="demo-hero">
 <p class="eyebrow">16476 · 16475 · Blazor · OpgaverAPI · 13 lektioner</p>
 <div class="teori-brand-row"><img src="/teori/assets/blazor-icon.svg" alt="" width="40" height="40" /><h1 class="brand">Teori</h1></div>
-<p class="lede">Et fuldt pensum i Blazor: hosting, Razor, forms, komponenter, DI, livscyklus, HttpClient, SPA, auth og sikkerhed — med quizzes, labs og Client↔Server-animationer. Målpindene er taggede på hver lektion.</p>
+<p class="lede">Ikke en tjekliste — et pensum I kan <em>arbejde</em> med. Hver lektion har labs, quizzes og mini-opgaver mod rigtige endpoints. Målpindene er taggede, så dokumentationen skriver næsten sig selv.</p>
 </header>
+
+<section class="teori-progress" data-teori-progress aria-label="Jeres fremdrift">
+  <p class="teori-progress-label" data-progress-label>0 / 13 lektioner besøgt</p>
+  <div class="teori-progress-track"><div class="teori-progress-fill" data-progress-bar></div></div>
+</section>
+
+<section class="teori-how" aria-label="Sådan bruger I pensum">
+  <article>
+    <span class="step">01</span>
+    <h3>Læs + afspil</h3>
+    <p>Start labben før I kopierer kode. Forståelsen sidder bedre, når I har set requesten flyve.</p>
+  </article>
+  <article>
+    <span class="step">02</span>
+    <h3>Besvar quizzen</h3>
+    <p>Tre spørgsmål pr. lektion. Forkert svar er OK — den grønne mulighed forklarer hvorfor.</p>
+  </article>
+  <article>
+    <span class="step">03</span>
+    <h3>Mini-opgave</h3>
+    <p>Byg det lille flow i jeres Blazor-app mod OpgaverAPI — så er målpinden dokumenteret med bevis.</p>
+  </article>
+</section>
 
 <section class="teori-anim" data-http-sim aria-label="Client-server HTTP-animation">
   <div class="teori-anim-head">
     <h3>Client ↔ Server</h3>
-    <p>Afspil en HTTP-runde. Flere labs findes inde i lektionerne.</p>
+    <p>Afspil en HTTP-runde. Samme model jeres Blazor-app bruger via HttpClient.</p>
   </div>
   <div class="teori-anim-controls">
     <button type="button" class="btn ghost sm active" data-scenario="get">GET 200</button>
@@ -67,22 +90,22 @@
 <h2 id="path-title">Læringssti</h2>
 <ol class="teori-path-list">
 <li><a href="/teori/intro-hosting/"><div><strong>Intro og hosting</strong><span>Blazor vs andre SPA’er · Server / WASM / Hybrid · Client↔Server-lab.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
-<li><a href="/teori/projekt-opsaetning/"><div><strong>Projekt-opsætning</strong><span>Template, filtræ-lab, Program.cs, Docker til Dokploy.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
-<li><a href="/teori/razor-html-css/"><div><strong>Razor, HTML og CSS</strong><span>Semantik, box model, CSS isolation, Bootstrap, quizzes.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
-<li><a href="/teori/forms-editform/"><div><strong>Forms med EditForm</strong><span>Model + DataAnnotations · live validerings-lab.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
-<li><a href="/teori/komponenter-events/"><div><strong>Komponenter og events</strong><span>Parameter · @bind-lab · EventCallback parent/child.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
-<li><a href="/teori/di-services/"><div><strong>Dependency Injection</strong><span>Lifetimes · IHttpClientFactory · typed clients · DI-lab.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
-<li><a href="/teori/livscyklus-state/"><div><strong>Livscyklus og state</strong><span>OnInitializedAsync · OnParametersSet · StateHasChanged.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
-<li><a href="/teori/httpclient-api/"><div><strong>HttpClient og API-kald</strong><span>CRUD · async-timeline · GET/POST/401-animation.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
+<li><a href="/teori/projekt-opsaetning/"><div><strong>Projekt-opsætning</strong><span>Template · filtræ-lab · Program.cs · Docker.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
+<li><a href="/teori/razor-html-css/"><div><strong>Razor, HTML og CSS</strong><span>Semantik · box model · CSS isolation · Bootstrap.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
+<li><a href="/teori/forms-editform/"><div><strong>Forms med EditForm</strong><span>Model · DataAnnotations · live validerings-lab.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
+<li><a href="/teori/komponenter-events/"><div><strong>Komponenter og events</strong><span>Parameter · @bind-lab · EventCallback.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
+<li><a href="/teori/di-services/"><div><strong>Dependency Injection</strong><span>Lifetimes · factory · typed clients · DI-lab med visuelle id’er.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
+<li><a href="/teori/livscyklus-state/"><div><strong>Livscyklus og state</strong><span>OnInitializedAsync · autoplay · CancellationToken.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
+<li><a href="/teori/httpclient-api/"><div><strong>HttpClient og API-kald</strong><span>CRUD · async-timeline · fejlhåndtering.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
 <li><a href="/teori/routing-spa/"><div><strong>Routing og SPA</strong><span>@page · NavLink · interaktiv SPA-shell.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
 <li><a href="/teori/layout-ui/"><div><strong>Layout og UI-patterns</strong><span>Master/Detail · MudBlazor · async vs threads.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
-<li><a href="/teori/auth-api-noegler/"><div><strong>Auth og API-nøgler</strong><span>Mercantec Auth PKCE · Bearer · X-Api-Key · storage.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
-<li><a href="/teori/sikkerhed-performance/"><div><strong>Sikkerhed og performance</strong><span>XSS-lab · tokens · CORS · WASM-tips.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
-<li><a href="/teori/debug-test/"><div><strong>Debug, test og usability</strong><span>DevTools · testplan · usability-script · quizzes.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
+<li><a href="/teori/auth-api-noegler/"><div><strong>Auth og API-nøgler</strong><span>PKCE · Bearer · X-Api-Key · sessionStorage.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
+<li><a href="/teori/sikkerhed-performance/"><div><strong>Sikkerhed og performance</strong><span>XSS-lab · tokens · CORS · WASM.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
+<li><a href="/teori/debug-test/"><div><strong>Debug, test og usability</strong><span>DevTools · testplan · usability-script.</span></div><span class="arrow" aria-hidden="true">→</span></a></li>
 </ol>
 </section>
 
-<section class="teori-quiz" data-quiz data-correct="1" data-ok="Præcis — DI + factory er standarden." data-bad="Tænk på levetid og sockets.">
+<section class="teori-quiz" data-quiz data-correct="1" data-ok="Præcis — DI + IHttpClientFactory er standarden i produktion." data-bad="new HttpClient() i hver side giver levetids- og socket-problemer.">
   <h3>Klar-quiz</h3>
   <p>Hvad er den anbefalede måde at kalde OpgaverAPI fra Blazor på?</p>
   <div class="quiz-options">
@@ -95,12 +118,13 @@
 
 <p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn</a>. Eksempler: <a href="https://github.com/MAGS-Template/BlazorEksempler" rel="noreferrer">BlazorEksempler</a>.</p>
 </main>
-<script src="/teori/anim.js?v=20261015mega2"></script>
+<script src="/teori/anim.js?v=20261015pro"></script>
+<script src="/teori/progress.js?v=20261015pro"></script>
 <script src="/teori/vendor/prism/prism-core.min.js"></script>
 <script src="/teori/vendor/prism/prism-clike.min.js"></script>
 <script src="/teori/vendor/prism/prism-markup.min.js"></script>
 <script src="/teori/vendor/prism/prism-csharp.min.js"></script>
 <script src="/teori/vendor/prism/prism-cshtml.min.js"></script>
-<script src="/teori/highlight.js?v=20261015mega2"></script>
+<script src="/teori/highlight.js?v=20261015pro"></script>
 </body>
 </html>
