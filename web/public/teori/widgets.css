@@ -657,7 +657,11 @@
   font-weight: 600;
 }
 
-/* Bred skærm: shell får TOC-kolonne til venstre — pensum i højre kolonne */
+.demo-shell-main {
+  min-width: 0;
+}
+
+/* Bred skærm: TOC | (nav+titel+pensum) i én række — ingen luft over titel */
 @media (min-width: 1180px) {
   .demo-shell:has(.teori-toc) {
     max-width: 1280px;
@@ -667,13 +671,9 @@
     align-items: start;
   }
 
-  .demo-shell:has(.teori-toc) > :not(.teori-toc) {
-    grid-column: 2;
-  }
-
-  .teori-toc {
+  .demo-shell:has(.teori-toc) > .teori-toc {
     grid-column: 1;
-    grid-row: 1 / -1;
+    grid-row: 1;
     position: sticky;
     top: 1.25rem;
     align-self: start;
@@ -681,6 +681,19 @@
     max-height: calc(100vh - 2.5rem);
     overflow-y: auto;
     margin: 0;
+  }
+
+  .demo-shell:has(.teori-toc) > .demo-shell-main {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .demo-shell:has(.teori-toc) .demo-nav {
+    margin-bottom: 1rem;
+  }
+
+  .demo-shell:has(.teori-toc) .demo-hero {
+    margin-bottom: 1.25rem;
   }
 }
 

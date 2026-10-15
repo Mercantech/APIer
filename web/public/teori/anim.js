@@ -777,18 +777,35 @@
   function ensureLessonSidebar() {
     document.querySelectorAll(".teori-lesson").forEach((lesson) => {
       const shell = lesson.closest(".demo-shell");
-      // unwrap ældre to-kolonne-wrap
-      const main = lesson.querySelector(":scope > .teori-lesson-main");
-      if (main) {
-        while (main.firstChild) lesson.appendChild(main.firstChild);
-        main.remove();
+      if (!shell) return;
+
+      // unwrap ældre lesson-wrap
+      const oldMain = lesson.querySelector(":scope > .teori-lesson-main");
+      if (oldMain) {
+        while (oldMain.firstChild) lesson.appendChild(oldMain.firstChild);
+        oldMain.remove();
       }
+
       let toc =
-        lesson.querySelector(":scope > .teori-toc") ||
-        shell?.querySelector(":scope > .teori-toc");
-      if (!toc || !shell) return;
-      // TOC som første child i shell → egen grid-kolonne, ikke inden i pensum
-      if (toc.parentElement !== shell || shell.firstElementChild !== toc) {
+        lesson.querySelector(".teori-toc") ||
+        shell.querySelector(":scope > .teori-toc") ||
+        shell.querySelector(".teori-toc");
+      if (!toc) return;
+
+      // Én indholdskolonne (nav+hero+pensum) så TOC ikke blæser første række op
+      let shellMain = shell.querySelector(":scope > .demo-shell-main");
+      if (!shellMain) {
+        shellMain = document.createElement("div");
+        shellMain.className = "demo-shell-main";
+        [...shell.children].forEach((child) => {
+          if (child !== toc && child !== shellMain) shellMain.appendChild(child);
+        });
+        shell.appendChild(shellMain);
+      } else if (toc.parentElement === shellMain) {
+        shell.insertBefore(toc, shellMain);
+      }
+
+      if (shell.firstElementChild !== toc) {
         shell.insertBefore(toc, shell.firstElementChild);
       }
     });
