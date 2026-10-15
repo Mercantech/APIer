@@ -100,7 +100,16 @@
   color: #d7e6f5;
 }
 
-.teori-code .token.directive-name {
+.teori-code .token.directive > .token.keyword,
+.teori-code .token.block > .token.keyword {
   color: #c792ea;
-  font-weight: 500;
+  font-weight: 600;
+}
+
+.teori-code .token.attr-name {
+  color: #3dd6c6;
+}
+
+.teori-code .token.tag > .token.tag {
+  color: #6cbcf0;
 }

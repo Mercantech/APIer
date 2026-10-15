@@ -14,6 +14,22 @@
     return "csharp";
   }
 
+  /** Prism cshtml often leaves C# as one opaque span — re-tokenize leaves. */
+  function enrichCsharpLeaves(root) {
+    root.querySelectorAll(".token.csharp").forEach((el) => {
+      if (el.dataset.enriched === "1") return;
+      if (el.querySelector(".token")) return;
+      const text = el.textContent;
+      if (!text || !Prism.languages.csharp) return;
+      try {
+        el.innerHTML = Prism.highlight(text, Prism.languages.csharp, "csharp");
+        el.dataset.enriched = "1";
+      } catch {
+        /* ignore */
+      }
+    });
+  }
+
   function highlightAll() {
     if (!window.Prism) return;
 
@@ -31,6 +47,7 @@
       code.className = `language-${lang}`;
       pre.classList.add(`language-${lang}`);
       Prism.highlightElement(code);
+      enrichCsharpLeaves(code);
       pre.dataset.hl = "1";
     });
   }
