@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Razor, HTML og CSS — Teori</title>
+<meta name="description" content="HTML-semantik og CSS i Razor-komponenter — inkl. box model, selectors og Bootstrap til responsive layouts." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/styles.css?v=20261015teori" />
+<link rel="stylesheet" href="/demo.css?v=20261015teori" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015teori" />
+</head>
+<body>
+<div class="atmosphere" aria-hidden="true"></div>
+<main class="demo-shell">
+<nav class="demo-nav">
+<a class="back" href="/teori">← Teori</a>
+<div class="demo-links">
+<a class="btn ghost sm" href="/">Katalog</a>
+<a class="btn ghost sm" href="/demo">Demo</a>
+</div>
+</nav>
+<header class="demo-hero">
+<p class="eyebrow">Semantik · CSS · Bootstrap · Responsive</p>
+<div class="teori-brand-row"><img src="/teori/assets/blazor-icon.svg" alt="" width="36" height="36" /><h1 class="brand">Razor, HTML og CSS</h1></div>
+<p class="lede">HTML-semantik og CSS i Razor-komponenter — inkl. box model, selectors og Bootstrap til responsive layouts.</p>
+</header>
+<article class="teori-lesson">
+
+<p>I Blazor er markup stadig HTML. Du bruger semantiske elementer (<code>header</code>, <code>main</code>, <code>nav</code>, <code>section</code>, <code>article</code>), lister, links, billeder og tabeller — præcis som i ren HTML, bare i en <code>.razor</code>-fil.</p>
+<figure class="teori-figure"><img src="/teori/assets/razor-structure.png" alt="Opbygning af en Razor-fil" loading="lazy" /><figcaption>Typisk Razor-fil: direktiv, markup og <code>@code</code>.</figcaption></figure>
+<h2>CSS i Blazor</h2>
+<ul>
+<li><strong>Selectors</strong> — element, klasse, id, efterkommer/sibling</li>
+<li><strong>Styling</strong> — tekst, links, lister, tabeller</li>
+<li><strong>Box model</strong> — content, padding, border, margin</li>
+<li><strong>Responsive</strong> — media queries eller et framework</li>
+</ul>
+<p><strong>Bootstrap</strong> (eller MudBlazor senere) giver grid, utilities og komponenter så I hurtigt får responsive layouts uden at opfinde CSS fra bunden. Global CSS ligger typisk i <code>wwwroot</code>; scoped CSS kan følge en komponent som <code>MyComponent.razor.css</code>.</p>
+<pre class="teori-code">@page "/pokemon-kort"
+
+&lt;article class="card"&gt;
+  &lt;h2&gt;@navn&lt;/h2&gt;
+  &lt;img src="@sprite" alt="@navn" width="96" height="96" /&gt;
+  &lt;ul&gt;
+    @foreach (var t in types)
+    {
+      &lt;li&gt;@t&lt;/li&gt;
+    }
+  &lt;/ul&gt;
+&lt;/article&gt;
+
+@code {
+  string navn = "Pikachu";
+  string sprite = "https://...";
+  string[] types = ["electric"];
+}</pre>
+<section class="teori-ms"><h2>Læs hos Microsoft</h2><ul>
+<li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/components/" rel="noreferrer">ASP.NET Core Razor components</a></li>
+<li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/components/css-isolation" rel="noreferrer">CSS isolation</a></li>
+</ul></section>
+<section class="teori-try"><h2>Prøv med API</h2><ul>
+<li>Hent data fra <a href="/demo/pokemon">Pokémon-demo</a> og tegn et kort med semantisk HTML + CSS i Blazor.</li>
+</ul></section>
+<section class="teori-tags" aria-label="Målpinde"><span class="teori-tag">16476 #3</span><span class="teori-tag">16476 #4</span><span class="teori-tag">16476 #6</span><span class="teori-tag">16476 #7</span><span class="teori-tag">16476 #8</span><span class="teori-tag">16476 #9</span></section>
+<nav class="teori-nav-lessons"><a class="btn ghost sm" href="/teori/projekt-opsaetning/">← Opsætning</a><a class="btn primary sm" href="/teori/forms-editform/">Forms →</a></nav>
+<p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
+</article>
+</main>
+</body>
+</html>

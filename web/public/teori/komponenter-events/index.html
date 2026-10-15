@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Komponenter og events — Teori</title>
+<meta name="description" content="Byg UI af genbrugelige komponenter med parametre, data binding og C#-events — i stedet for jQuery-DOM." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/styles.css?v=20261015teori" />
+<link rel="stylesheet" href="/demo.css?v=20261015teori" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015teori" />
+</head>
+<body>
+<div class="atmosphere" aria-hidden="true"></div>
+<main class="demo-shell">
+<nav class="demo-nav">
+<a class="back" href="/teori">← Teori</a>
+<div class="demo-links">
+<a class="btn ghost sm" href="/">Katalog</a>
+<a class="btn ghost sm" href="/demo">Demo</a>
+</div>
+</nav>
+<header class="demo-hero">
+<p class="eyebrow">Parametere · binding · event-handling</p>
+<div class="teori-brand-row"><img src="/teori/assets/blazor-icon.svg" alt="" width="36" height="36" /><h1 class="brand">Komponenter og events</h1></div>
+<p class="lede">Byg UI af genbrugelige komponenter med parametre, data binding og C#-events — i stedet for jQuery-DOM.</p>
+</header>
+<article class="teori-lesson">
+
+<p>Komponenter er Blazors svar på «custom controls». I sender data ind med <code>[Parameter]</code>, reagerer på klik med <code>@onclick</code>, og binder felter med <code>@bind</code>.</p>
+<pre class="teori-code">@* PokemonCard.razor *@
+&lt;div class="card" @onclick="OnSelect"&gt;
+  &lt;h3&gt;@Name&lt;/h3&gt;
+  &lt;p&gt;HP: @Hp&lt;/p&gt;
+&lt;/div&gt;
+
+@code {
+  [Parameter] public string Name { get; set; } = "";
+  [Parameter] public int Hp { get; set; }
+  [Parameter] public EventCallback&lt;string&gt; Selected { get; set; }
+
+  private async Task OnSelect() =&gt; await Selected.InvokeAsync(Name);
+}</pre>
+<h2>C# vs JavaScript</h2>
+<ul>
+<li><strong>Objekter &amp; klasser</strong> — stærke typer, properties, interfaces</li>
+<li><strong>Funktioner</strong> — metoder med klare parametre/returtyper</li>
+<li><strong>DOM</strong> — Blazor opdaterer UI via render; I skriver sjældent <code>document.querySelector</code></li>
+<li><strong>JS interop</strong> — kun når browser-API’er mangler i .NET (fx special-clipboard, canvas)</li>
+</ul>
+<p>jQuery/AJAX erstattes af komponent-state + <code>HttpClient</code>. Det er den praktiske vej til «clientside der taler med Web API».</p>
+<section class="teori-ms"><h2>Læs hos Microsoft</h2><ul>
+<li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/components/" rel="noreferrer">Components</a></li>
+<li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/components/event-handling" rel="noreferrer">Event handling</a></li>
+<li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/components/data-binding" rel="noreferrer">Data binding</a></li>
+</ul></section>
+<section class="teori-try"><h2>Prøv med API</h2><ul>
+<li>Byg et <code>PokemonCard</code>-komponent og genbrug det på en liste fra <a href="/demo/pokemon">Pokémon-demo</a>.</li>
+</ul></section>
+<section class="teori-tags" aria-label="Målpinde"><span class="teori-tag">16476 #10</span><span class="teori-tag">16476 #11</span><span class="teori-tag">16476 #12</span><span class="teori-tag">16476 #13</span><span class="teori-tag">16476 #14</span><span class="teori-tag">16475 #2</span><span class="teori-tag">16475 #5</span><span class="teori-tag">16475 #7</span></section>
+<nav class="teori-nav-lessons"><a class="btn ghost sm" href="/teori/forms-editform/">← Forms</a><a class="btn primary sm" href="/teori/httpclient-api/">HttpClient →</a></nav>
+<p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
+</article>
+</main>
+</body>
+</html>

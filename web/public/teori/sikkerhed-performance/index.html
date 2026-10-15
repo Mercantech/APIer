@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sikkerhed og performance — Teori</title>
+<meta name="description" content="Clientside-risici (XSS m.m.), SPA-tokens og performance-tips for Blazor/WASM." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/styles.css?v=20261015teori" />
+<link rel="stylesheet" href="/demo.css?v=20261015teori" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015teori" />
+</head>
+<body>
+<div class="atmosphere" aria-hidden="true"></div>
+<main class="demo-shell">
+<nav class="demo-nav">
+<a class="back" href="/teori">← Teori</a>
+<div class="demo-links">
+<a class="btn ghost sm" href="/">Katalog</a>
+<a class="btn ghost sm" href="/demo">Demo</a>
+</div>
+</nav>
+<header class="demo-hero">
+<p class="eyebrow">XSS · tokens · payload</p>
+<div class="teori-brand-row"><img src="/teori/assets/blazor-icon.svg" alt="" width="36" height="36" /><h1 class="brand">Sikkerhed og performance</h1></div>
+<p class="lede">Clientside-risici (XSS m.m.), SPA-tokens og performance-tips for Blazor/WASM.</p>
+</header>
+<article class="teori-lesson">
+
+<h2>Sikkerhed</h2>
+<ul>
+<li><strong>XSS</strong> — stole ikke på brugerinput i HTML. Blazor encoder som udgangspunkt; pas på <code>MarkupString</code> / rå HTML.</li>
+<li><strong>API-nøgler</strong> — elev-nøgler er personlige. Gem ikke secrets i public git. Brug headers (<code>X-Api-Key</code>), ikke query-strings.</li>
+<li><strong>SPA-tokens</strong> — access tokens i memory/session er at foretrække frem for long-lived keys i localStorage. Forstå CORS og at alt i browseren kan inspiceres.</li>
+<li><strong>WASM</strong> — klientkode kan reverse-engineeres; hemmelig business-logik hører hjemme på serveren.</li>
+</ul>
+<h2>Performance</h2>
+<ul>
+<li>Minimer unødige re-renders; brug parametre bevidst</li>
+<li>WASM: trim, compression, undgå store unused packages</li>
+<li>Lazy-load tunge sider; paginér API-svar (katalogets demos trimmer ofte arrays)</li>
+</ul>
+<section class="teori-ms"><h2>Læs hos Microsoft</h2><ul>
+<li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/security/" rel="noreferrer">Blazor security</a></li>
+<li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/host-and-deploy/webassembly" rel="noreferrer">Host and deploy WASM</a></li>
+</ul></section>
+<section class="teori-try"><h2>Prøv med API</h2><ul>
+<li>Opret en nøgle under <a href="/">kataloget</a> og kald LoL — bemærk at nøglen aldrig skal committes.</li>
+</ul></section>
+<section class="teori-tags" aria-label="Målpinde"><span class="teori-tag">16476 #17</span><span class="teori-tag">16476 #18</span><span class="teori-tag">16475 #16</span></section>
+<nav class="teori-nav-lessons"><a class="btn ghost sm" href="/teori/layout-ui/">← Layout</a><a class="btn primary sm" href="/teori/debug-test/">Debug & test →</a></nav>
+<p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
+</article>
+</main>
+</body>
+</html>

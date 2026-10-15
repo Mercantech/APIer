@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Routing og SPA — Teori</title>
+<meta name="description" content="Flere «sider» i én Blazor-app med routing, layouts og navigation — SPA-arkitektur i praksis." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/styles.css?v=20261015teori" />
+<link rel="stylesheet" href="/demo.css?v=20261015teori" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015teori" />
+</head>
+<body>
+<div class="atmosphere" aria-hidden="true"></div>
+<main class="demo-shell">
+<nav class="demo-nav">
+<a class="back" href="/teori">← Teori</a>
+<div class="demo-links">
+<a class="btn ghost sm" href="/">Katalog</a>
+<a class="btn ghost sm" href="/demo">Demo</a>
+</div>
+</nav>
+<header class="demo-hero">
+<p class="eyebrow">@page · Layout · NavMenu</p>
+<div class="teori-brand-row"><img src="/teori/assets/blazor-icon.svg" alt="" width="36" height="36" /><h1 class="brand">Routing og SPA</h1></div>
+<p class="lede">Flere «sider» i én Blazor-app med routing, layouts og navigation — SPA-arkitektur i praksis.</p>
+</header>
+<article class="teori-lesson">
+
+<p>En SPA loader appen én gang og skifter «sider» uden fuld reload. I Blazor markerer I en komponent som side med <code>@page "/sti"</code>. Layouts (fx <code>MainLayout</code>) deler navbar mellem sider.</p>
+<pre class="teori-code">@page "/countries"
+@layout MainLayout
+
+&lt;PageTitle&gt;Countries&lt;/PageTitle&gt;
+&lt;h1&gt;Lande&lt;/h1&gt;</pre>
+<p><strong>Fordele:</strong> hurtig navigation, genbrug af state/services, én codebase til UI.<br />
+<strong>Ulemper:</strong> mere kompleks initial load, SEO/SSR skal planlægges, sikkerhed (tokens) er jeres ansvar i browseren.</p>
+<p>Tilføj links i <code>NavMenu</code> med <code>NavLink</code>, så aktiv route fremhæves.</p>
+<section class="teori-ms"><h2>Læs hos Microsoft</h2><ul>
+<li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/fundamentals/routing?view=aspnetcore-10.0" rel="noreferrer">Routing</a></li>
+<li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/components/layouts" rel="noreferrer">Layouts</a></li>
+</ul></section>
+<section class="teori-try"><h2>Prøv med API</h2><ul>
+<li>Lav sider <code>/pokemon</code>, <code>/minecraft</code>, <code>/starwars</code> der hver henter fra OpgaverAPI — samme mønster som <a href="/demo">demo-hubben</a>.</li>
+</ul></section>
+<section class="teori-tags" aria-label="Målpinde"><span class="teori-tag">16475 #12</span><span class="teori-tag">16475 #13</span><span class="teori-tag">16475 #14</span></section>
+<nav class="teori-nav-lessons"><a class="btn ghost sm" href="/teori/httpclient-api/">← HttpClient</a><a class="btn primary sm" href="/teori/layout-ui/">Layout & UI →</a></nav>
+<p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
+</article>
+</main>
+</body>
+</html>

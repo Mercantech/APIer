@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>HttpClient og API-kald — Teori</title>
+<meta name="description" content="Kald OpgaverAPI asynkront fra Blazor med HttpClient — CRUD over HTTP i stedet for jQuery AJAX." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/styles.css?v=20261015teori" />
+<link rel="stylesheet" href="/demo.css?v=20261015teori" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015teori" />
+</head>
+<body>
+<div class="atmosphere" aria-hidden="true"></div>
+<main class="demo-shell">
+<nav class="demo-nav">
+<a class="back" href="/teori">← Teori</a>
+<div class="demo-links">
+<a class="btn ghost sm" href="/">Katalog</a>
+<a class="btn ghost sm" href="/demo">Demo</a>
+</div>
+</nav>
+<header class="demo-hero">
+<p class="eyebrow">GET · POST · X-Api-Key · async</p>
+<div class="teori-brand-row"><img src="/teori/assets/blazor-icon.svg" alt="" width="36" height="36" /><h1 class="brand">HttpClient og API-kald</h1></div>
+<p class="lede">Kald OpgaverAPI asynkront fra Blazor med HttpClient — CRUD over HTTP i stedet for jQuery AJAX.</p>
+</header>
+<article class="teori-lesson">
+
+<p>CRUD over HTTP mapper til <code>POST</code> / <code>GET</code> / <code>PUT</code> / <code>DELETE</code>. I Blazor bruger I <code>HttpClient</code> (gerne via DI), ikke <code>new HttpClient()</code> overalt i produktion.</p>
+<figure class="teori-figure"><img src="/teori/assets/http-crud.png" alt="CRUD til HTTP-metoder" loading="lazy" /><figcaption>CRUD ↔ HTTP-metoder.</figcaption></figure>
+<pre class="teori-code">@page "/pokemon"
+@inject HttpClient Http
+
+&lt;button @onclick="Load"&gt;Hent Pokémon&lt;/button&gt;
+@if (items is not null)
+{
+  &lt;ul&gt;@foreach (var p in items) { &lt;li&gt;@p.Name&lt;/li&gt; }&lt;/ul&gt;
+}
+
+@code {
+  List&lt;PokeDto&gt;? items;
+
+  async Task Load()
+  {
+    items = await Http.GetFromJsonAsync&lt;List&lt;PokeDto&gt;&gt;("/go/pokemon?limit=20");
+  }
+
+  public record PokeDto(string Name, int Id);
+}</pre>
+<p>Beskyttede endpoints (fx LoL) kræver header <code>X-Api-Key</code> — opret nøgle via kataloget når I er logget ind.</p>
+<pre class="teori-code">Http.DefaultRequestHeaders.Add("X-Api-Key", apiKey);
+var champs = await Http.GetFromJsonAsync&lt;ChampionDto[]&gt;("/LeagueOfLegends/Champions");</pre>
+<div class="teori-callout"><p>Registrér <code>HttpClient</code> i <code>Program.cs</code> med korrekt <code>BaseAddress</code> (fx <code>https://api-opgaver.mercantec.tech</code>) — se Microsofts guide om typed clients / <code>IHttpClientFactory</code>.</p></div>
+<section class="teori-ms"><h2>Læs hos Microsoft</h2><ul>
+<li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/call-web-api?view=aspnetcore-10.0" rel="noreferrer">Call a web API from Blazor</a></li>
+</ul></section>
+<section class="teori-try"><h2>Prøv med API</h2><ul>
+<li><a href="/">Katalog</a> · <a href="/demo/rickandmorty">Rick and Morty</a> · <a href="/demo/lol">LoL (API-nøgle)</a></li>
+</ul></section>
+<section class="teori-tags" aria-label="Målpinde"><span class="teori-tag">16476 #1</span><span class="teori-tag">16476 #16</span><span class="teori-tag">16475 #15</span></section>
+<nav class="teori-nav-lessons"><a class="btn ghost sm" href="/teori/komponenter-events/">← Komponenter</a><a class="btn primary sm" href="/teori/routing-spa/">Routing →</a></nav>
+<p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
+</article>
+</main>
+</body>
+</html>

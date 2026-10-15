@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Projekt-opsætning — Teori</title>
+<meta name="description" content="Opret en Blazor Web App, forstå filstrukturen og gør projektet Docker-klar." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/styles.css?v=20261015teori" />
+<link rel="stylesheet" href="/demo.css?v=20261015teori" />
+<link rel="stylesheet" href="/teori/teori.css?v=20261015teori" />
+</head>
+<body>
+<div class="atmosphere" aria-hidden="true"></div>
+<main class="demo-shell">
+<nav class="demo-nav">
+<a class="back" href="/teori">← Teori</a>
+<div class="demo-links">
+<a class="btn ghost sm" href="/">Katalog</a>
+<a class="btn ghost sm" href="/demo">Demo</a>
+</div>
+</nav>
+<header class="demo-hero">
+<p class="eyebrow">Visual Studio · .NET 8/10 · Docker</p>
+<div class="teori-brand-row"><img src="/teori/assets/blazor-icon.svg" alt="" width="36" height="36" /><h1 class="brand">Projekt-opsætning</h1></div>
+<p class="lede">Opret en Blazor Web App, forstå filstrukturen og gør projektet Docker-klar.</p>
+</header>
+<article class="teori-lesson">
+
+<p>Sørg for at Visual Studio har workloaden <strong>ASP.NET and web development</strong> (inkl. Docker-support).</p>
+<figure class="teori-figure"><img src="/teori/assets/vs-workload.png" alt="Visual Studio workload ASP.NET" loading="lazy" /><figcaption>Installer ASP.NET-workloaden.</figcaption></figure>
+<p>Opret projektet med skabelonen <strong>Blazor Web App</strong>. Brug <strong>.NET 8</strong> eller <strong>.NET 10</strong> — ældre .NET 6-guides er forældede.</p>
+<figure class="teori-figure"><img src="/teori/assets/blazor-web-app.png" alt="Vælg Blazor Web App template" loading="lazy" /><figcaption>Vælg Blazor Web App.</figcaption></figure>
+<figure class="teori-figure"><img src="/teori/assets/project-name.png" alt="Navngiv projektet" loading="lazy" /><figcaption>Giv projektet et klart navn.</figcaption></figure>
+<figure class="teori-figure"><img src="/teori/assets/project-options.png" alt="Framework og interactivity-indstillinger" loading="lazy" /><figcaption>Framework, HTTPS, interactivity (ofte Interactive Server / Global).</figcaption></figure>
+<h2>Filstruktur at kende</h2>
+<figure class="teori-figure"><img src="/teori/assets/file-structure.png" alt="Blazor Web App filstruktur" loading="lazy" /><figcaption>wwwroot, Components (Layout + Pages) og Program.cs.</figcaption></figure>
+<ul>
+<li><strong>wwwroot</strong> — CSS, favicon, statiske assets</li>
+<li><strong>Components/Layout</strong> — fælles layout og NavMenu</li>
+<li><strong>Components/Pages</strong> — sider med <code>@page "/sti"</code></li>
+<li><strong>Program.cs</strong> — starter app, DI, routing, render modes (application lifetime)</li>
+</ul>
+<div class="teori-callout"><p>Enable Docker fra starten når I senere deployer til Dokploy — samme vane som resten af Mercantec-stacken.</p></div>
+<section class="teori-ms"><h2>Læs hos Microsoft</h2><ul>
+<li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/tutorials/build-a-blazor-app" rel="noreferrer">Build a Blazor app</a></li>
+<li><a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/tooling" rel="noreferrer">Blazor tooling</a></li>
+</ul></section>
+<section class="teori-try"><h2>Eksempler</h2><ul>
+<li><a href="https://github.com/MAGS-Template/BlazorEksempler" rel="noreferrer">MAGS BlazorEksempler</a></li>
+<li><a href="https://github.com/MAGS-Template/H1-Eksempler" rel="noreferrer">H1-Eksempler</a> · <a href="https://github.com/MAGS-Template/H2-Eksempler" rel="noreferrer">H2-Eksempler</a></li>
+</ul></section>
+<section class="teori-tags" aria-label="Målpinde"><span class="teori-tag">16475 #8</span><span class="teori-tag">16475 #12</span></section>
+<nav class="teori-nav-lessons"><a class="btn ghost sm" href="/teori/intro-hosting/">← Intro</a><a class="btn primary sm" href="/teori/razor-html-css/">Razor & HTML/CSS →</a></nav>
+<p class="teori-attr">Baseret på <a href="https://app.notion.com/p/mercantec/Blazor-db3407ecc592435984c8868c23d7152a" rel="noreferrer">MAGS Blazor-wiki</a> og <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor/" rel="noreferrer">Microsoft Learn — Blazor</a>.</p>
+</article>
+</main>
+</body>
+</html>
