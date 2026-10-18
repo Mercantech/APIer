@@ -81,8 +81,11 @@ namespace OpgaverAPI.Controllers
         /// Bevarer legacy-felter for de gamle Opgaver-JSON-endpoints og returnerer alle tracked routes.
         /// </summary>
         [HttpGet("Stats")]
-        public IActionResult GetStats()
+        public async Task<IActionResult> GetStats(CancellationToken ct)
         {
+            // Flush .NET-pending + hent Go/.NET-tal fra Postgres ind i live-snapshot
+            await _stats.FlushAsync(ct);
+            await _stats.LoadFromDatabaseAsync(ct);
             var snapshot = _stats.GetSnapshot();
 
             return Ok(new
