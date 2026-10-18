@@ -114,11 +114,11 @@ window.APIER_CATALOG = {
     {
       method: "GET",
       path: "/Opgaver/Stats",
-      title: "API-kaldestatistik",
-      summary: "Hybrid: live hukommelse + Postgres. Tracker alle .NET-endpoints (og Go via samme tabel).",
-      source: { type: "postgres", detail: "EndpointCallStats — memory flush hvert 5. sekund" },
+      title: "API-kaldestatistik (alle kategorier)",
+      summary: "Hybrid memory+Postgres. Tracker Opgaver, Countries, Pokémon, Minecraft, LoL, R&M, Star Wars, Terraria og platform.",
+      source: { type: "postgres", detail: "EndpointCallStats — grupperet i categories[]" },
       backend: "dotnet",
-      category: "opgaver",
+      category: "platform",
     },
     {
       method: "GET",

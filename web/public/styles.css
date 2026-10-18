@@ -309,8 +309,18 @@ a:hover {
   gap: 0.55rem 0.75rem;
 }
 
-.endpoint-chevron {
+.call-count {
   margin-left: auto;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.endpoint-chevron {
+  margin-left: 0.35rem;
   width: 0.55rem;
   height: 0.55rem;
   border-right: 2px solid var(--muted);

@@ -20,6 +20,68 @@
 
   let activeFilter = "all";
   let endpointsBound = [];
+  /** @type {Map<string, {calls:number, lastCalledAt?:string}>} */
+  let callStatsByKey = new Map();
+  /** @type {Map<string, number>} */
+  let callStatsByCategory = new Map();
+
+  function statsKey(method, path) {
+    return `${String(method || "GET").toUpperCase()} ${String(path || "").replace(/\/$/, "") || "/"}`;
+  }
+
+  function lookupCalls(ep) {
+    const direct = callStatsByKey.get(statsKey(ep.method, ep.path));
+    if (direct) return direct.calls;
+    // Match template-paths: katalog /go/pokemon/{id} ↔ tracked /go/pokemon/{id}
+    for (const [key, row] of callStatsByKey) {
+      const sp = key.indexOf(" ");
+      if (sp < 0) continue;
+      const m = key.slice(0, sp);
+      const p = key.slice(sp + 1);
+      if (m !== String(ep.method || "GET").toUpperCase()) continue;
+      if (pathsLooselyMatch(ep.path, p)) return row.calls;
+    }
+    return 0;
+  }
+
+  function pathsLooselyMatch(catalogPath, trackedPath) {
+    const a = String(catalogPath || "").replace(/\/$/, "") || "/";
+    const b = String(trackedPath || "").replace(/\/$/, "") || "/";
+    if (a.toLowerCase() === b.toLowerCase()) return true;
+    // /go/minecraft/recipes/diamond_pickaxe ↔ /go/minecraft/recipes/{name}
+    const ax = a.split("/");
+    const bx = b.split("/");
+    if (ax.length !== bx.length) return false;
+    for (let i = 0; i < ax.length; i++) {
+      const av = ax[i];
+      const bv = bx[i];
+      if (av === bv) continue;
+      if (bv.startsWith("{") || av.startsWith("{")) continue;
+      return false;
+    }
+    return true;
+  }
+
+  async function loadCallStats() {
+    try {
+      const res = await fetch("/Opgaver/Stats");
+      if (!res.ok) return;
+      const data = await res.json();
+      callStatsByKey = new Map();
+      callStatsByCategory = new Map();
+      for (const row of data.endpoints || []) {
+        callStatsByKey.set(statsKey(row.method, row.path), {
+          calls: Number(row.calls) || 0,
+          lastCalledAt: row.lastCalledAt,
+        });
+      }
+      for (const cat of data.categories || []) {
+        callStatsByCategory.set(cat.id, Number(cat.totalCalls) || 0);
+      }
+    } catch {
+      /* stats er nice-to-have */
+    }
+  }
 
   function escapeHtml(value) {
     return String(value ?? "")
@@ -797,12 +859,14 @@ ${goAuth ? `\t` + goAuth + `\n` : ""}\tres, err := http.DefaultClient.Do(req)
 
   function endpointCardHtml(ep, i) {
     const backend = backendById[ep.backend];
+    const calls = lookupCalls(ep);
     return `
         <article class="endpoint" data-idx="${i}" style="animation-delay:${Math.min(i, 12) * 40}ms">
           <button type="button" class="endpoint-summary" aria-expanded="false" data-idx="${i}">
             <div class="endpoint-top">
               <span class="method">${escapeHtml(ep.method)}</span>
               <span class="path">${escapeHtml(ep.path)}</span>
+              <span class="call-count" title="Kald (hybrid memory+Postgres)">${calls.toLocaleString("da-DK")} kald</span>
               <span class="endpoint-chevron" aria-hidden="true"></span>
             </div>
             <h3>${escapeHtml(ep.title)}</h3>
@@ -850,7 +914,7 @@ ${goAuth ? `\t` + goAuth + `\n` : ""}\tres, err := http.DefaultClient.Do(req)
           <header class="category-head">
             <h3 id="cat-title-${escapeHtml(catId)}">${escapeHtml(meta.title)}</h3>
             ${meta.description ? `<p>${escapeHtml(meta.description)}</p>` : ""}
-            <span class="category-count">${eps.length} endpoint${eps.length === 1 ? "" : "s"}</span>
+            <span class="category-count">${eps.length} endpoint${eps.length === 1 ? "" : "s"}${typeof callStatsByCategory.get(catId) === "number" ? ` · ${(callStatsByCategory.get(catId) || 0).toLocaleString("da-DK")} kald` : ""}</span>
           </header>
           <div class="category-endpoints">
             ${eps.map((ep) => endpointCardHtml(ep, indexByEp.get(ep))).join("")}
@@ -873,4 +937,5 @@ ${goAuth ? `\t` + goAuth + `\n` : ""}\tres, err := http.DefaultClient.Do(req)
   renderBackends();
   renderFilters();
   renderEndpoints();
+  loadCallStats().then(() => renderEndpoints());
 })();
