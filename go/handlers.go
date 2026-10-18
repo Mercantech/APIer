@@ -315,13 +315,22 @@ func (a *api) handleMCList(w http.ResponseWriter, r *http.Request, table string)
 	}
 	offset := queryInt(r, "offset", 0)
 	q := r.URL.Query().Get("q")
+	excludeBlocks := r.URL.Query().Get("excludeBlocks") == "true"
+	excludeAir := r.URL.Query().Get("includeAir") != "true"
 
 	sql := `SELECT raw FROM ` + table
 	args := []any{}
 	where := []string{}
+	if excludeAir {
+		where = append(where, `name <> 'air'`)
+	}
+	// Items-tab: kun «rigtige» items (ikke dem der også er blocks) — ellers ligner listen blocks
+	if excludeBlocks && table == "go_mc_items" {
+		where = append(where, `name NOT IN (SELECT name FROM go_mc_blocks)`)
+	}
 	if q != "" {
-		where = append(where, `(name ILIKE $1 OR display_name ILIKE $1)`)
 		args = append(args, "%"+q+"%")
+		where = append(where, fmt.Sprintf(`(name ILIKE $%d OR display_name ILIKE $%d)`, len(args), len(args)))
 	}
 	if len(where) > 0 {
 		sql += ` WHERE ` + strings.Join(where, " AND ")

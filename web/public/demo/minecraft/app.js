@@ -1,7 +1,11 @@
 (() => {
-  // 1.20.4 findes ikke i minecraft-assets — brug nærmeste med textures
-  const ASSET =
-    "https://cdn.jsdelivr.net/gh/PrismarineJS/minecraft-assets@master/data/1.21.4";
+  // Vanilla textures (bedre dækning end PrismarineJS minecraft-assets flade PNG'er)
+  const MC_VER = "1.20.4";
+  const TEX = {
+    item: `https://mcasset.cloud/${MC_VER}/assets/minecraft/textures/item`,
+    block: `https://mcasset.cloud/${MC_VER}/assets/minecraft/textures/block`,
+  };
+
   const grid = document.getElementById("grid");
   const status = document.getElementById("status");
   const detail = document.getElementById("detail");
@@ -9,7 +13,6 @@
   const tabs = document.getElementById("tabs");
 
   let tab = "items";
-  let cache = {};
 
   function escapeHtml(v) {
     return String(v ?? "")
@@ -19,31 +22,65 @@
       .replaceAll('"', "&quot;");
   }
 
-  /** Items ligger ofte kun under blocks/ (fx stone); tools under items/. */
+  function roundNum(v) {
+    if (v == null || v === "") return v;
+    const n = Number(v);
+    if (!Number.isFinite(n)) return v;
+    // Undgå 4,333333333333333 i UI
+    return Math.round(n * 1000) / 1000;
+  }
+
+  function formatMeta(it) {
+    if (tab === "blocks") {
+      const h = roundNum(it.hardness);
+      const dig = it.diggable === false ? "ikke diggable" : "diggable";
+      return `hardness ${h ?? "—"} · ${dig}`;
+    }
+    if (tab === "items") {
+      return `stack ${it.stackSize ?? it.stack_size ?? "—"}`;
+    }
+    if (tab === "mobs") {
+      return `${escapeHtml(it.category || "mob")} · ${roundNum(it.width) ?? "?"}×${roundNum(it.height) ?? "?"}`;
+    }
+    if (tab === "biomes") {
+      return `temp ${roundNum(it.temperature) ?? "—"} · rain ${roundNum(it.rainfall) ?? "—"}`;
+    }
+    return "";
+  }
+
+  /** Flere kandidater: item/block + side/front/top-varianter */
   function assetCandidates(kind, name) {
-    if (!name) return [];
-    if (kind === "items") {
-      return [`${ASSET}/items/${name}.png`, `${ASSET}/blocks/${name}.png`];
-    }
-    if (kind === "blocks") {
-      return [`${ASSET}/blocks/${name}.png`, `${ASSET}/items/${name}.png`];
-    }
+    if (!name || name === "air") return [];
+    const n = String(name);
+    const blockVariants = [
+      `${TEX.block}/${n}.png`,
+      `${TEX.block}/${n}_side.png`,
+      `${TEX.block}/${n}_front.png`,
+      `${TEX.block}/${n}_top.png`,
+      `${TEX.block}/${n}_still.png`,
+    ];
+    const itemVariants = [`${TEX.item}/${n}.png`];
+
+    if (kind === "items") return [...itemVariants, ...blockVariants];
+    if (kind === "blocks") return [...blockVariants, ...itemVariants];
     if (kind === "mobs") {
       return [
-        `${ASSET}/entity/${name}/${name}.png`,
-        `${ASSET}/entity/${name}.png`,
+        `${TEX.item}/${n}_spawn_egg.png`,
+        `${TEX.item}/${n}.png`,
       ];
     }
-    return [];
+    return itemVariants;
   }
 
   function imgTag(kind, name, cls) {
     const cands = assetCandidates(kind, name);
-    if (!cands.length) return "";
+    if (!cands.length) {
+      return `<div class="mc-ph${cls ? ` ${cls}` : ""}" aria-hidden="true">?</div>`;
+    }
     const first = escapeHtml(cands[0]);
     const rest = escapeHtml(cands.slice(1).join("|"));
     const classAttr = cls ? ` class="${cls}"` : "";
-    return `<img${classAttr} src="${first}" data-fallbacks="${rest}" alt="" width="48" height="48" loading="lazy" onerror="window.__mcImgFallback(this)" />`;
+    return `<img${classAttr} src="${first}" data-fallbacks="${rest}" alt="" width="48" height="48" loading="lazy" decoding="async" onerror="window.__mcImgFallback(this)" />`;
   }
 
   window.__mcImgFallback = function (img) {
@@ -53,7 +90,11 @@
       img.src = next[0];
       return;
     }
-    img.remove();
+    const ph = document.createElement("div");
+    ph.className = "mc-ph";
+    ph.setAttribute("aria-hidden", "true");
+    ph.textContent = "?";
+    img.replaceWith(ph);
   };
 
   function endpointFor(t, q) {
@@ -61,8 +102,11 @@
       if (q) return `/go/minecraft/recipes/${encodeURIComponent(q)}`;
       return `/go/minecraft/recipes?limit=40`;
     }
-    const base = `/go/minecraft/${t}?limit=80`;
-    return q ? `${base}&q=${encodeURIComponent(q)}` : base;
+    const params = new URLSearchParams({ limit: "80" });
+    if (q) params.set("q", q);
+    // Uden søgning: items ≠ blocks (ellers er første side næsten identisk)
+    if (t === "items" && !q) params.set("excludeBlocks", "true");
+    return `/go/minecraft/${t}?${params}`;
   }
 
   async function load() {
@@ -76,9 +120,12 @@
       const res = await fetch(url);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
-      cache[tab] = data;
+      const label =
+        tab === "items" && !q
+          ? "inventory-items (uden block-duplikater)"
+          : tab;
       status.textContent = Array.isArray(data)
-        ? `${data.length} resultater · klik for detaljer`
+        ? `${data.length} ${label} · klik for detaljer`
         : "Svar modtaget";
       if (tab === "recipes") renderRecipes(data, url);
       else renderGrid(data, url);
@@ -94,11 +141,14 @@
       .map((it, i) => {
         const name = it.name || it.id;
         const title = it.displayName || name;
+        const meta = formatMeta(it);
         return `
         <article class="mc-card" tabindex="0" role="button" data-idx="${i}" style="animation-delay:${Math.min(i, 24) * 20}ms">
           ${imgTag(tab, name)}
+          <span class="mc-kind">${escapeHtml(tab === "blocks" ? "block" : tab === "items" ? "item" : tab)}</span>
           <h3>${escapeHtml(title)}</h3>
           <p class="sub">${escapeHtml(name)}</p>
+          ${meta ? `<p class="mc-meta">${escapeHtml(meta)}</p>` : ""}
         </article>`;
       })
       .join("");
@@ -145,15 +195,25 @@
       </div>`;
   }
 
+  function sanitizeDetail(it) {
+    const copy = { ...it };
+    for (const k of ["hardness", "width", "height", "temperature", "rainfall"]) {
+      if (k in copy) copy[k] = roundNum(copy[k]);
+    }
+    return copy;
+  }
+
   function showItem(it, listUrl) {
     detail.classList.remove("hidden");
     const name = it.name || "";
+    const meta = formatMeta(it);
     detail.innerHTML = `
       <div class="detail-head">
-        ${imgTag(tab === "biomes" ? "" : tab, name, "mc")}
+        ${imgTag(tab === "biomes" ? "items" : tab, name, "mc")}
         <div>
           <h2>${escapeHtml(it.displayName || name)}</h2>
           <p class="demo-meta-line">${escapeHtml(name)} · id ${it.id ?? "—"}</p>
+          ${meta ? `<p class="demo-meta-line">${escapeHtml(meta)}</p>` : ""}
         </div>
       </div>
       <div class="call-box">
@@ -164,7 +224,7 @@
             : ""
         }
       </div>
-      <pre class="demo-json" style="margin-top:1rem;max-height:40vh">${escapeHtml(JSON.stringify(it, null, 2))}</pre>`;
+      <pre class="demo-json" style="margin-top:1rem;max-height:40vh">${escapeHtml(JSON.stringify(sanitizeDetail(it), null, 2))}</pre>`;
 
     document.getElementById("btnRecipe")?.addEventListener("click", () => {
       tab = "recipes";

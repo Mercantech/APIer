@@ -280,17 +280,51 @@
   filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.35));
 }
 
-.mc-card img {
+.mc-card img,
+.mc-card .mc-ph {
   width: 48px;
   height: 48px;
   image-rendering: pixelated;
   margin: 0.35rem auto;
-  display: block;
+  display: grid;
+  place-items: center;
   min-height: 48px;
   object-fit: contain;
 }
 
-.mc-card:not(:has(img)) h3 {
+.mc-card .mc-ph {
+  border-radius: 8px;
+  border: 1px dashed var(--line);
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.85rem;
+}
+
+.mc-card .mc-kind {
+  display: inline-block;
+  margin-top: 0.25rem;
+  padding: 0.12rem 0.45rem;
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid rgba(61, 214, 198, 0.35);
+  background: rgba(61, 214, 198, 0.1);
+}
+
+.mc-card .mc-meta {
+  margin: 0.35rem 0 0;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.mc-card:not(:has(img)):not(:has(.mc-ph)) h3 {
   margin-top: 0.15rem;
 }
 
