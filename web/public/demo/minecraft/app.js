@@ -1,9 +1,10 @@
 (() => {
-  // Vanilla textures (bedre dækning end PrismarineJS minecraft-assets flade PNG'er)
-  const MC_VER = "1.20.4";
+  // Rå PNG'er via jsDelivr (mcasset.cloud serverer HTML-viewer, ikke image/*)
+  const ASSET =
+    "https://cdn.jsdelivr.net/gh/PrismarineJS/minecraft-assets@master/data/1.21.4";
   const TEX = {
-    item: `https://mcasset.cloud/${MC_VER}/assets/minecraft/textures/item`,
-    block: `https://mcasset.cloud/${MC_VER}/assets/minecraft/textures/block`,
+    item: `${ASSET}/items`,
+    block: `${ASSET}/blocks`,
   };
 
   const grid = document.getElementById("grid");
