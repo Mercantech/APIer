@@ -21,6 +21,7 @@ namespace OpgaverAPI.Context
         public DbSet<TerrariaItem> TerrariaItems { get; set; }
         public DbSet<TerrariaRecipe> TerrariaRecipes { get; set; }
         public DbSet<TerrariaNpc> TerrariaNpcs { get; set; }
+        public DbSet<EndpointCallStat> EndpointCallStats { get; set; }
 
         public AppDBContext(DbContextOptions<AppDBContext> options)
             : base(options)
@@ -106,6 +107,14 @@ namespace OpgaverAPI.Context
                 e.ToTable("TerrariaNpcs");
                 e.HasIndex(x => x.NpcId);
                 e.HasIndex(x => x.IsBoss);
+            });
+
+            modelBuilder.Entity<EndpointCallStat>(e =>
+            {
+                e.ToTable("EndpointCallStats");
+                e.Property(x => x.Method).HasMaxLength(16);
+                e.Property(x => x.Path).HasMaxLength(512);
+                e.HasIndex(x => new { x.Method, x.Path }).IsUnique();
             });
         }
 

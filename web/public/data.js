@@ -114,9 +114,9 @@ window.APIER_CATALOG = {
     {
       method: "GET",
       path: "/Opgaver/Stats",
-      title: "Opgaver-kaldestatistik",
-      summary: "Tæller kald til Opgaver-endpoints i den kørende proces.",
-      source: { type: "memory", detail: "In-memory counters i .NET" },
+      title: "API-kaldestatistik",
+      summary: "Hybrid: live hukommelse + Postgres. Tracker alle .NET-endpoints (og Go via samme tabel).",
+      source: { type: "postgres", detail: "EndpointCallStats — memory flush hvert 5. sekund" },
       backend: "dotnet",
       category: "opgaver",
     },

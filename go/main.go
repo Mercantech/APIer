@@ -23,6 +23,7 @@ func main() {
 	}
 
 	api := &api{db: pool}
+	stats := newGoStatsTracker(pool)
 
 	// Baggrunds-seed hvis tom (første start)
 	go func() {
@@ -151,7 +152,7 @@ func main() {
 		addr = ":" + p
 	}
 	log.Printf("go-api listening on %s", addr)
-	log.Fatal(http.ListenAndServe(addr, mux))
+	log.Fatal(http.ListenAndServe(addr, stats.middleware(mux)))
 }
 
 func writeJSON(w http.ResponseWriter, status int, v any) {

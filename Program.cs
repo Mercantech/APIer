@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using OpgaverAPI.Context;
+using OpgaverAPI.Middleware;
 using OpgaverAPI.Services;
 using MongoDB.Driver;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -128,6 +129,8 @@ namespace OpgaverAPI
             builder.Services.AddScoped<RickAndMortySeedService>();
             builder.Services.AddScoped<StarWarsSeedService>();
             builder.Services.AddScoped<TerrariaSeedService>();
+            builder.Services.AddSingleton<IEndpointStatsService, EndpointStatsService>();
+            builder.Services.AddHostedService<EndpointStatsFlushHostedService>();
 
             builder.Services.Configure<OpgaverAPI.Services.S3Options>(
                 builder.Configuration.GetSection(OpgaverAPI.Services.S3Options.Section));
@@ -253,6 +256,8 @@ namespace OpgaverAPI
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseMiddleware<EndpointStatsMiddleware>();
 
             app.MapControllers();
 
