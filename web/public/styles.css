@@ -313,10 +313,30 @@ a:hover {
   margin-left: auto;
   font-family: var(--mono);
   font-size: 0.72rem;
-  font-weight: 600;
-  color: var(--accent);
+  font-weight: 700;
   letter-spacing: 0.02em;
   white-space: nowrap;
+  padding: 0.22rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  background: rgba(18, 32, 51, 0.85);
+}
+
+.call-count.has-calls {
+  color: var(--ink, #e8f1fb);
+  border-color: rgba(61, 214, 198, 0.45);
+  background: rgba(61, 214, 198, 0.16);
+  color: #3dd6c6;
+}
+
+.tag.calls-meta {
+  border-color: rgba(61, 214, 198, 0.28);
+  color: var(--accent);
+}
+
+.call-hero .call-count {
+  margin-left: 0.35rem;
 }
 
 .endpoint-chevron {

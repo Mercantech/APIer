@@ -20,46 +20,63 @@
 
   let activeFilter = "all";
   let endpointsBound = [];
-  /** @type {Map<string, {calls:number, lastCalledAt?:string}>} */
+  /** @type {Map<string, {calls:number, lastCalledAt?:string, path:string}>} */
   let callStatsByKey = new Map();
+  /** @type {Map<string, {calls:number, lastCalledAt?:string, path:string}>} */
+  let callStatsBySignature = new Map();
   /** @type {Map<string, number>} */
   let callStatsByCategory = new Map();
 
   function statsKey(method, path) {
-    return `${String(method || "GET").toUpperCase()} ${String(path || "").replace(/\/$/, "") || "/"}`;
+    return `${String(method || "GET").toUpperCase()} ${normalizePath(path)}`;
   }
 
-  function lookupCalls(ep) {
-    const direct = callStatsByKey.get(statsKey(ep.method, ep.path));
-    if (direct) return direct.calls;
-    // Match template-paths: katalog /go/pokemon/{id} ↔ tracked /go/pokemon/{id}
-    for (const [key, row] of callStatsByKey) {
-      const sp = key.indexOf(" ");
-      if (sp < 0) continue;
-      const m = key.slice(0, sp);
-      const p = key.slice(sp + 1);
-      if (m !== String(ep.method || "GET").toUpperCase()) continue;
-      if (pathsLooselyMatch(ep.path, p)) return row.calls;
-    }
-    return 0;
+  function normalizePath(path) {
+    let p = String(path || "").trim() || "/";
+    if (!p.startsWith("/")) p = `/${p}`;
+    if (p.length > 1) p = p.replace(/\/$/, "");
+    return p;
   }
 
-  function pathsLooselyMatch(catalogPath, trackedPath) {
-    const a = String(catalogPath || "").replace(/\/$/, "") || "/";
-    const b = String(trackedPath || "").replace(/\/$/, "") || "/";
-    if (a.toLowerCase() === b.toLowerCase()) return true;
-    // /go/minecraft/recipes/diamond_pickaxe ↔ /go/minecraft/recipes/{name}
-    const ax = a.split("/");
-    const bx = b.split("/");
-    if (ax.length !== bx.length) return false;
-    for (let i = 0; i < ax.length; i++) {
-      const av = ax[i];
-      const bv = bx[i];
-      if (av === bv) continue;
-      if (bv.startsWith("{") || av.startsWith("{")) continue;
-      return false;
+  /** /go/pokemon/25 og /go/pokemon/{id:int} → /go/pokemon/{p} */
+  function pathSignature(path) {
+    return normalizePath(path)
+      .split("/")
+      .map((seg) => {
+        if (!seg) return "";
+        if (seg.startsWith("{")) return "{p}";
+        if (/^\d+$/.test(seg)) return "{p}";
+        if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(seg))
+          return "{p}";
+        return seg.toLowerCase();
+      })
+      .join("/");
+  }
+
+  function lookupStat(ep) {
+    const method = String(ep.method || "GET").toUpperCase();
+    const path = normalizePath(ep.path);
+    const direct = callStatsByKey.get(statsKey(method, path));
+    if (direct) return direct;
+    const sig = callStatsBySignature.get(`${method} ${pathSignature(path)}`);
+    if (sig) return sig;
+    return { calls: 0, lastCalledAt: null, path };
+  }
+
+  function formatLastCalled(iso) {
+    if (!iso) return "";
+    try {
+      const d = new Date(iso);
+      if (Number.isNaN(d.getTime())) return "";
+      return d.toLocaleString("da-DK", {
+        day: "2-digit",
+        month: "short",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } catch {
+      return "";
     }
-    return true;
   }
 
   async function loadCallStats() {
@@ -68,16 +85,33 @@
       if (!res.ok) return;
       const data = await res.json();
       callStatsByKey = new Map();
+      callStatsBySignature = new Map();
       callStatsByCategory = new Map();
       for (const row of data.endpoints || []) {
-        callStatsByKey.set(statsKey(row.method, row.path), {
+        const method = String(row.method || "GET").toUpperCase();
+        const path = normalizePath(row.path);
+        const entry = {
           calls: Number(row.calls) || 0,
-          lastCalledAt: row.lastCalledAt,
-        });
+          lastCalledAt: row.lastCalledAt || null,
+          path,
+        };
+        callStatsByKey.set(statsKey(method, path), entry);
+        const sigKey = `${method} ${pathSignature(path)}`;
+        const prev = callStatsBySignature.get(sigKey);
+        if (!prev || entry.calls >= prev.calls) {
+          callStatsBySignature.set(sigKey, entry);
+        }
       }
       for (const cat of data.categories || []) {
         callStatsByCategory.set(cat.id, Number(cat.totalCalls) || 0);
       }
+      // Kategori-sum også ud fra katalog-match (så UI matcher kortene)
+      const byCat = new Map();
+      for (const ep of catalog.endpoints || []) {
+        const cat = ep.category || "platform";
+        byCat.set(cat, (byCat.get(cat) || 0) + lookupStat(ep).calls);
+      }
+      for (const [id, n] of byCat) callStatsByCategory.set(id, n);
     } catch {
       /* stats er nice-to-have */
     }
@@ -615,11 +649,14 @@ ${goAuth ? `\t` + goAuth + `\n` : ""}\tres, err := http.DefaultClient.Do(req)
 
   function paintDemoBody(ep, path) {
     if (!demoBody) return;
+    const stat = lookupStat(ep);
+    const last = formatLastCalled(stat.lastCalledAt);
     demoBody.innerHTML = `
       <div class="call-hero">
         <div class="demo-meta">
           <span class="method method-${escapeHtml(ep.method.toLowerCase())}">${escapeHtml(ep.method)}</span>
           <code class="path call-path">${escapeHtml(path)}</code>
+          <span class="call-count has-calls" data-demo-calls title="Mapped fra /Opgaver/Stats">${stat.calls.toLocaleString("da-DK")} kald${last ? ` · ${escapeHtml(last)}` : ""}</span>
         </div>
         <button type="button" class="btn ghost sm" id="demoCopyPath">Kopiér URL</button>
       </div>
@@ -780,6 +817,36 @@ ${goAuth ? `\t` + goAuth + `\n` : ""}\tres, err := http.DefaultClient.Do(req)
         raw,
       };
       applyLiveView();
+      // Opdatér mapped stats på kortet efter live-kald
+      loadCallStats().then(() => {
+        const openPath = demoState.ep?.path;
+        const openMethod = demoState.ep?.method;
+        if (openPath && demoBody) {
+          const s = lookupStat(demoState.ep);
+          const last = formatLastCalled(s.lastCalledAt);
+          const badge = demoBody.querySelector("[data-demo-calls]");
+          if (badge) {
+            badge.textContent = `${s.calls.toLocaleString("da-DK")} kald${last ? ` · ${last}` : ""}`;
+          }
+        }
+        document.querySelectorAll(".endpoint[data-ep-path]").forEach((card) => {
+          const cep = {
+            method: card.getAttribute("data-ep-method"),
+            path: card.getAttribute("data-ep-path"),
+          };
+          if (openMethod && openPath && cep.path === openPath && cep.method === openMethod) {
+            const s = lookupStat(cep);
+            const el = card.querySelector("[data-call-badge]");
+            if (el) {
+              el.textContent = `${s.calls.toLocaleString("da-DK")} kald`;
+              el.classList.toggle("has-calls", s.calls > 0);
+              el.title = s.lastCalledAt
+                ? `${s.calls} kald · sidst ${formatLastCalled(s.lastCalledAt)}`
+                : `${s.calls} kald (fra /Opgaver/Stats)`;
+            }
+          }
+        });
+      });
     } catch (e) {
       demoState.live = {
         status: "Netværksfejl",
@@ -859,14 +926,18 @@ ${goAuth ? `\t` + goAuth + `\n` : ""}\tres, err := http.DefaultClient.Do(req)
 
   function endpointCardHtml(ep, i) {
     const backend = backendById[ep.backend];
-    const calls = lookupCalls(ep);
+    const stat = lookupStat(ep);
+    const last = formatLastCalled(stat.lastCalledAt);
+    const title = last
+      ? `${stat.calls} kald · sidst ${last}`
+      : `${stat.calls} kald (fra /Opgaver/Stats)`;
     return `
-        <article class="endpoint" data-idx="${i}" style="animation-delay:${Math.min(i, 12) * 40}ms">
+        <article class="endpoint" data-idx="${i}" data-ep-path="${escapeHtml(ep.path)}" data-ep-method="${escapeHtml(ep.method)}" style="animation-delay:${Math.min(i, 12) * 40}ms">
           <button type="button" class="endpoint-summary" aria-expanded="false" data-idx="${i}">
             <div class="endpoint-top">
               <span class="method">${escapeHtml(ep.method)}</span>
               <span class="path">${escapeHtml(ep.path)}</span>
-              <span class="call-count" title="Kald (hybrid memory+Postgres)">${calls.toLocaleString("da-DK")} kald</span>
+              <span class="call-count${stat.calls > 0 ? " has-calls" : ""}" title="${escapeHtml(title)}" data-call-badge>${stat.calls.toLocaleString("da-DK")} kald</span>
               <span class="endpoint-chevron" aria-hidden="true"></span>
             </div>
             <h3>${escapeHtml(ep.title)}</h3>
@@ -875,6 +946,7 @@ ${goAuth ? `\t` + goAuth + `\n` : ""}\tres, err := http.DefaultClient.Do(req)
               <span class="tag source-${escapeHtml(ep.source.type)}">${escapeHtml(sourceLabel[ep.source.type] || ep.source.type)}</span>
               <span class="tag backend-${escapeHtml(ep.backend)}">${escapeHtml(backend?.language || ep.backend)} · ${escapeHtml(backend?.service || "")}</span>
               ${ep.auth === "apiKey" ? `<span class="tag auth">API-nøgle</span>` : ep.auth ? `<span class="tag auth">${escapeHtml(ep.auth)}</span>` : ""}
+              ${last ? `<span class="tag calls-meta">Sidst ${escapeHtml(last)}</span>` : ""}
             </div>
             <p class="source-detail">${escapeHtml(ep.source.detail)}</p>
           </button>
