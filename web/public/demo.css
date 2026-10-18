@@ -280,20 +280,26 @@
   filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.35));
 }
 
-.mc-card img,
-.mc-card .mc-ph {
-  width: 48px;
-  height: 48px;
+.mc-card img {
+  width: 64px;
+  height: 64px;
   image-rendering: pixelated;
-  margin: 0.35rem auto;
-  display: grid;
-  place-items: center;
-  min-height: 48px;
+  margin: 0.45rem auto 0.15rem;
+  display: block;
   object-fit: contain;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  padding: 6px;
+  box-sizing: border-box;
 }
 
 .mc-card .mc-ph {
-  border-radius: 8px;
+  width: 64px;
+  height: 64px;
+  margin: 0.45rem auto 0.15rem;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
   border: 1px dashed var(--line);
   background: rgba(0, 0, 0, 0.25);
   color: var(--muted);
