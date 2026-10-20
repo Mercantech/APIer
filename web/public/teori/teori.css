@@ -23,7 +23,7 @@
   gap: 0.85rem;
   align-items: center;
   padding: 0.85rem 1rem;
-  border-radius: 12px;
+  border-radius: 0;
   border: 1px solid var(--line);
   background: rgba(18, 32, 51, 0.72);
   color: inherit;
@@ -32,8 +32,8 @@
 }
 
 .teori-path-list a:hover {
-  border-color: rgba(61, 214, 198, 0.4);
-  background: rgba(61, 214, 198, 0.06);
+  border-color: rgba(0, 255, 255, 0.4);
+  background: rgba(0, 255, 255, 0.06);
   text-decoration: none;
 }
 
@@ -47,7 +47,7 @@
   display: grid;
   place-items: center;
   border-radius: 8px;
-  background: rgba(61, 214, 198, 0.15);
+  background: rgba(0, 255, 255, 0.15);
   color: var(--accent);
 }
 
@@ -129,7 +129,7 @@
 .teori-figure {
   margin: 0.4rem 0 1rem;
   padding: 0.75rem;
-  border-radius: 14px;
+  border-radius: 0;
   border: 1px solid var(--line);
   background: rgba(0, 0, 0, 0.22);
 }
@@ -149,9 +149,9 @@
 
 .teori-callout {
   padding: 0.9rem 1rem;
-  border-radius: 12px;
-  border: 1px solid rgba(61, 214, 198, 0.28);
-  background: rgba(61, 214, 198, 0.07);
+  border-radius: 0;
+  border: 1px solid rgba(0, 255, 255, 0.28);
+  background: rgba(0, 255, 255, 0.07);
   margin: 0.5rem 0 1rem;
 }
 
@@ -165,7 +165,7 @@
   display: grid;
   gap: 0.45rem;
   padding: 1rem 1.05rem;
-  border-radius: 12px;
+  border-radius: 0;
   border: 1px solid var(--line);
   background: rgba(18, 32, 51, 0.65);
 }
@@ -192,7 +192,7 @@
   font-family: var(--mono);
   font-size: 0.72rem;
   padding: 0.28rem 0.55rem;
-  border-radius: 999px;
+  border-radius: 0;
   border: 1px solid var(--line);
   color: var(--muted);
 }
@@ -210,7 +210,7 @@
 .teori-table-wrap {
   overflow-x: auto;
   margin: 0.5rem 0 1rem;
-  border-radius: 12px;
+  border-radius: 0;
   border: 1px solid var(--line);
 }
 
@@ -241,7 +241,7 @@
 .teori-code {
   margin: 0.4rem 0 1rem;
   padding: 0.9rem 1rem;
-  border-radius: 12px;
+  border-radius: 0;
   border: 1px solid var(--line);
   background: #071018;
   overflow-x: auto;

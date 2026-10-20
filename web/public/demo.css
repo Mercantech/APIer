@@ -112,7 +112,7 @@
   flex: 1 1 200px;
   font: inherit;
   padding: 0.7rem 0.95rem;
-  border-radius: 12px;
+  border-radius: 0;
   border: 1px solid var(--line);
   background: rgba(0, 0, 0, 0.28);
   color: var(--text);
@@ -136,7 +136,7 @@
   color: var(--muted);
   background: transparent;
   border: 1px solid var(--line);
-  border-radius: 999px;
+  border-radius: 0;
   padding: 0.45rem 0.9rem;
 }
 
@@ -161,7 +161,7 @@
   cursor: pointer;
   text-transform: capitalize;
   padding: 0.35rem 0.7rem;
-  border-radius: 999px;
+  border-radius: 0;
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.04);
   color: var(--muted);
@@ -231,7 +231,7 @@
   flex: 1 1 180px;
   font: inherit;
   padding: 0.65rem 0.85rem;
-  border-radius: 12px;
+  border-radius: 0;
   border: 1px solid var(--line);
   background: rgba(0, 0, 0, 0.28);
   color: var(--text);
@@ -288,7 +288,7 @@
   display: block;
   object-fit: contain;
   background: rgba(255, 255, 255, 0.06);
-  border-radius: 6px;
+  border-radius: 0;
   padding: 6px;
   box-sizing: border-box;
 }
@@ -299,7 +299,7 @@
   margin: 0.45rem auto 0.15rem;
   display: grid;
   place-items: center;
-  border-radius: 6px;
+  border-radius: 0;
   border: 1px dashed var(--line);
   background: rgba(0, 0, 0, 0.25);
   color: var(--muted);
@@ -311,7 +311,7 @@
   display: inline-block;
   margin-top: 0.25rem;
   padding: 0.12rem 0.45rem;
-  border-radius: 999px;
+  border-radius: 0;
   font-family: var(--mono);
   font-size: 0.65rem;
   font-weight: 700;
@@ -337,7 +337,7 @@
 .lol-card img {
   width: 64px;
   height: 64px;
-  border-radius: 10px;
+  border-radius: 0;
   object-fit: cover;
   margin: 0.15rem auto;
   display: block;
@@ -348,7 +348,7 @@
   width: 72px;
   height: 48px;
   object-fit: cover;
-  border-radius: 6px;
+  border-radius: 0;
   margin: 0.15rem auto;
   display: block;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.28);
@@ -359,7 +359,7 @@
   width: 72px;
   height: 48px;
   margin: 0.15rem auto;
-  border-radius: 6px;
+  border-radius: 0;
   background: rgba(255, 255, 255, 0.06);
   border: 1px dashed var(--line);
 }
@@ -404,7 +404,7 @@
   color: var(--text);
   background: rgba(0, 0, 0, 0.22);
   border: 1px solid var(--line);
-  border-radius: 999px;
+  border-radius: 0;
   padding: 0.35rem 0.7rem 0.35rem 0.4rem;
 }
 
@@ -432,7 +432,7 @@
   font-weight: 600;
   text-transform: capitalize;
   padding: 0.15rem 0.45rem;
-  border-radius: 999px;
+  border-radius: 0;
   background: rgba(61, 214, 198, 0.12);
   color: var(--accent);
 }
@@ -472,14 +472,14 @@
 .detail-head img.lol {
   width: 96px;
   height: 96px;
-  border-radius: 12px;
+  border-radius: 0;
   object-fit: cover;
 }
 
 .detail-head img.country {
   width: 120px;
   height: 80px;
-  border-radius: 10px;
+  border-radius: 0;
   object-fit: cover;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
@@ -503,7 +503,7 @@
   font: inherit;
   font-size: 0.9rem;
   padding: 0.45rem 0.65rem;
-  border-radius: 10px;
+  border-radius: 0;
   border: 1px solid var(--line);
   background: var(--panel);
   color: inherit;
@@ -553,7 +553,7 @@
 
 .stat-track {
   height: 0.45rem;
-  border-radius: 999px;
+  border-radius: 0;
   background: rgba(255, 255, 255, 0.08);
   overflow: hidden;
 }
@@ -567,7 +567,7 @@
 .stat-val {
   text-align: right;
   font-variant-numeric: tabular-nums;
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--mono);
 }
 
 .meta-list {
@@ -624,7 +624,7 @@
 .call-box {
   margin-top: 1rem;
   padding: 0.75rem 0.85rem;
-  border-radius: 10px;
+  border-radius: 0;
   background: rgba(0, 0, 0, 0.3);
   border: 1px solid var(--line);
 }
@@ -645,7 +645,7 @@
 .recipe-block {
   padding: 0.85rem;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: 0;
   background: rgba(0, 0, 0, 0.2);
 }
 
