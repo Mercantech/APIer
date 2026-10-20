@@ -881,16 +881,17 @@ ${goAuth ? `\t` + goAuth + `\n` : ""}\tres, err := http.DefaultClient.Do(req)
 
   const categoryById = Object.fromEntries((catalog.categories || []).map((c) => [c.id, c]));
 
-  function matchesFilter(ep, filterId = activeFilter) {
-    if (filterId === "all") return true;
-    if (filterId.startsWith("category:")) {
-      return (ep.category || "platform") === filterId.slice("category:".length);
+  function matchesFilter(ep, filterId) {
+    const id = typeof filterId === "string" ? filterId : activeFilter;
+    if (id === "all") return true;
+    if (id.startsWith("category:")) {
+      return (ep.category || "platform") === id.slice("category:".length);
     }
-    if (filterId.startsWith("backend:")) {
-      return ep.backend === filterId.slice("backend:".length);
+    if (id.startsWith("backend:")) {
+      return ep.backend === id.slice("backend:".length);
     }
-    if (filterId.startsWith("source:")) {
-      return ep.source.type === filterId.slice("source:".length);
+    if (id.startsWith("source:")) {
+      return ep.source.type === id.slice("source:".length);
     }
     return true;
   }
