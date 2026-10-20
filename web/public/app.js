@@ -881,48 +881,144 @@ ${goAuth ? `\t` + goAuth + `\n` : ""}\tres, err := http.DefaultClient.Do(req)
 
   const categoryById = Object.fromEntries((catalog.categories || []).map((c) => [c.id, c]));
 
-  function renderFilters() {
-    const sources = [...new Set(catalog.endpoints.map((e) => e.source.type))];
-    const catButtons = (catalog.categories || []).map((c) => ({
-      id: `category:${c.id}`,
-      label: c.title,
-    }));
-    const buttons = [
-      { id: "all", label: "Alle" },
-      ...catButtons,
-      ...catalog.backends.map((b) => ({ id: `backend:${b.id}`, label: b.language })),
-      ...sources.map((s) => ({ id: `source:${s}`, label: sourceLabel[s] || s })),
-    ];
-
-    filtersEl.innerHTML = buttons
-      .map(
-        (b) =>
-          `<button type="button" class="filter-btn${b.id === activeFilter ? " active" : ""}" data-filter="${escapeHtml(b.id)}">${escapeHtml(b.label)}</button>`
-      )
-      .join("");
-
-    filtersEl.querySelectorAll(".filter-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        activeFilter = btn.dataset.filter;
-        renderFilters();
-        renderEndpoints();
-      });
-    });
-  }
-
-  function matchesFilter(ep) {
-    if (activeFilter === "all") return true;
-    if (activeFilter.startsWith("category:")) {
-      return (ep.category || "platform") === activeFilter.slice("category:".length);
+  function matchesFilter(ep, filterId = activeFilter) {
+    if (filterId === "all") return true;
+    if (filterId.startsWith("category:")) {
+      return (ep.category || "platform") === filterId.slice("category:".length);
     }
-    if (activeFilter.startsWith("backend:")) {
-      return ep.backend === activeFilter.slice("backend:".length);
+    if (filterId.startsWith("backend:")) {
+      return ep.backend === filterId.slice("backend:".length);
     }
-    if (activeFilter.startsWith("source:")) {
-      return ep.source.type === activeFilter.slice("source:".length);
+    if (filterId.startsWith("source:")) {
+      return ep.source.type === filterId.slice("source:".length);
     }
     return true;
   }
+
+  function filterCount(filterId) {
+    return catalog.endpoints.filter((ep) => matchesFilter(ep, filterId)).length;
+  }
+
+  function filterLabel(filterId) {
+    if (filterId === "all") return "Alle";
+    if (filterId.startsWith("category:")) {
+      const id = filterId.slice("category:".length);
+      return categoryById[id]?.title || id;
+    }
+    if (filterId.startsWith("backend:")) {
+      const id = filterId.slice("backend:".length);
+      return backendById[id]?.language || id;
+    }
+    if (filterId.startsWith("source:")) {
+      const id = filterId.slice("source:".length);
+      return sourceLabel[id] || id;
+    }
+    return filterId;
+  }
+
+  function dropdownHtml(groupId, groupLabel, options) {
+    const selected = options.find((o) => o.id === activeFilter);
+    const openClass = selected ? " has-value" : "";
+    const triggerLabel = selected ? selected.label : "Alle";
+    const opts = options
+      .map((o) => {
+        const n = filterCount(o.id);
+        const sel = o.id === activeFilter ? " aria-selected=\"true\"" : "";
+        return `<button type="button" class="filter-option${o.id === activeFilter ? " selected" : ""}" role="option"${sel} data-filter="${escapeHtml(o.id)}">
+          <span>${escapeHtml(o.label)}</span>
+          <span class="filter-option-count">${n}</span>
+        </button>`;
+      })
+      .join("");
+    return `
+      <div class="filter-dropdown${openClass}" data-group="${escapeHtml(groupId)}">
+        <button type="button" class="filter-trigger" aria-haspopup="listbox" aria-expanded="false" data-trigger="${escapeHtml(groupId)}">
+          <span class="filter-trigger-kicker">${escapeHtml(groupLabel)}</span>
+          <span class="filter-trigger-value">${escapeHtml(triggerLabel)}</span>
+          <span class="filter-chevron" aria-hidden="true"></span>
+        </button>
+        <div class="filter-menu" role="listbox" aria-label="${escapeHtml(groupLabel)}" hidden>
+          ${opts}
+        </div>
+      </div>`;
+  }
+
+  function closeFilterMenus(except) {
+    filtersEl.querySelectorAll(".filter-dropdown").forEach((dd) => {
+      if (except && dd === except) return;
+      dd.classList.remove("open");
+      const menu = dd.querySelector(".filter-menu");
+      const trigger = dd.querySelector(".filter-trigger");
+      if (menu) menu.hidden = true;
+      if (trigger) trigger.setAttribute("aria-expanded", "false");
+    });
+  }
+
+  function setFilter(filterId) {
+    activeFilter = filterId;
+    closeFilterMenus();
+    renderFilters();
+    renderEndpoints();
+  }
+
+  function renderFilters() {
+    const sources = [...new Set(catalog.endpoints.map((e) => e.source.type))];
+    const catOpts = (catalog.categories || []).map((c) => ({
+      id: `category:${c.id}`,
+      label: c.title,
+    }));
+    const backendOpts = catalog.backends.map((b) => ({
+      id: `backend:${b.id}`,
+      label: b.language,
+    }));
+    const sourceOpts = sources.map((s) => ({
+      id: `source:${s}`,
+      label: sourceLabel[s] || s,
+    }));
+
+    const showing =
+      activeFilter === "all"
+        ? `${catalog.endpoints.length} endpoints`
+        : `${filterCount(activeFilter)} · ${filterLabel(activeFilter)}`;
+
+    filtersEl.innerHTML = `
+      <div class="filter-bar" role="toolbar" aria-label="Filtrer katalog">
+        <button type="button" class="filter-all${activeFilter === "all" ? " active" : ""}" data-filter="all">Alle</button>
+        ${dropdownHtml("emne", "Emne", catOpts)}
+        ${dropdownHtml("backend", "Backend", backendOpts)}
+        ${dropdownHtml("kilde", "Datakilde", sourceOpts)}
+        <p class="filter-status" aria-live="polite">${escapeHtml(showing)}</p>
+      </div>`;
+
+    filtersEl.querySelector('[data-filter="all"]')?.addEventListener("click", () => setFilter("all"));
+
+    filtersEl.querySelectorAll(".filter-trigger").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const dd = btn.closest(".filter-dropdown");
+        const willOpen = !dd.classList.contains("open");
+        closeFilterMenus();
+        if (willOpen) {
+          dd.classList.add("open");
+          btn.setAttribute("aria-expanded", "true");
+          dd.querySelector(".filter-menu").hidden = false;
+        }
+      });
+    });
+
+    filtersEl.querySelectorAll(".filter-menu").forEach((menu) => {
+      menu.addEventListener("click", (e) => e.stopPropagation());
+    });
+
+    filtersEl.querySelectorAll(".filter-option").forEach((btn) => {
+      btn.addEventListener("click", () => setFilter(btn.dataset.filter));
+    });
+  }
+
+  document.addEventListener("click", () => closeFilterMenus());
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeFilterMenus();
+  });
 
   function endpointCardHtml(ep, i) {
     const backend = backendById[ep.backend];
